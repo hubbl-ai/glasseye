@@ -52,8 +52,12 @@ def main():
 
         tufte_template = template_path
 
-    #Convert markdown to html using pandoc
-    py.convert(user_path+input_file, 'html', outputfile = user_path + "pandocHTML.html", extra_args=['--mathjax'])
+     #Convert markdown to html using pandoc
+    if hasattr(py, 'convert'):
+        convert = py.convert
+    else:
+        convert = py.convert_file
+    convert(user_path+input_file, 'html', outputfile = user_path + "pandocHTML.html", extra_args=['--mathjax'])
 
     #Read in the html and soupify it
     read_html= open(user_path + pandoc_html,'r').read()
@@ -96,7 +100,8 @@ def main():
 
     #Standard charts
 
-    standard_charts = ["simplot", "treemap", "dot_plot", "gantt", "donut", "barchart", "tree", "force", "venn", "scatterplot", "timeseries"]
+    # standard_charts = ["simplot", "treemap", "dot_plot", "gantt", "donut", "barchart", "tree", "force", "venn", "scatterplot", "timeseries", "skey"]
+    standard_charts = ["skey","barchart","piechart","donut","linechart", "tree"]
 
     for s in standard_charts:
         code_string = add_chart(s, code_string)
@@ -111,9 +116,9 @@ def main():
         arguments = str(d[1].contents[0])
         if "," in arguments and ".csv" in arguments:
             arguments = arguments.split(",", 1)
-            code_string += "lineplot(" + arguments[0] + ", " + "'#lineplot_" + str(d[0]) + "','" + size + "'," + arguments[1] + "); \n"
+            code_string += "lineplot(" + arguments[0] + ", " + "'#lineplot_" + str(d[0]) + "','" + size + "'," + arguments[1].replace("\n"," ") + "); \n"
         else:
-            code_string += "lineplot(" + str(d[1].contents[0]) + ", " + "'#lineplot_" + str(d[0]) + "','" + size + "'); \n"
+            code_string += "lineplot(" + str(d[1].contents[0]).replace("\n"," ") + ", " + "'#lineplot_" + str(d[0]) + "','" + size + "'); \n"
         d[1].name = "span"
         d[1].contents = ""
         d[1]['id'] = "lineplot_" + str(d[0])
@@ -122,9 +127,12 @@ def main():
 
 
     soup_string = str(soup)
+    # code_string = code_string.replace('“','"').replace('”','"').replace("’","'").replace("‘","'")
+    code_string = re.sub('[“”]', '"', code_string)
+    code_string = re.sub("[“’‘”]", "'", code_string)
 
     #Write to file with header and footer from template
-    with open(template_path, "r") as template:
+    with open(tufte_template, "r") as template:
          with open(user_path + glasseye_file, "w") as glasseye_file:
              for line in template:
                  if '<div id = "tufte_container">' in line:
