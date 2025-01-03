@@ -20,7 +20,8 @@ SOURCE_FILES = \
 	LogReg.js \
 	RandomNumber.js \
 	AnimatedDensity.js \
-	PolygonMap.js
+	PolygonMap.js \
+	Skey.js
 
 # Parsers.js \
 
