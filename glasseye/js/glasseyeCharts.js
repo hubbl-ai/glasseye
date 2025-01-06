@@ -1,3 +1,9 @@
+// Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
+// Generated Mon Jan  6 14:40:34 CAT 2025
+
+
+/// GlasseyeChart.js
+
 //Glasseye chart super class: sets up the svg and the chart area
 var GlasseyeChart = function(div, size, margin, custom_height) {
 
@@ -134,932 +140,9 @@ GlasseyeChart.prototype.set_tooltip_text = function (commentary_strings, variabl
   return self;
 
 }
-var GridChart = function (div, size, labels, scales, margin, height) {
 
-    var self = this;
-    self.scales = scales;
-    self.labels = labels;
+/// GlobalFunctionsAndVariable.js
 
-    GlasseyeChart.call(self, div, size, margin, height);
-
-    if (scales[0].scale_type === "ordinal") {
-        self.x = self.scales[0].scale_func.rangePoints([0, self.width], 1);
-    } else {
-        self.x = self.scales[0].scale_func.range([0, self.width]);
-    }
-
-    if (scales[1].scale_type === "ordinal") {
-        self.y = self.scales[1].scale_func.rangePoints([self.height, 0], 1);
-    } else {
-        self.y = self.scales[1].scale_func.range([self.height, 0]);
-    }
-
-
-    self.x_axis = d3.svg.axis()
-        .scale(self.x)
-        .orient("bottom")
-        .tickSize(-self.height, 0, 0)
-        .tickPadding(10);
-
-    self.y_axis = d3.svg.axis()
-        .scale(self.y)
-        .orient("left")
-        .tickSize(-self.width, 0, 0);
-
-    //If the scale is not ordinal apply the universal format
-    if (scales[1].scale_type != "ordinal") {self.y_axis .tickFormat(uni_format_axis)};
-
-    self.tooltip_formtter = uni_format;
-
-};
-
-GridChart.prototype = Object.create(GlasseyeChart.prototype);
-
-GridChart.prototype.set_y_axis_format = function (format) {
-
-    var self = this;
-
-    self.y_axis.tickFormat(format);
-    self.tooltip_formtter = format;
-    return self;
-
-}
-
-
-
-GridChart.prototype.add_grid = function () {
-
-    var self = this;
-
-    var x_axis_g = self.chart_area.append("g")
-        .attr("class", "chart_grid x_axis")
-        .attr("transform", "translate(0," + self.height + ")")
-        .call(self.x_axis);
-
-    if (self.scales[0].scale_type === "nonlinear") {
-        x_axis_g.selectAll("text")
-            .style("text-anchor", "end")
-            .attr("dx", "-.8em")
-            .attr("dy", ".15em")
-            .attr("transform", "rotate(-90)");
-    }
-
-    self.chart_area.append("g")
-        .attr("class", "chart_grid y_axis")
-        .call(self.y_axis);
-
-    //Add labels if they have been provided
-
-    if (typeof self.labels !== "undefined") {
-        self.svg.append("g")
-            .attr("class", "axis_label axis_label_x")
-            .attr("transform", "translate(" + (self.margin.left + self.width + 15) + ", " + (self.height + self.margin.top) + ") rotate(-90)")
-            .append("text")
-            .text(self.labels[0]);
-
-        self.svg.append("g")
-            .attr("class", "axis_label axis_label_y")
-            .attr("transform", "translate(" + self.margin.left + ", " + (self.margin.top - 8) + ")")
-            .append("text")
-            .text(self.labels[1]);
-    }
-
-    return self;
-
-};
-/**
- * Builds a BarChart object
- * @constructor
- * @param {array} processed_data Data that has been given a structure appropriate to the chart
- * @param {string} div The div in which the chart will be placed
- * @param {string} size The size (one of several preset sizes)
- * @param {array} [labels] An array of the axis labels
- * @param {array} scales Scales for the x and y axes
- * @param {object} [margin] Optional argument in case the default margin settings need to be overridden
- */
-
-var BarChart = function (processed_data, div, size, labels, scales, margin) {
-
-    var self = this;
-
-    self.processed_data = processed_data;
-
-    self.type = (self.processed_data[0].group === undefined) ? "simple" : "group";
-
-    //Work out if there is a need for label rotation
-
-    var x_scale_labels = scales[0].scale_func.domain();
-    var max_string = d3.max(x_scale_labels.map(function (d) {
-        return d.length;
-    }));
-    var num_points = x_scale_labels.length;
-
-    self.rotate_labels = (max_string > 60 / num_points)? true: false;
-
-    if (margin === undefined) {
-        margin = {
-            top: 20,
-            bottom: 30,
-            right: 20,
-            left: 40
-        };
-    }
-
-    if (self.rotate_labels === true) {margin.bottom = max_string*5};
-
-    if (self.type === "group") {
-        margin.right = 80;
-
-        self.loose_bars = self.processed_data.map(function (d) {
-
-            return (d.values.map(function (e) {
-                return {
-                    value: e.value,
-                    group: d.group,
-                    label: e.label,
-                    y0: e.y0,
-                    y1: e.y1
-                };
-            }));
-        });
-
-
-        self.loose_bars = [].concat.apply([], self.loose_bars).filter(function (d) {
-            return d !== undefined;
-        });
-
-
-        //Section to work out the number of labels
-        self.legend_labels = [];
-
-        self.loose_bars.forEach(function (d) {
-            if (self.legend_labels.indexOf(d.label) === -1) {
-                self.legend_labels.push(d.label);
-            }
-        });
-
-        self.num_labels = self.legend_labels.length;
-
-        self.color = d3.scale.ordinal()
-            .range(colorbrewer.RdBu[self.num_labels]);
-    }
-
-    GridChart.call(self, div, size, labels, scales, margin);
-
-    //Some customisations
-    //self.margin.left = 4;
-    //self.y_axis.tickFormat("");
-
-    self.tip = d3.tip()
-        .attr('class', 'd3-tip')
-        .offset([-10, 0])
-        .html(function (d) {
-            var text = (self.type === "simple") ? uni_format(d.value) : d.label + "<br> size: " + uni_format(d.value);
-            return text;
-        });
-
-    self.bar_width = self.width / processed_data.length;
-
-};
-
-BarChart.prototype = Object.create(GridChart.prototype);
-
-
-/**
- * Adds the SVGs corresponding to the BarChart object
- *
- * @method
- * @returns {object} The modified BarChart object
- */
-
-BarChart.prototype.add_bars = function () {
-
-    var self = this;
-
-    self.chart_area.call(self.tip);
-
-    if (self.type === "simple") {
-
-        self.chart_area.selectAll(".bar")
-            .data(self.processed_data)
-            .enter()
-            .append("rect")
-            .attr("class", "bar")
-            .attr("x", function (d) {
-                return self.x(d.label) - self.bar_width / 4;
-            })
-            .attr("y", function (d) {
-                return self.y(d.value);
-            })
-            .attr("width", self.bar_width / 2)
-            .attr("height", function (d) {
-                return self.height - self.y(d.value);
-            })
-            .on('mouseover', self.tip.show)
-            .on('mouseout', self.tip.hide);
-
-    } else {
-
-        self.chart_area.selectAll(".bar")
-            .data(self.loose_bars)
-            .enter()
-            .append("rect")
-            .attr("class", "bar")
-            .attr("x", function (d) {
-                return self.x(d.group) - self.bar_width / 4;
-            })
-            .attr("y", function (d) {
-                return self.y(d.y1);
-            })
-            .attr("width", self.bar_width / 2)
-            .attr("height", function (d) {
-                return self.y(d.y0) - self.y(d.y1);
-            })
-            .on('mouseover', self.tip.show)
-            .on('mouseout', self.tip.hide)
-            .on('click', function () {
-                self.change_layout("to_side");
-            })
-            .style("fill", function (d) {
-                return self.color(d.label);
-            });
-
-        //Add the legend
-        add_legend(self.svg, self.margin.left + self.width + 20, self.margin.top, self.legend_labels.map(function (v, i) {
-            return {
-                "label": v,
-                "colour": self.color(v),
-                "class": "d_" + i
-            };
-        }).reverse());
-
-    }
-
-    //Rotate labels if necessary
-
-    if (self.rotate_labels === true) {
-        self.chart_area.selectAll(".x_axis").selectAll("text")
-            .style("text-anchor", "end")
-            .attr("dx", "-1em")
-            .attr("dy", "-0.8em")
-            .attr("transform", "rotate(-90)");
-    }
-
-    //Prune the y axis tick labels
-
-    var tick_labels = self.chart_area.selectAll(".y_axis").selectAll("text");
-    var ticks_even = +(tick_labels[0].length % 2 === 0);
-    tick_labels.style("opacity", function (d, i) {
-        return (i % 2 === ticks_even) ? 1 : 0;
-    });
-
-    return self;
-
-};
-
-/**
- * Changes a grouped barchart from stacked to side by side and vice versa.
- *
- * @method
- * @returns {object} The modified BarChart object
- */
-
-BarChart.prototype.change_layout = function (direction) {
-
-    var self = this;
-
-    if (direction === "to_side") {
-
-        //Adjust the y axis
-
-        self.preserved_domain = self.y.domain();
-        var max_to_side = 0;
-        self.processed_data.forEach(function (d) {
-            d.values.forEach(function (e) {
-                max_to_side = (e.value > max_to_side) ? e.value : max_to_side;
-            })
-        });
-        self.y.domain([self.preserved_domain[0], max_to_side]);
-        self.chart_area.selectAll(".y_axis").transition()
-            .duration(1000)
-            .call(self.y_axis);
-
-        //Prune the y axis tick labels
-        var tick_labels = self.chart_area.selectAll(".y_axis").selectAll("text");
-        var ticks_even = +(tick_labels[0].length % 2 === 0);
-        tick_labels.style("opacity", function (d, i) {
-            return (i % 2 === ticks_even) ? 1 : 0;
-        });
-
-
-        self.chart_area.selectAll(".bar")
-            .on('click', function () {
-                self.change_layout("to_stack");
-            })
-            .transition()
-            .duration(1000)
-            .attr("width", self.bar_width * 0.8 / self.num_labels)
-            .attr("y", function (d) {
-                return self.y(d.value);
-            })
-            .attr("height", function (d) {
-                return self.y(d.y0) - self.y(d.y1);
-            })
-            .attr("x", function (d) {
-                var j = self.legend_labels.indexOf(d.label);
-                return self.x(d.group) + j * (self.bar_width * 0.8 / self.num_labels) - self.bar_width * 0.5 + self.bar_width * 0.1;
-            });
-
-
-    } else {
-
-        self.y.domain(self.preserved_domain);
-        self.chart_area.selectAll(".y_axis").transition()
-            .duration(1000)
-            .call(self.y_axis);
-
-        //Prune the y axis tick labels
-        var tick_labels = self.chart_area.selectAll(".y_axis").selectAll("text");
-        var ticks_even = +(tick_labels[0].length % 2 === 0);
-        tick_labels.style("opacity", function (d, i) {
-            return (i % 2 === ticks_even) ? 1 : 0;
-        });
-
-        self.chart_area.selectAll(".bar")
-            .on('click', function () {
-                self.change_layout("to_side");
-            })
-            .transition()
-            .duration(1000)
-            .attr("x", function (d) {
-                return self.x(d.group) - self.bar_width / 4;
-            })
-            .attr("y", function (d) {
-                return self.y(d.y1);
-            })
-            .attr("width", self.bar_width / 2)
-            .attr("height", function (d) {
-                return self.y(d.y0) - self.y(d.y1);
-            });
-
-
-    }
-
-
-};
-
-/**
- * Allows the used to see which differences are significant
- *
- * @method
- * @returns {object} The modified BarChart object
- */
-
-BarChart.prototype.grumpy = function (method) {
-
-    var self = this;
-
-    if (self.type === "simple") {
-
-        //Add the commentary div;
-
-        d3.selectAll(self.div).append("div").attr("id", "commentary").style("width", self.width + "px").style("margin-left", self.margin.left + "px");
-
-        var bar_values = self.processed_data.map(function (d) {
-            return d.value
-        });
-        var bar_labels = self.processed_data.map(function (d) {
-            return d.label
-        });
-        var sum_values = d3.sum(bar_values);
-
-        if (method === "bayesian") {
-
-            var alphas = bar_values.map(function (d) {
-                return d + 1
-            });
-
-            //Work out shrunk means
-            var sum_alphas = d3.sum(alphas);
-
-            var shrunk_means = alphas.map(function (d) {
-                return sum_values * d / sum_alphas;
-            });
-
-            //Generate draws from the posterior distribution
-            var draw = random_dirichlet(alphas);
-            var sample = [];
-
-            for (var i = 0; i < 5000; i = i + 1) {
-                sample.push(draw())
-            }
-            ;
-
-            var comparisons = [];
-
-            bar_labels.forEach(function (d, i) {
-                bar_labels.forEach(function (e, j) {
-                    comparisons.push(
-                        {
-                            A: i, B: j, A_label: d, B_label: e,
-                            diff_dist: sample.map(function (f) {
-                                return f[i] - f[j];
-                            }),
-                        })
-                })
-
-            });
-
-            self.comparisons = comparisons.map(function (d) {
-                return {
-                    A: d.A, B: d.B, A_label: d.A_label, B_label: d.B_label,
-                    diff_dist: d.diff_dist,
-                    less_than_zero: d3.sum(d.diff_dist.map(function (e) {
-                        return (e < 0) ? 1 : 0;
-                    })) / 5000,
-                    more_than_zero: d3.sum(d.diff_dist.map(function (e) {
-                        return (e < 0) ? 0 : 1;
-                    })) / 5000
-                }
-            })
-
-
-            //Shadows for shrunken means
-            shrunk_means = shrunk_means.map(function (d, i) {
-                return {
-                    label: bar_labels[i],
-                    value: d
-                };
-            });
-
-
-            self.chart_area.insert("g", "rect").selectAll(".bar_shrunk")
-                .data(shrunk_means)
-                .enter()
-                .append("rect")
-                .attr("class", "bar_shrunk")
-                .attr("x", function (d) {
-                    return self.x(d.label) - self.bar_width / 4 + 15;
-                })
-                .attr("y", function (d) {
-                    return self.y(d.value);
-                })
-                .attr("width", self.bar_width / 2)
-                .attr("height", function (d) {
-                    return self.height - self.y(d.value);
-                })
-                .style("fill", "steelblue")
-                .style("opacity", 0.2);
-
-
-            //Click to show differences
-
-            self.select_mode = 0;
-
-            self.posterior_diff = function (d, i) {
-
-
-                if (self.select_mode === 0) {
-                    self.select_mode = 1;
-                    self.A = i;
-                }
-
-                else if (self.select_mode === 1) {
-                    self.select_mode = 2;
-                    self.B = i;
-                    console.log(self.comparisons);
-                    var diff = self.comparisons.filter(function (f) {
-                        return f.A === self.A & f.B === self.B;
-                    })[0];
-
-
-                    d3.selectAll(self.div).selectAll("#commentary").html("Assuming that data sampling was random, there is a " + d3.format("%")(diff.more_than_zero) + " probability that the number of " + diff.A_label + " in the population is greater that the number of " + diff.B_label);
-                }
-
-                else {
-                    console.log("ok");
-                }
-
-            };
-
-
-            self.chart_area.selectAll(".bar")
-                .on('click', function (d, i) {
-                    if (self.select_mode === 2) {
-                        self.chart_area.selectAll(".bar").style("fill", 'steelblue');
-                        self.select_mode = 0;
-                    }
-                    d3.select(this).style("fill", '#2b506e');
-                    self.posterior_diff(d, i);
-                })
-
-
-            /*
-             .on('mouseover', function(d){
-             self.tip.show(d);
-             d3.selectAll(".bar_shrunk").style("opacity", 0.2);
-             })
-             .on('mouseout', function(d){
-             self.tip.show(d);
-             d3.selectAll(".bar_shrunk").style("opacity", 0);
-             });
-             */
-
-
-        }
-
-    }
-
-
-}
-
-
-/**
- * Creates a barchart within a div
- *
- * @param {array} data Either the path to a csv file or inline data in glasseye
- * @param {string} div The div in which the chart will be placed
- * @param {string} size The size (one of several preset sizes)
- * @param {array} labels An array containing the labels of the x and y axes
- */
-
-
-function barchart(data, div, size) {
-
-    var inline_parser = function (data) {
-
-        processed_data = [];
-
-        for (i = 0; i < data.value.length; i++) {
-            data_item = {
-                "label": data.label[i],
-                "value": +data.value[i]
-            };
-            processed_data.push(data_item);
-
-        }
-        return processed_data;
-
-    };
-
-    var draw = function (processed_data, div, size) {
-
-        var x_values = [],
-            y_values = [];
-
-        if (processed_data[0].group === undefined) {
-
-            x_values = processed_data.map(function (d) {
-                return d.label;
-            });
-            y_values = processed_data.map(function (d) {
-                return d.value;
-            });
-
-        } else {
-
-            x_values = processed_data.map(function (d) {
-                return d.group;
-            });
-
-            y_values = processed_data.map(function (d) {
-                return (d.values.map(function (e) {
-                    return e.y1;
-                }));
-            });
-            y_values = [].concat.apply([], y_values);
-
-        }
-
-
-        var scales = [create_scale(x_values, d3.scale.ordinal()), create_scale(y_values, d3.scale.linear())];
-
-
-        var glasseye_chart = new BarChart(processed_data, div, size, ["label", "value"], scales);
-
-        glasseye_chart.add_svg().add_grid().add_bars().grumpy("bayesian");
-
-
-    };
-
-    build_chart(data, div, size, undefined, group_label_value_parser, inline_parser, draw);
-
-
-}
-var heatmap_parser = function (data) {
-
-        var processed_data;
-
-        processed_data = data.map(function (d) {
-            return {
-                category_x: d.category_x,
-                category_y: d.category_y,
-                group: d.group,
-                value: +d.value,
-                nat_avg: +d.nat_avg,
-                raw_value: +d.segment
-            };
-        });
-
-
-        //Insert undefined for all combinations that don't appear
-
-        //Get all groups
-        var group = [];
-        processed_data.map(function (d) {
-            if (group.indexOf(d.group) === -1) {
-                group.push(d.group);
-            }
-        });
-
-        //Get all category_x
-        var category_x = [];
-        processed_data.map(function (d) {
-            if (category_x.indexOf(d.category_x) === -1) {
-                category_x.push(d.category_x);
-            }
-        });
-
-        //Get all category_y
-        var category_y = [];
-        processed_data.map(function (d) {
-            if (category_y.indexOf(d.category_y) === -1) {
-                category_y.push(d.category_y);
-            }
-        });
-
-
-        var augmented_data = []
-
-        group.forEach(function (d) {
-                category_x.forEach(function (e) {
-                    category_y.forEach(function (f) {
-                        var i = processed_data.filter(function (g) {
-                            return g.group === d & g.category_x === e & g.category_y === f;
-                        });
-
-                        if (i.length === 0) {
-                            augmented_data.push(
-                                {
-                                    category_x: e,
-                                    category_y: f,
-                                    group: d,
-                                    value: undefined,
-                                    nat_avg: undefined,
-                                    raw_value: undefined
-                                }
-                        );
-                        }
-                        else {
-
-                            augmented_data.push(i[0]);
-                        }
-                    })
-                    ;
-                })
-
-            }
-        )
-        ;
-
-        return (augmented_data);
-
-    }
-    ;
-
-
-var polygon_map_parser = function (data) {
-
-    var ireland = topojson.feature(data, data.objects.Ireland).features[0];
-    var ulster = topojson.feature(data, data.objects.Ulster).features[0];
-    var tv_regions = topojson.feature(data, data.objects.TVRegions).features;
-    ireland.properties['name'] = "Ireland";
-    ulster.properties['name'] = "Ulster";
-    tv_regions.push(ireland);
-    tv_regions.push(ulster);
-    return (tv_regions);
-
-};
-
-
-var time_linked_venn_parser = function (data) {
-
-    //Get all the dates
-
-    var times = [];
-    data.map(function (d) {
-        if (times.indexOf(d.time) === -1) {
-            times.push(d.time);
-        }
-    });
-
-    var parse_date = d3.time.format("%d/%m/%Y").parse;
-
-    //Create the json data from the csv data
-    var processed_data = times.map(function (g) {
-
-        return {
-            time: parse_date(g),
-            venns: data.filter(function (d) {
-                return d.time === g;
-            }).map(function (e) {
-                return {
-                    size: +e.value,
-                    sets: e.group.split("_")
-
-                };
-            })
-        };
-    });
-
-    return processed_data;
-
-};
-
-var drillable_venn_parser = function (data) {
-
-
-
-    //Get all the parents
-
-    var parents = [];
-    data.map(function (d) {
-        if (parents.indexOf(d.parent) === -1) {
-            parents.push(d.parent);
-        }
-    });
-
-    //Create the json data from the csv data
-    var processed_data = parents.map(function (g) {
-
-        return {
-            parent: g,
-            venns: data.filter(function (d) {
-                return d.parent === g;
-            }).map(function (e) {
-                return {
-                    size: +e.value,
-                    sets: e.group.split("_")
-
-                };
-            })
-        };
-    });
-
-
-    return processed_data;
-
-};
-
-var timeseries_parser = function (data) {
-
-    var groups = [];
-    data.map(function (d) {
-        if (groups.indexOf(d.group) === -1) {
-            groups.push(d.group);
-        }
-    });
-
-
-    var parse_date = d3.time.format("%d/%m/%Y").parse;
-
-    //Create the json data from the csv data
-    var processed_data = groups.map(function (g) {
-
-        return {
-            group: g,
-            values: data.filter(function (d) {
-                return d.group === g;
-            }).map(function (e) {
-                return {
-                    value: +e.value,
-                    time: parse_date(e.time),
-                    variable: e.variable
-                };
-            }).sort(function (a, b) {
-                return (a.time - b.time);
-            })
-        };
-    });
-
-    return processed_data;
-
-};
-
-var time_linked_parser = function (data) {
-
-
-    var categories = [];
-    data.map(function (d) {
-        if (categories.indexOf(d.category) === -1) {
-            categories.push(d.category);
-        }
-    });
-
-    //Try some date formats
-    var parse_date = d3.time.format("%d/%m/%Y").parse;
-
-    //Create the json data from the csv data
-    var processed_data = categories.map(function (g) {
-
-        return {
-            category: g,
-            values: data.filter(function (d) {
-                return d.category === g;
-            }).map(function (e) {
-                return {
-                    value: +e.value,
-                    time: parse_date(e.time),
-                    variable: e.variable
-                };
-            }).sort(function (a, b) {
-                return (a.time - b.time);
-            })
-        };
-    });
-
-    return processed_data;
-
-};
-
-var dial_parser = function (data) {
-
-    //Get all the groups
-
-    //Get all the dates
-
-    var groups = [];
-    data.map(function (d) {
-        if (groups.indexOf(d.group) === -1) {
-            groups.push(d.group);
-        }
-    });
-
-    //Create the json data from the csv data
-    var processed_data = groups.map(function (g) {
-
-        return {
-            group: g,
-            values: data.filter(function (d) {
-                return d.group === g;
-            }).map(function (e) {
-                return {
-                    value: +e.value,
-                    variable: e.variable,
-                    label: e.label
-                };
-            })
-        };
-    });
-
-    return processed_data;
-
-};
-
-var group_label_value_parser = function (data) {
-
-    var processed_data;
-
-    if (data[0].group === undefined) {
-
-        processed_data = data.map(function (d) {
-            return {label: d.label, value: +d.value};
-
-        });
-
-    } else {
-
-        var groups = [];
-        data.map(function (d) {
-            if (groups.indexOf(d.group) === -1) {
-                groups.push(d.group);
-            }
-        });
-
-        //Create the json data from the csv data
-        processed_data = groups.map(function (g) {
-            var y0 = 0;
-            return {
-                group: g,
-                values: data.filter(function (d) {
-                    return d.group === g;
-                }).map(function (e) {
-                    return {
-                        value: +e.value,
-                        label: e.label,
-                        y0: y0,
-                        y1: y0 += +e.value
-                    };
-                })
-            };
-        });
-
-
-    }
-
-    return processed_data;
-
-};
 //Global formatting functions
 
 //Add span around text for highlighting
@@ -1349,1349 +432,9 @@ function create_class_label(prefix, x){
 
   return prefix + "_" + x.replace(/[.,\/#!$%\^&\*;:{}=+\-_`~()]/g,"").replace(" ","");
 
-}var AnimatedBarChart = function (processed_data, div, size, labels, scales) {
-
-    var self = this;
-
-    var margin = {
-        top: 50,
-        bottom: 80,
-        right: 50,
-        left: 60
-    };
-
-    BarChart.call(self, processed_data, div, size, labels, scales, margin);
-    self.bar_width = self.width / self.processed_data.length;
-    self.y_axis.tickFormat(d3.format(",%")).ticks(6);
-    this.x_axis.tickSize(0);
-
-    self.current_variable = "";
-
-    self.tooltip_text = function (d) {
-        return d3.format(".1%")(d.value) + " of " + d.category + " have access to a " + self.current_variable;
-    }
-
-    self.tip = d3.tip()
-        .attr('class', 'd3-tip')
-        .offset([-10, 0])
-        .html(self.tooltip_text);
-
-};
-
-AnimatedBarChart.prototype = Object.create(BarChart.prototype);
-
-AnimatedBarChart.prototype.add_bars = function () {
-
-    var self = this;
-
-    self.chart_area.call(self.tip);
-
-    //Customisations
-    self.svg.attr("class", "glasseye_chart animated_barchart");
-
-    //Get first Date
-    var start_date = d3.min(self.processed_data[0].values.map(function(d) {
-        return d.time;
-    }));
-
-    //Get first variable
-    var start_variable = d3.min(self.processed_data[0].values.map(function(d) {
-        return d.variable;
-    }));
-
-    var bars = self.chart_area.selectAll(".bar")
-        .data(self.processed_data)
-        .enter()
-        .append("g")
-        .attr("transform", function (d) {
-            return "translate(" + (self.x(d.category) - self.bar_width * 0.4) + ", " + 0 + ")";
-        });
-
-    bars.append("rect")
-        .attr("class", "bar")
-        .attr("x", 0)
-        .attr("y", function (d) {
-            return self.y(d.values[0].value);
-        })
-        .attr("width", self.bar_width * 0.8)
-        .attr("height", function (d) {
-            return self.height - self.y(d.values[0].value);
-        })
-        .on('mouseover', self.tip.show)
-        .on('mouseout', self.tip.hide);
-    ;
-
-    self.svg.append("text").attr("class", "context")
-        .attr("y", self.height + self.margin.top + 60)
-        .attr("x", self.margin.left + self.width / 2)
-        .style("text-anchor", "middle")
-        .text("At " + quarter_year(self.processed_data[0].values[0].time) + " for " + self.processed_data[0].values[0].variable);
-
-    var max_string = d3.max(self.x.domain().map(function (d) {
-        return d.length;
-    }));
-    var num_points = self.x.domain().length;
-
-    if ((max_string * 5) > (1.5 * self.bar_width)) {
-        self.chart_area.selectAll(".x_axis").selectAll("text")
-            .style("text-anchor", "end")
-            .attr("dx", "-1em")
-            .attr("dy", "-0.8em")
-            .attr("transform", "rotate(-90)");
-    }
-
-
-    self.update_bars(start_date, start_variable);
-
-    return this;
-
-};
-
-
-AnimatedBarChart.prototype.update_bars = function (time, variable) {
-
-    var self = this;
-
-
-    //Set variable so that it can be accessed by the tooltip
-    self.current_variable = variable.toLowerCase();
-
-    var filtered_bars = self.processed_data.map(function(d) {
-        return {
-
-            category: d.category,
-            value: d.values.filter(function(e) {
-                return (e.time.getTime() === time.getTime() & e.variable === variable);
-            })[0].value
-        };
-    });
-
-    self.chart_area.selectAll(".bar").data(filtered_bars)
-     .transition()
-     .duration(500)
-     .attr("y", function (d){return self.y(d.value);})
-     .attr("height", function (d){return self.height - self.y(d.value);});
-
-
-    self.svg.selectAll(".context").text("In " + quarter_year(time) + " for " + variable);
-
-
-};
-
-AnimatedBarChart.prototype.add_title = function (title, subtitle) {
-
-    var self = this;
-    self.title = title;
-    self.svg.append('text').attr("class", "title")
-        .text(title)
-        .attr("transform", "translate(" + (self.margin.left - 10) + ",20)");
-
-    if (subtitle != undefined) {
-
-        self.subtitle = subtitle;
-        self.svg.append('text').attr("class", "subtitle")
-            .text(subtitle)
-            .attr("transform", "translate(" + (self.margin.left - 10) + ",35)");
-
-    } else {
-        self.subtitle = "";
-    }
-
-    return this;
-
-};
-
-AnimatedBarChart.prototype.redraw_barchart = function (title) {
-
-    var self = this;
-
-    //Delete the existing svg and commentary
-    d3.select(self.div).selectAll("svg").remove();
-
-
-    //Reset the size
-    self.set_size();
-    self.bar_width = self.width / self.processed_data.length;
-    self.x = self.scales[0].scale_func.rangePoints([0, self.width], 1);
-    self.y_axis = d3.svg.axis()
-        .scale(self.y)
-        .orient("left")
-        .tickSize(-self.width, 0, 0)
-        .tickFormat(d3.format("%")).ticks(6);
-
-
-    //Redraw the chart
-    self.add_svg().add_grid().add_bars().add_title(self.title, self.subtitle);
-
-};
-
-
-var AnimatedDonut = function(processed_data, div, size) {
-
-  var self = this;
-
-  margin = {
-    top: 80,
-    bottom: 130,
-    left: 30,
-    right: 30
-  };
-
-  GlasseyeChart.call(self, div, size, margin, 400);
-
-  self.processed_data = processed_data;
-
-  var total_value = d3.sum(processed_data.map(function(d) {
-    return d.values[0].value;
-  }));
-
-  self.current_total = 1;
-
-  self.tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      return   uni_format(d.data.value) + " households"  + "<br>" + d3.format(".1%")(d.data.value/self.current_total) + " of the total";
-    });
-
-  var radius = self.width / 2;
-
-  self.arc = d3.svg.arc()
-    .outerRadius(radius - 10)
-    .innerRadius(radius - 70);
-
-  self.pie = d3.layout.pie()
-    .sort(null)
-    .value(function(d) {
-      return d.value;
-    });
-
-};
-
-
-AnimatedDonut.prototype = Object.create(GlasseyeChart.prototype);
-
-
-AnimatedDonut.prototype.add_donut = function() {
-
-  var self = this;
-
-  var svg_donut = self.chart_area.append("g")
-    .attr("transform", "translate(" + self.width / 2 + "," + self.height / 2 + ")");
-
-  var color = d3.scale.ordinal()
-    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
-  //Get first Date
-
-  var start_date = d3.min(self.processed_data[0].values.map(function(d) {
-    return d.time;
-  }));
-
-  //Create filtered data Set
-
-  var filtered_donut = self.processed_data.map(function(d) {
-    return {
-      category: d.category,
-      value: d.values[0].value
-    };
-  });
-
-  svg_donut.call(self.tip);
-
-  self.donut_arc = svg_donut.selectAll(".arc")
-    .data(self.pie(filtered_donut))
-    .enter().append("g")
-    .attr("class", "arc");
-
-  var existing_text;
-
-  self.donut_path = self.donut_arc.append("path")
-    .attr("d", self.arc)
-    .attr("class", function(d, i) {
-      return ("d_" + i + " " + create_class_label("d", d.data.category));
-    })
-    .attr("fill", function(d) {
-      return color(d.data.category);
-    })
-    .on('mouseover', function(d, i) {
-      /*existing_text  = self.svg.selectAll(".context").text();
-      var text_line_1 = existing_text.substring(0, 11) + d3.format("%")(d.data.value/self.current_total) + " of households";
-      var text_line_2  = "with " + existing_text.substring(15, existing_text.length);
-      var text_line_3  = "are at lifestage " + d.data.group;
-      self.svg.selectAll(".context").text(text_line_1);
-      self.svg.selectAll(".context_2").text(text_line_2);
-      self.svg.selectAll(".context_3").text(text_line_3);
-      */
-      self.tip.show(d);
-    })
-    .on('mouseout', function(d, i) {
-      //self.svg.selectAll(".context").text(existing_text);
-      self.tip.hide(d);
-    });
-
-
-  self.donut_text = self.donut_arc.append("text")
-    .attr("transform", function(d) {
-      return "translate(" + self.arc.centroid(d) + ")";
-    })
-    .attr("dy", ".35em")
-    .style("text-anchor", "middle")
-    .text(function(d) {
-      if (d.endAngle - d.startAngle > 0.35) {
-        return d.data.category;
-      } else {
-        return "";
-      }
-    });
-
-  self.donut_path.transition()
-    .duration(500)
-    .attr("fill", function(d, i) {
-      return color(d.data.category);
-    })
-    .attr("d", self.arc)
-    .each(function(d) {
-      this._current = d;
-    });
-
-  self.svg.append("text").attr("class", "context")
-    .attr("y", self.height + self.margin.top + 70)
-    .attr("x", self.margin.left + self.width / 2)
-    .style("text-anchor", "middle");
-
-  /*self.svg.append("text").attr("class", "context_2")
-      .attr("y", self.height + self.margin.top + 75)
-      .attr("x", self.margin.left + self.width / 2)
-      .style("text-anchor", "middle");
-
-  self.svg.append("text").attr("class", "context_3")
-      .attr("y", self.height + self.margin.top + 90)
-      .attr("x", self.margin.left + self.width / 2)
-      .style("text-anchor", "middle");
-  */
-
-  self.update_donut(start_date, "No TV");
-
-
-  return this;
-
-};
-
-
-AnimatedDonut.prototype.update_donut = function(time, variable) {
-
-  var self = this;
-
-  var color = d3.scale.ordinal()
-    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
-
-  var filtered_donut = self.processed_data.map(function(d) {
-
-    return {
-
-      category: d.category,
-      value: d.values.filter(function(e) {
-        return (e.time.getTime() === time.getTime() & e.variable === variable);
-      })[0].value
-    };
-  });
-
-
-  //Update tooltip
-
-  self.current_total = d3.sum(filtered_donut.map(function(d){return d.value}));
-
-  self.donut_path.data(self.pie(filtered_donut)).transition().duration(200).attrTween("d", arcTween);
-
-
-  self.donut_text.data(self.pie(filtered_donut)).transition().duration(200).attr("transform", function(d) {
-      return "translate(" + self.arc.centroid(d) + ")";
-    })
-    .attr("dy", ".35em")
-    .style("text-anchor", "middle")
-    .text(function(d) {
-      return d.data.category;
-    });
-
-  function arcTween(a) {
-    var i = d3.interpolate(this._current, a);
-    this._current = i(0);
-    return function(t) {
-      return self.arc(i(t));
-    };
-  }
-
-  self.svg.selectAll(".context").text("In " + quarter_year(time) + " for " + variable);
-
-
-
-
-};
-
-AnimatedDonut.prototype.add_title = function(title, subtitle) {
-
-  var self = this;
-  self.title = title;
-  self.svg.append('text').attr("class", "title")
-    .text(title)
-    .attr("y", 20)
-    .attr("x", self.margin.left + self.width / 2)
-    .style("text-anchor", "middle");
-
-  if (subtitle != undefined) {
-
-    self.subtitle = subtitle;
-    self.svg.append('text').attr("class", "subtitle")
-        .text(subtitle)
-        .attr("y", 35)
-        .attr("x", self.margin.left + self.width / 2)
-        .style("text-anchor", "middle");
-
-  } else {
-    self.subtitle = "";
-  }
-
-  return this;
-
-};
-
-AnimatedDonut.prototype.redraw_donut = function(title) {
-
-  var self = this;
-
-  //Delete the existing svg and commentary
-  d3.select(self.div).selectAll("svg").remove();
-  d3.select(self.div).selectAll("#venn_context").remove();
-
-  //Reset the size
-  self.set_size();
-
-  var radius = self.width / 2;
-
-  self.arc = d3.svg.arc()
-    .outerRadius(radius - 10)
-    .innerRadius(radius - 70);
-
-
-  //Redraw the chart
-  self.add_svg().add_donut().add_title(self.title, self.subtitle);
-
-};
-/**
- * Builds an AnimatedVenn object
- * @constructor
- * @param {array} processed_data Data that has been given a structure appropriate to the chart
- * @param {string} div The div in which the chart will be placed
- * @param {string} size The size (one of several preset sizes)
- */
-
-var AnimatedVenn = function(processed_data, div, size) {
-
-  var self = this;
-
-  margin = {
-    top: 60,
-    bottom: 0,
-    left: 5,
-    right: 5
-  };
-
-  GlasseyeChart.call(self, div, size, margin, 250);
-
-  self.processed_data = processed_data;
-
-  self.venn_chart = venn.VennDiagram()
-    .width(self.width)
-    .height(self.height);
-
-  self.tip = d3.select(self.div).append('div')
-      .attr('class', 'hidden tooltip');
-
-  self.interactive_text = function(d, existing_text) {
-
-    var text, set_name = d.sets[0],
-      set_size = d.size;
-
-    //Get total number
-    var all_sets = self.chart_area.selectAll("g")[0];
-    var signed = all_sets.map(function(e) {
-      if (e.__data__.sets.length == 2) {
-        return -e.__data__.size;
-      } else {
-        return e.__data__.size;
-      }
-    });
-
-    var total = signed.reduce(add, 0);
-
-    if (d.sets.length == 1) {
-
-      text = set_name + " was in " + uni_format(set_size * 1000) + " households making up " + d3.format(",.1%")(set_size / total) + " of all VOD subscribing households.";
-
-      //$ was in $ households making up $ of all VOD subscribing households
-
-    } else if (d.sets.length == 2) {
-
-      var sub_1 = d.sets[0];
-      var sub_2 = d.sets[1];
-
-      //Work out set sizes
-      var set_1_size = all_sets.filter(function(d) {
-        return d.__data__.sets.length === 1 & d.__data__.sets[0] === sub_1;
-      })[0].__data__.size;
-      var set_2_size = all_sets.filter(function(d) {
-        return d.__data__.sets.length === 1 & d.__data__.sets[0] === sub_2;
-      })[0].__data__.size;
-
-      text = "There were " + uni_format(set_size * 1000) + " households that subscribe to both " + sub_1 + " and " + sub_2 + " (" + d3.format(",.1%")(set_size / total) + " of all VOD subscribing households.)";
-      //There were $ households that subscribe to both $ and $ ($ of all VOD subscribing households)
-    } else {
-
-      text = "There were " + uni_format(set_size * 1000) + " households that subscribe to all three. That's " + d3.format(",.1%")(set_size / total) + " of all VOD subscribing households.";
-      //There were $ households that subscribe to all three. That's $ of all VOD subscribing households
-    }
-
-    function add(a, b) {
-      return a + b;
-    }
-
-    return text;
-
-  };
-
-};
-
-AnimatedVenn.prototype = Object.create(GlasseyeChart.prototype);
-
-/**
- * Adds the SVGs corresponding to the AnimatedVenn object
- *
- * @method
- * @returns {object} The modified AnimatedVenn object
- */
-
-AnimatedVenn.prototype.set_commentary = function(commentary_strings) {
-
-  var self = this;
-
-  self.interactive_text = function(d, existing_text) {
-
-    var text, string_parts, set_name = d.sets[0],
-        set_size = d.size;
-
-    //Get total number
-    var all_sets = self.chart_area.selectAll("g")[0];
-    var signed = all_sets.map(function(e) {
-      if (e.__data__.sets.length == 2) {
-        return -e.__data__.size;
-      } else {
-        return e.__data__.size;
-      }
-    });
-
-    var total = signed.reduce(add, 0);
-
-    if (d.sets.length == 1) {
-
-      string_parts = commentary_strings[0].split("$");
-
-      text = string_parts[0] + set_name + string_parts[1] + uni_format(set_size * 1000) + string_parts[2] + d3.format(",.1%")(set_size / total) + string_parts[3];
-
-      //$ was in $ households making up $ of all VOD subscribing households
-
-    } else if (d.sets.length == 2) {
-
-      var sub_1 = d.sets[0];
-      var sub_2 = d.sets[1];
-
-      //Work out set sizes
-      var set_1_size = all_sets.filter(function(d) {
-        return d.__data__.sets.length === 1 & d.__data__.sets[0] === sub_1;
-      })[0].__data__.size;
-      var set_2_size = all_sets.filter(function(d) {
-        return d.__data__.sets.length === 1 & d.__data__.sets[0] === sub_2;
-      })[0].__data__.size;
-
-      string_parts = commentary_strings[1].split("$");
-      text = string_parts[0] + uni_format(set_size * 1000) + string_parts[1] + sub_1 + string_parts[2] + sub_2 + string_parts[3] + d3.format(",.1%")(set_size / total) + string_parts[4];
-      //There were $ households that subscribe to both $ and $ ($ of all VOD subscribing households)
-    } else {
-
-      string_parts = commentary_strings[2].split("$");
-      text = string_parts[0] + uni_format(set_size * 1000) + string_parts[1] + d3.format(",.1%")(set_size / total) + string_parts[2];
-      //There were $ households that subscribe to all three. That's $ of all VOD subscribing households
-    }
-
-    function add(a, b) {
-      return a + b;
-    }
-
-    return text;
-
-  };
-
-  return self;
-
-};
-
-/**
- * Adds the SVGs corresponding to the AnimatedVenn object
- *
- * @method
- * @returns {object} The modified AnimatedVenn object
- */
-
-AnimatedVenn.prototype.add_venn = function() {
-
-  var self = this;
-
-
-  //var start_date = new Date("March 31, 2014 00:00:00"); //Hardcoded at the moment - change later
-
-  var start_date =  d3.max(self.processed_data.map(function(d){ return d.time}));
-
-  var filtered_data = self.processed_data.filter(function(d) {
-    return d.time.getTime() === start_date.getTime();
-  })[0].venns;
-
-  self.chart_area.datum(filtered_data).call(self.venn_chart);
-
-  //Remove the labels
-
-  self.chart_area.selectAll(".venn-area").selectAll("text").remove();
-
-  self.svg.append("text").attr("class", "context")
-    .attr("y", 40)
-    .attr("x", self.margin.left + self.width / 2)
-    .style("text-anchor", "middle")
-      .text("In " + quarter_year(start_date) + " ");
-
-  //Add the div for the commentary
-  var div = d3.select(self.div).append("div").attr("id", "venn_context");
-  div.append("div").attr("id", "commentary").style("font-size", "11px").html("Hover over the parts of the Venn diagram for information about the sizes of the groups.");
-
-  //Add interactivity
-  self.chart_area.selectAll("g")
-    .on("mouseover", function(d, i) {
-
-      //Set all charts back to no border-box
-      self.chart_area.selectAll(".venn-area")
-        .selectAll("path")
-        .style("stroke-opacity", 0);
-
-      // sort all the areas relative to the current item
-      venn.sortAreas(self.chart_area, d);
-      var selection = d3.select(this);
-      selection.select("path").transition().duration(500)
-        .style("stroke-opacity", 1);
-
-      //update the text
-      var existing_text = d3.selectAll("#commentary").html();
-      d3.selectAll("#commentary").html(self.interactive_text(d, existing_text));
-
-      //Add the tooltip
-
-      var mouse = d3.mouse(self.chart_area.node()).map(function (d) {
-        return parseInt(d);
-      });
-
-      self.tip.classed('hidden', false)
-          .attr('style', 'left:' + (mouse[0]) +
-              'px; top:' + (mouse[1] + 30) + 'px')
-          .html(d.sets.join("<br>"));
-
-    })
-    .on("mouseout", function(d, i) {
-      var selection = d3.select(this);
-      selection.select("path").transition().duration(500)
-        //  .style("fill-opacity", d.sets.length == 1 ? 0.5 : 0)
-        .style("stroke-opacity", 0);
-
-      self.tip.classed('hidden', true);
-
-    });
-
-  return this;
-
-};
-
-/**
- * Updates the Venn to show the overlaps at a specific time and with a spectific set highlighted. Also changes the commentary.
- * @method
- * @param {date} time The time for which the overlaps should be calculated
- * @param {string} variable The set which should be highlighted
- * @returns {object} The modified AnimatedVenn object
- */
-
-AnimatedVenn.prototype.update_venn = function(time, variable) {
-
-  var self = this;
-
-  //Hide labels when set size = 0
-  //self.chart_area.selectAll(".venn-area").selectAll("text").style("opacity", function(d){ return d.size>0?1:0;});
-
-  var filtered_data = self.processed_data.filter(function(d) {
-    return d.time.getTime() === time.getTime();
-  })[0].venns;
-
-  self.chart_area.datum(filtered_data).call(self.venn_chart);
-
-  self.chart_area.selectAll(".venn-area")
-    .selectAll("path")
-    .style("stroke-opacity", 0);
-
-  self.chart_area.selectAll(".venn-sets-" + variable)
-    .selectAll("path")
-    .style("stroke-opacity", 1);
-
-  d3.selectAll("#commentary").html("Hover over the parts of the Venn diagram for information about the sizes of the groups.");
-  self.svg.selectAll(".context").text("In " + quarter_year(time) + " ");
-
-  return this;
-
-};
-
-/**
- * Adds a title to the Venn
- * @method
- * @param {string} title The title to be placed at the top of the Venn
- * @returns {object} The modified AnimatedVenn object
- */
-
-AnimatedVenn.prototype.add_title = function(title) {
-
-  var self = this;
-  self.title = title;
-  self.svg.append('text').attr("class", "title")
-    .text(title)
-    .attr("y", 20)
-    .attr("x", self.margin.left + self.width / 2)
-    .style("text-anchor", "middle");
-
-  return this;
-
-  if (subtitle != undefined) {
-
-    self.subtitle = subtitle;
-    self.svg.append('text').attr("class", "subtitle")
-        .text(subtitle)
-        .attr("y", 35)
-        .attr("x", self.margin.left + self.width / 2)
-        .style("text-anchor", "middle");
-
-  } else {
-    self.subtitle = "";
-  }
-
-};
-
-/**
- * Redraws the Venn (for example after a resize of the div)
- * @method
- * @returns {object} The modified AnimatedVenn object
- */
-
-AnimatedVenn.prototype.redraw_venn = function(title) {
-
-  var self = this;
-
-  //Delete the existing svg and commentary
-  d3.select(self.div).selectAll("svg").remove();
-  d3.select(self.div).selectAll("#venn_context").remove();
-
-  //Reset the size
-  self.set_size();
-  self.venn_chart = venn.VennDiagram()
-    .width(self.width)
-    .height(self.height);
-
-  //Redraw the chart
-  self = self.add_svg().add_venn().add_title(self.title, self.subtitle);
-
-};
-/**
- * Builds an DrillableVenn object
- * @constructor
- * @param {array} processed_data Data that has been given a structure appropriate to the chart
- * @param {string} div The div in which the chart will be placed
- * @param {string} size The size (one of several preset sizes)
- */
-
-var DrillableVenn = function (processed_data, div, size) {
-
-    var self = this;
-
-    margin = {
-        top: 40,
-        bottom: 0,
-        left: 5,
-        right: 5
-    };
-
-    GlasseyeChart.call(self, div, size, margin, 350);
-
-    self.processed_data = processed_data;
-
-    self.venn_chart = venn.VennDiagram()
-        .width(self.width)
-        .height(self.height);
-
-    self.tip = d3.tip()
-        .attr('class', 'd3-tip')
-        .offset([-10, 0])
-        .html(function (d) {
-            return d3.format(".3n")(d.size);
-        });
-
-    self.current_level = "none";
-
-    self.interactive_text = function (d, existing_text) {
-
-        var text, set_name = d.sets[0],
-            set_size = d.size;
-
-        var qualifier = +(self.current_level === "none") ? "" : self.current_level;
-
-        //Get total number
-        var all_sets = self.chart_area.selectAll("g")[0].filter(function(d){return d.__data__.sets[0] != "500k"});
-        console.log(all_sets);
-        var signed = all_sets.map(function (e) {
-            if (e.__data__.sets.length == 2) {
-                return -e.__data__.size;
-            } else {
-                return e.__data__.size;
-            }
-        });
-
-        var total = signed.reduce(add, 0);
-
-        if (set_name === "500k") {
-
-            text = "This circle represents 500k households and can be used as reference point when the Venn diagrams change in scale.";
-
-        }
-
-        else if (d.sets.length == 1) {
-
-            text = set_name + " consoles are in " + uni_format(set_size) + " households, making up " + d3.format(",.1%")(set_size / total) + " of all households with " + qualifier + " games consoles.";
-
-        } else if (d.sets.length == 2) {
-
-            var sub_1 = d.sets[0];
-            var sub_2 = d.sets[1];
-
-            //Work out set sizes
-            var set_1_size = all_sets.filter(function (d) {
-                return d.__data__.sets.length === 1 & d.__data__.sets[0] === sub_1;
-            })[0].__data__.size;
-            var set_2_size = all_sets.filter(function (d) {
-                return d.__data__.sets.length === 1 & d.__data__.sets[0] === sub_2;
-            })[0].__data__.size;
-
-            text = "There are " + uni_format(set_size) + " households that have both " + sub_1 + " and " + sub_2 + " consoles (" + d3.format(",.1%")(set_size / total) + " of all households with " + qualifier + " games consoles.)";
-        } else {
-
-            text = "There are " + uni_format(set_size) + " households that own all three types of consoles. That's " + d3.format(",.1%")(set_size / total) + " of all households with " + qualifier + " games consoles.";
-
-        }
-
-        function add(a, b) {
-            return a + b;
-        }
-
-        return text;
-
-    };
-
-};
-
-DrillableVenn.prototype = Object.create(GlasseyeChart.prototype);
-
-/**
- * Adds the SVGs corresponding to the DrillableVenn object
- *
- * @method
- * @returns {object} The modified DrillableVenn object
- */
-
-DrillableVenn.prototype.add_venn = function (parent) {
-
-    var self = this;
-
-    self.current_level = parent;
-
-    var filtered_data = self.processed_data.filter(function (d) {
-        return d.parent === parent;
-    })[0].venns;
-
-
-    self.chart_area.datum(filtered_data).call(self.venn_chart);
-
-    d3.selectAll(".venn-area text").style("fill", "white");
-
-    //Add the div for the commentary
-    var parent_div = d3.selectAll("#chart_container");
-    parent_div.selectAll("#venn_context_side").remove();
-
-    var div = parent_div.append("div").attr("id", "venn_context_side");
-    div.append("div").attr("id", "venn_instructions").html("<h1> Instructions </h1><ul><li>Click on each circle in the Venn diagram to drill a level further into the data.</li><li>Click again on a circle to return to  the top level.</li><li>The scale of the diagram is adjusted as you drill into the data however there is always a circle showing 500k households as a point of reference.</li></ul><h1>Commentary</h1>");
-    div.append("div").attr("id", "commentary").html("Hover over a circle and commentary will appear here.");
-
-    //Add interactivity
-    self.chart_area.selectAll("g")
-        .on("mouseover", function (d, i) {
-
-            //Set all charts back to no border-box
-            self.chart_area.selectAll(".venn-area")
-                .selectAll("path")
-                .style("stroke-opacity", 0);
-
-            // sort all the areas relative to the current item
-            venn.sortAreas(self.chart_area, d);
-            var selection = d3.select(this);
-            selection.select("path").transition().duration(500)
-                .style("stroke-opacity", 1);
-
-            //update the text
-            var existing_text = d3.selectAll("#commentary").html();
-            d3.selectAll("#commentary").html(self.interactive_text(d, existing_text));
-
-        })
-        .on("mouseout", function (d, i) {
-            var selection = d3.select(this);
-            selection.select("path").transition().duration(500)
-                //  .style("fill-opacity", d.sets.length == 1 ? 0.5 : 0)
-                .style("stroke-opacity", 0);
-
-        })
-        .on("click", function (d, i) {
-            var selection = d3.select(this);
-
-            if (parent == "none") {
-
-                if (d.sets.length > 1) {
-                    console.log("Cannot click on intersections");
-                }
-                else {
-                    self.add_venn(d.sets[0]);
-                }
-            }
-            else {
-                self.add_venn("none");
-            }
-        });
-
-
-    //}
-
-    return self;
-
-};
-
-
-/**
- * Adds a title to the Venn
- * @method
- * @param {string} title The title to be placed at the top of the Venn
- * @returns {object} The modified AnimatedVenn object
- */
-
-DrillableVenn.prototype.add_title = function (title) {
-
-    var self = this;
-    self.title = title;
-    self.svg.append('text').attr("class", "title")
-        .text(title)
-        .attr("y", 20)
-        .attr("x", self.margin.left + self.width / 2)
-        .style("text-anchor", "middle");
-
-    return this;
-
-    if (subtitle != undefined) {
-
-        self.subtitle = subtitle;
-        self.svg.append('text').attr("class", "subtitle")
-            .text(subtitle)
-            .attr("y", 35)
-            .attr("x", self.margin.left + self.width / 2)
-            .style("text-anchor", "middle");
-
-    } else {
-        self.subtitle = "";
-    }
-
-};
-
-/**
- * Redraws the Venn (for example after a resize of the div)
- * @method
- * @returns {object} The modified AnimatedVenn object
- */
-
-DrillableVenn.prototype.redraw_venn = function (title) {
-
-    var self = this;
-
-    //Delete the existing svg and commentary
-    d3.select(self.div).selectAll("svg").remove();
-    d3.select(self.div).selectAll("#venn_context_side").remove();
-
-    //Reset the size
-    self.set_size();
-
-
-    self.venn_chart = venn.VennDiagram()
-        .width(self.width)
-        .height(self.height);
-
-    //Redraw the chart
-    self = self.add_svg().add_venn(self.current_level).add_title(self.title, self.subtitle);
-
-};
-var Donut = function(processed_data, div, size) {
-
-  margin = {
-    top: 5,
-    bottom: 5,
-    left: 5,
-    right: 5
-  };
-
-  GlasseyeChart.call(this, div, size, margin);
-
-  this.processed_data = processed_data;
-
-  var total_value = d3.sum(processed_data.map(function(d) {
-    return d.value;
-  }));
-
-  this.tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      return d.data.label + "<br><br>" + d.data.value + "<br><br>" + d3.format("%")(d.data.value / total_value);
-    });
-
-  var radius = this.height / 2;
-
-  this.arc = d3.svg.arc()
-    .outerRadius(radius - 10)
-    .innerRadius(radius - 70);
-
-  this.pie = d3.layout.pie()
-    .sort(null)
-    .value(function(d) {
-      return d.value;
-    });
-
-};
-
-
-Donut.prototype = Object.create(GlasseyeChart.prototype);
-
-Donut.prototype.add_donut = function() {
-
-  var svg_donut = this.chart_area.append("g")
-    .attr("transform", "translate(" + this.width / 2 + "," + this.height / 2 + ")");
-
-  var color = d3.scale.ordinal()
-    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
-  svg_donut.call(this.tip);
-
-  var g = svg_donut.selectAll(".arc")
-    .data(this.pie(this.processed_data))
-    .enter().append("g")
-    .attr("class", "arc");
-
-  g.append("path")
-    .attr("d", this.arc)
-    .style("fill", function(d) {
-      return color(d.data.label);
-    })
-    .on('mouseover', this.tip.show)
-    .on('mouseout', this.tip.hide);
-
-  var arc = this.arc;
-
-  g.append("text")
-    .attr("transform", function(d) {
-      return "translate(" + arc.centroid(d) + ")";
-    })
-    .attr("dy", ".35em")
-    .style("text-anchor", "middle")
-    .text(function(d) {
-      if (d.endAngle - d.startAngle > 0.35) {
-        return d.data.label;
-      } else {
-        return "";
-      }
-    });
-
-};
-
-function donut(data, div, size) {
-
-  var inline_parser = function(data) {
-
-    processed_data = [];
-
-    for (i = 0; i < data.values.length; i++) {
-      data_item = {
-        "label": data.labels[i],
-        "value": +data.values[i]
-      };
-      processed_data.push(data_item);
-
-    }
-
-    return processed_data;
-
-  };
-
-  var csv_parser = function(data) {
-    return data;
-  };
-
-  var draw = function(processed_data, div, size) {
-
-    var glasseye_chart = new Donut(processed_data, div, size);
-
-    glasseye_chart.add_svg().add_donut();
-
-  };
-
-  build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
-
 }
-var Force = function(processed_data, div, size) {
+/// LinePlot.js
 
-  var margin = (size === "full_page") ? {
-    top: 5,
-    bottom: 5,
-    left: 100,
-    right: 100
-  } : {
-    top: 5,
-    bottom: 5,
-    left: 50,
-    right: 50
-  };
-
-  GlasseyeChart.call(this, div, size, margin, 300);
-
-  this.processed_data = processed_data;
-
-  //Set up the force layout
-  this.force = d3.layout.force()
-    .charge(-120)
-    .linkDistance(30)
-    .size([this.width, this.height]);
-
-  this.tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      return d.name;
-    });
-
-};
-
-
-Force.prototype = Object.create(GlasseyeChart.prototype);
-
-Force.prototype.add_force = function() {
-
-  var color = d3.scale.category20();
-
-  this.chart_area.call(this.tip);
-
-  //Creates the graph data structure out of the json data
-  this.force.nodes(this.processed_data.nodes)
-    .links(this.processed_data.links)
-    .start();
-
-  //Create all the line svgs but without locations yet
-  var link = this.chart_area.selectAll(".forcelink")
-    .data(this.processed_data.links)
-    .enter().append("line")
-    .attr("class", "forcelink")
-    .style("stroke-width", function(d) {
-      return Math.sqrt(d.value);
-    });
-
-  //Do the same with the circles for the nodes - no
-  var node = this.chart_area.selectAll(".forcenode")
-    .data(this.processed_data.nodes)
-    .enter().append("circle")
-    .attr("class", "forcenode")
-    .attr("r", 8)
-    .style("fill", function(d) {
-      return color(d.group);
-    })
-    .call(this.force.drag)
-    .on('mouseover', this.tip.show)
-    .on('mouseout', this.tip.hide);
-
-  //Now we are giving the SVGs co-ordinates - the force layout is generating the co-ordinates which this code is using to update the attributes of the SVG elements
-  this.force.on("tick", function() {
-    link.attr("x1", function(d) {
-        return d.source.x;
-      })
-      .attr("y1", function(d) {
-        return d.source.y;
-      })
-      .attr("x2", function(d) {
-        return d.target.x;
-      })
-      .attr("y2", function(d) {
-        return d.target.y;
-      });
-
-    node.attr("cx", function(d) {
-        return d.x;
-      })
-      .attr("cy", function(d) {
-        return d.y;
-      });
-  });
-
-};
-
-function force(data, div, size) {
-
-  var inline_parser = function(data) {
-    return data;
-  };
-
-  var csv_parser = function(data) {
-    return data;
-  };
-
-  var draw = function(processed_data, div, size) {
-
-    var glasseye_chart = new Force(processed_data, div, size);
-
-    glasseye_chart.add_svg().add_force();
-
-  };
-
-  build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
-
-
-}
-var Gantt = function(processed_data, div, size, scales) {
-
-  this.div = div;
-  this.processed_data = processed_data;
-
-  GridChart.call(this, div, size, ["Time", "Tasks"], scales, {
-    top: 20,
-    bottom: 80,
-    left: 80,
-    right: 20
-  });
-
-  this.tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      return Math.floor((d.end - d.start) / (1000 * 60 * 60 * 24)) + " days";
-    });
-
-  this.bar_width = this.width / processed_data.length;
-
-};
-
-Gantt.prototype = Object.create(GridChart.prototype);
-
-Gantt.prototype.add_tasks = function() {
-
-  var x_scale = this.x,
-    y_scale = this.y,
-    bar_width = this.bar_width;
-
-  this.chart_area.call(this.tip);
-  this.chart_area.selectAll(".task")
-    .data(this.processed_data)
-    .enter()
-    .append("rect")
-    .attr("class", "task")
-    .attr("y", function(d) {
-      return y_scale(d.task) - bar_width / 6;
-    })
-    .attr("x", function(d) {
-      return x_scale(d.start);
-    })
-    .attr("height", this.bar_width / 3)
-    .attr("width", function(d) {
-      return x_scale(d.end) - x_scale(d.start);
-    })
-    .on('mouseover', this.tip.show)
-    .on('mouseout', this.tip.hide);
-
-  return this;
-
-};
-
-function gantt(data, div, size) {
-
-  var inline_parser = function(data) {
-
-    var parse_date = d3.time.format("%d/%m/%Y").parse;
-
-    //Parse the dates
-    data.forEach(function(d) {
-      d.start = parse_date(d.start);
-      d.end = parse_date(d.end);
-    });
-
-
-    data.sort(function(a, b) {
-      return b.start - a.start;
-    });
-
-    return data;
-
-  };
-
-
-  var csv_parser = function(data) {
-
-    //To be written
-
-  };
-
-  var draw = function(processed_data, div, size) {
-
-    var starts = processed_data.map(function(d) {
-      return d.start;
-    });
-
-    var ends = processed_data.map(function(d) {
-      return d.end;
-    });
-
-    var x_values = starts.concat(ends);
-
-    var y_values = processed_data.map(function(d) {
-      return d.task;
-    });
-
-    var scales = [create_scale(x_values, d3.time.scale()), create_scale(y_values, d3.scale.ordinal())];
-
-
-    var glasseye_chart = new Gantt(processed_data, div, size, scales);
-    glasseye_chart.add_svg().add_grid().add_tasks();
-
-  };
-
-  build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
-
-}
 var LinePlot = function(processed_data, div, size, labels, scales) {
 
   GridChart.call(this, div, size, labels, scales);
@@ -2854,6 +597,9 @@ function lineplot(data, div, size, labels) {
   build_chart(data, div, size, labels, csv_parser, inline_parser, draw);
 
 }
+
+/// NonStandard.js
+
 function treemap(data, div, size) {
 
   var inline_parser = function(data) {
@@ -3373,6 +1119,9 @@ function dot_plot(file, div, size) {
   //ordinal.rangePoints(interval[, padding])
 
 }
+
+/// ScatterPlot.js
+
 var ScatterPlot = function(processed_data, div, size, labels, scales) {
 
   GridChart.call(this, div, size, labels, scales);
@@ -3474,6 +1223,9 @@ function scatterplot(data, div, size, labels) {
   build_chart(data, div, size, labels, csv_parser, inline_parser, draw);
 
 }
+
+/// Thermometers.js
+
 var Thermometers = function(processed_data, div, size, labels, scales) {
 
   var self = this;
@@ -3685,6 +1437,9 @@ function thermometers(data, div, size) {
 
 
 }
+
+/// TimeSeries.js
+
 /**
  * Builds an TimeSeries object
  * @constructor
@@ -4266,97 +2021,99 @@ function timeseries(data, div, size, labels) {
   build_chart(data, div, size, labels, csv_parser, inline_parser, draw);
 
 }
-var Tree = function(processed_data, div, size) {
 
-  var margin = (size === "full_page") ? {
-    top: 5,
-    bottom: 5,
-    left: 100,
-    right: 100
-  } : {
-    top: 5,
-    bottom: 5,
-    left: 50,
-    right: 50
-  };
+/// Tree.js
 
-  GlasseyeChart.call(this, div, size, margin, 300);
+
+var Tree = function (processed_data, div, size) {
+  this.margin =
+    size === "full_page"
+      ? {
+          top: 5,
+          bottom: 5,
+          left: 100,
+          right: 100,
+        }
+      : {
+          top: 5,
+          bottom: 5,
+          left: 50,
+          right: 50,
+        };
+
+  GlasseyeChart.call(this, div, size, this.margin, 300);
 
   this.processed_data = processed_data;
-
-  var cluster = d3.layout.tree()
-    .size([this.height, this.width]);
-
-  this.nodes = cluster.nodes(processed_data),
-    this.links = cluster.links(this.nodes);
-
-  this.diagonal = d3.svg.diagonal()
-    .projection(function(d) {
-      return [d.y, d.x];
-    });
-
 };
 
 Tree.prototype = Object.create(GlasseyeChart.prototype);
 
-Tree.prototype.add_tree = function() {
+Tree.prototype.add_tree = function () {
+   // Create a hierarchical layout
+   const root = d3.hierarchy(this.processed_data);
 
-  var link = this.chart_area.selectAll(".treelink")
-    .data(this.links)
-    .enter().append("path")
-    .attr("class", "treelink")
-    .attr("d", this.diagonal);
+   // Create a tree layout with size
+   const treeLayout = d3.tree().size([this.height - this.margin.top - this.margin.bottom, this.width - this.margin.left - this.margin.right]);
 
-  var node = this.chart_area.selectAll(".treenode")
-    .data(this.nodes)
-    .enter().append("g")
-    .attr("class", "treenode")
-    .attr("transform", function(d) {
-      return "translate(" + d.y + "," + d.x + ")";
-    });
+   // Apply the layout to the data
+   const treeData = treeLayout(root);
 
-  node.append("circle")
-    .attr("r", 4.5);
+   // Nodes and links
+   const nodes = treeData.descendants();
+   const links = treeData.links();
 
-  var abbr_len = (this.size === "full_page") ? 20 : 10;
+   // Add links
+   this.chart_area
+   .selectAll(".link")
+       .data(links)
+       .enter()
+       .append("path")
+       .attr("class", "link")
+       .attr("d", d3.linkHorizontal()
+           .x(d => d.y)
+           .y(d => d.x)
+       );
 
-  node.append("text")
-    .attr("dx", function(d) {
-      return d.children ? -8 : 8;
-    })
-    .attr("dy", 3)
-    .style("text-anchor", function(d) {
-      return d.children ? "end" : "start";
-    })
-    .text(function(d) {
-      return abbrev(d.name, abbr_len);
-    });
+   // Add nodes
+   const node = this.chart_area.selectAll(".node")
+       .data(nodes)
+       .enter()
+       .append("g")
+       .attr("class", "node")
+       .attr("transform", d => `translate(${d.y},${d.x})`);
+
+   // Add circles to the nodes
+   node.append("circle")
+       .attr("r", 5);
+
+   // Add labels to the nodes
+   node.append("text")
+       .attr("dy", 3)
+       .attr("x", d => d.children ? -10 : 10)
+       .style("text-anchor", d => d.children ? "end" : "start")
+       .text(d => d.data.name);
 
 };
 
-
 function tree(data, div, size) {
-
-  var inline_parser = function(data) {
+  var inline_parser = function (data) {
     return data;
   };
 
-  var csv_parser = function(data) {
+  var csv_parser = function (data) {
     return data;
   };
 
-  var draw = function(processed_data, div, size) {
-
+  var draw = function (processed_data, div, size) {
     var glasseye_chart = new Tree(processed_data, div, size);
 
     glasseye_chart.add_svg().add_tree();
-
   };
 
   build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
-
-
 }
+/// Venn.js
+
 var Venn = function(processed_data, div, size) {
 
   margin = {
@@ -4409,6 +2166,9 @@ function venn(data, div, size) {
   build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
 
 }
+
+/// Dial.js
+
 var Dial = function(processed_data, div, size, scales) {
 
   //Store arguments
@@ -4641,6 +2401,9 @@ function x_chart(data, div, size) {
 
 }
 */
+
+/// LogReg.js
+
 //A template for glasseye charts
 
 /*
@@ -4791,6 +2554,9 @@ function x_chart(data, div, size) {
 
 }
 */
+
+/// RandomNumber.js
+
 function random_gamma(alpha, beta){
 
     //Create d3 random number generator functions
@@ -4847,7 +2613,10 @@ function random_dirichlet(alphas){
 
     return closure;
 
-}/**
+}
+/// AnimatedDensity.js
+
+/**
  * Builds a AnimatedDensity object
  * @constructor
  * @param {array} processed_data Data that has been given a structure appropriate to the chart
@@ -4974,6 +2743,9 @@ function animated_density(div, size) {
 
 
 }
+
+/// PolygonMap.js
+
 /**
  * Builds an PolygonMap object
  * @constructor
@@ -5086,402 +2858,393 @@ PolygonMap.prototype.redraw_map = function (title) {
     return self;
 
 };
-/**
- * Builds a Heatmap object
- * @constructor
- * @param {array} processed_data Data that has been given a structure appropriate to the chart
- * @param {string} div The div in which the chart will be placed
- * @param {string} size The size (one of several preset sizes)
- * @param {array} [labels] An array of the axis labels
- * @param {array} scales Scales for the x and y axes
- * @param {object} [margin] Optional argument in case the default margin settings need to be overridden
- */
 
-var Heatmap = function (processed_data, div, size, labels, scales, margin) {
+/// Skey.js
 
-    var self = this;
-
-    self.processed_data = processed_data;
-
-    //Work out if there is a need for label rotation
-    var x_scale_labels = scales[0].scale_func.domain();
-    var max_string = d3.max(x_scale_labels.map(function (d) {
-        return d.length;
-    }));
-    self.num_points = x_scale_labels.length;
-
-    self.rotate_labels = (max_string > 60 / self.num_points) ? true : false;
-
-    if (margin === undefined) {
-        margin = {
-            top: 50,
-            bottom: 20,
-            right: 20,
-            left: 120
-        };
-    }
-
-    if (self.rotate_labels === true) {
-        margin.bottom = max_string * 5
-    }
-    ;
-
-    //Creates color scale based on the value field
-    color_domain = d3.extent(processed_data.map(function (d) {
-        return d.value
-    }));
-
-    self.heat_scale = d3.scale.quantile()
-        .domain(processed_data.map(function (d) {
-            return d.value
-        }))
-        .range(colorbrewer.RdBu[9].reverse());
-
-    //Create a list of groupspw
-    self.groups = [];
-    processed_data.map(function (d) {
-        if (self.groups.indexOf(d.group) === -1) {
-            self.groups.push(d.group);
-        }
+var Skey = function (processed_data, div, size) {
+    var margin =
+      size === "full_page"
+        ? {
+            top: 5,
+            bottom: 5,
+            left: 100,
+            right: 100,
+          }
+        : {
+            top: 5,
+            bottom: 5,
+            left: 50,
+            right: 50,
+          };
+  
+    GlasseyeChart.call(this, div, size, margin, 300);
+  
+    this.processed_data = processed_data;
+  
+    // Initialize the Skey generator
+    self.sankeyGenerator = d3
+      .sankey()
+      .nodeWidth(15)
+      .nodePadding(10)
+      .extent([
+        [1, 1],
+        [this.width - 1, this.height - 6],
+      ]);
+  
+    // Map the data to the Skey generator
+    self.sankeyData = sankeyGenerator({
+      nodes: this.processed_data.nodes.map((d) => Object.assign({}, d)),
+      links: this.processed_data.links.map((d) => Object.assign({}, d)),
     });
-
-
-    GridChart.call(self, div, size, labels, scales, margin);
-
-    //Customise grid
-    self.x_axis.tickSize(0);
-    self.y_axis.tickSize(0).tickPadding(12);
-
-
-    //Work out rect dimensions
-    self.rect_height = self.height / scales[1].scale_func.domain().length;
-
-    //Redo the x axis so we always get squares
-    if (self.width > self.height){
-        self.width = self.num_points * self.rect_height;
-        self.x = self.scales[0].scale_func.rangePoints([0, self.width], 1);
-    }
-
-
-    self.tip = d3.tip()
-        .attr('class', 'd3-tip')
-        .offset([-10, 0])
-        .html(function (d) {
-            var text;
-            if (d.value> 1){ text = d.group + " penetration is " + d3.format(",.1%")(d.raw_value/100) + "<br>That's " + d3.format(",.1%")(d.value/100) + " up on a national<br>average of " +  d3.format(",.1%")(d.nat_avg/100);}
-        else
-    {
-        text = d.group + " penetration is " + d3.format(",.1%")(d.raw_value/100) + "<br>That's " +d3.format(",.1%")(-1*d.value/100) + " down on a national<br>average of " +  d3.format(",.1%")(d.nat_avg/100);
-    }
-            return text;
-        });
-
-};
-
-Heatmap.prototype = Object.create(GridChart.prototype);
-
-
-/**
- * Adds the SVGs corresponding to the BarChart object
- *
- * @method
- * @returns {object} The modified BarChart object
- */
-
-Heatmap.prototype.add_heatmap = function () {
-
-
-    var self = this;
-    self.parent_div = d3.select(self.svg.node().parentNode.parentNode);
-
-    self.chart_area.call(self.tip);
-
-    //Get first variable
-    var start_variable = self.processed_data[0].group;
-    self.store_clicked = start_variable;
-
-    //Filter the data
-    var filtered_heatmap = self.processed_data.filter(function (d) {
-            return d.group === start_variable
-        }
-    );
-
-    //Check if we can fit in squares
-
-    self.rect_width = (self.width > self.height)? self.rect_height : (self.width/self.num_points);
-
-    //Add squares
-    self.chart_area.selectAll(".heatmap_square")
-        .data(filtered_heatmap)
-        .enter()
-        .append("rect")
-        .attr("class", "heatmap_square")
-        .attr("x", function (d) {
-            return self.x(d.category_x) - self.rect_width / 2;
-        })
-        .attr("y", function (d) {
-            return self.y(d.category_y) - self.rect_height / 2;
-        })
-        .attr("width", self.rect_width - 5)
-        .attr("height", self.rect_height - 5)
-        .attr("rx", 5)
-        .attr("ry", 5)
-        .attr("fill", function (d) {
-            return self.heat_scale(d.value)
-        })
-        .on("mouseover", function(d, i) {
-
-            //update the text
-            self.parent_div.selectAll("#commentary").html(self.interactive_text(d));
-            self.tip.show(d);
-
-        })
-        .on('mouseout', self.tip.hide);
-
-
-    //Rotate labels if necessary
-    if (self.rotate_labels === true) {
-        self.chart_area.selectAll(".x_axis").selectAll("text")
-            .style("text-anchor", "end")
-            .attr("dx", "-1em")
-            .attr("dy", "-0.8em")
-            .attr("transform", "rotate(-90)");
-    }
-
-    //Add the controls
-    self.svg.selectAll('.control_label')
-        .data(self.groups)
-        .enter()
-        .append("text")
-        .attr("class", "control_label")
-        .attr("transform", function (d, i) {
-            return "translate(0," + (i * 22 + self.margin.top + 15) + ")"
-        })
-        .text(function (d) {
-            return d;
-        })
-        .attr("class", function(d) { return (d===start_variable)? "control_label selected":"control_label unselected"})
-        .on('mouseover', function (d) {
-            self.svg.selectAll('.control_label').attr("class", "control_label unselected");
-            d3.select(this).attr("class", "control_label selected");
-            self.update_heatmap(d);
-        })
-        .on('mouseout', function (d) {
-            self.svg.selectAll('.control_label').attr("class", function(d) {return (d===self.store_clicked)?"control_label selected":"control_label unselected";});
-            self.update_heatmap(self.store_clicked);
-        })
-        .on('click', function (d) {
-            self.svg.selectAll('.control_label').attr("class", "control_label unselected");
-            d3.select(this).attr("class", "control_label selected");
-            self.update_heatmap(d);
-            self.store_clicked = d;
-        });
-
-    //Add the div for the commentary
-    self.parent_div.selectAll("#heatmap_context_side").remove();
-    var div = self.parent_div.append("div").attr("id", "heatmap_context_side");
-    div.append("div").attr("id", "venn_instructions").html("<h1> Instructions </h1><ul><li>Hover over the platform providers on the left hand side to change the heatmap.</li><li>Hover over the cells to see a full commentary in space below.</li></ul><h1>Commentary</h1>");
-    div.append("div").attr("id", "commentary").html("Hover over a circle and commentary will appear here.");
-
-    //Adjust the x axis label
-
-    self.svg.selectAll(".axis_label_x")
-        .attr("class", "axis_label axis_label_x")
-        .attr("transform", "translate(" + (self.margin.left + self.num_points * self.rect_height + 10) + ", " + (self.height + self.margin.top - 3) + ") rotate(-90)");
-
-    return self;
-
-};
-
-
-Heatmap.prototype.add_legend = function () {
-
-    var self = this;
-
-    var square_dim = self.height / 9;
-
-    //Add legend
-    var legend = self.svg.append("g")
-        .attr("class", "legend")
-        .attr("width", 180)
-        .attr("height", 400)
-        .attr("transform", "translate(" + (self.margin.left + self.height * 1.1) + "," + self.margin.top + ")");
-
-    //Add label
-
-    legend
-        .append("text")
-        .attr("transform", "translate(-5," + self.height/2 +  ") rotate(-90)")
-        .text("% Gain on National Average")
-        .attr("text-anchor", "middle")
-        .attr("class", "subtitle");
-
-    legend_item = legend.selectAll("legend_item")
-        .data(self.heat_scale.range())
-        .enter()
-        .append("g")
-        .attr("class", "legend_item")
-        .attr("transform", function (d, i) {
-            return ("translate(" + 4 + "," + (self.height - (i + 1) * square_dim) + ")")
-        });
-
-    /*legend_item.append("line")
-     .attr("x1", square_dim/2+2)
-     .attr("x2", square_dim/2 + 6)
-     .attr("y1", 0)
-     .attr("y2", 0)
-     .attr("stroke", "white")
-     .style("opacity", function(d, i) {return (i===block)?0:1;});
-     */
-
-    legend_item.append("rect")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("height", square_dim)
-        .attr("width", square_dim / 2)
-        .attr("fill", function (d) {
-            return d
-        });
-
-    //var formatter = uni_format_range(self.heat_scale.domain());
-    var formatter =  d3.format(".0f");
-
-    legend_item.append("text")
-        .attr("class", "legend_text")
-        .attr("x", square_dim * 1.7)
-        .attr("y", 17)
-        .attr("text-anchor", "middle")
-        .text(function (d) {
-            var r = self.heat_scale.invertExtent(d);
-            return formatter(r[0]) + " to " + formatter(r[1]);
-        });
-
-
-    return self;
-
-}
-
-
-Heatmap.prototype.update_heatmap = function (group) {
-
-    var self = this;
-
-
-    //Set variable so that it can be accessed by the tooltip
-    //self.current_variable = variable.toLowerCase();
-
-    //Filter the data
-    var filtered_heatmap = self.processed_data.filter(function (d) {
-            return d.group === group
-        }
-    );
-
-    self.chart_area.selectAll(".heatmap_square").data(filtered_heatmap)
-        .transition()
-        .duration(1000)
-        .attr("fill", function (d) {
-            return (d.value === undefined) ? "black" : self.heat_scale(d.value)
-        });
-
-
-    //self.svg.selectAll(".context").text("In " + quarter_year(time) + " for " + variable);
-
-
-};
-
-Heatmap.prototype.set_commentary = function(commentary_strings) {
-
-    var self = this;
-
-    self.interactive_text = function(d) {
-
-        function highlight(text){
-            return "<span style='font-weight: bold; font-size: 1.2em;color:" + self.heat_scale(d.value) + "'>" + text + "</span>";
-        }
-
-        var string_parts = commentary_strings.split("$");
-        var text =string_parts[0] + highlight(d3.format(",.1%")(d.raw_value/100)) + string_parts[1] + highlight(d.category_x) + string_parts[2] + highlight(d.category_y) + string_parts[3]+ highlight(d.group) + string_parts[4] + highlight(d3.format(",.1%")(d.value/100)) + string_parts[5] + highlight(d.group) +  string_parts[6] + highlight(d3.format(",.1%")(d.nat_avg/100))
-        return text;
-
-    };
-
-    return self;
-};
-
-//In Q2 2016 $ of households with $ occupant(s) and a $ social grade had $. That's a % difference from the national average penetration for $ which is $"
-
-/**
- * Redraws the Heatmap (for example after a resize of the div)
- * @method
- * @returns {object} The modified Heatmap object
- */
-
-Heatmap.prototype.redraw_heatmap = function (title) {
-
-    var self = this;
-
-    //Delete the existing svg and commentary
-    d3.select(self.div).selectAll("svg").remove();
-    self.parent_div.selectAll("#heatmap_context_side").remove();
-
-    //Redo the x axis so we always get squares
-    if (self.width > self.height){
-        self.width = self.num_points * self.rect_height;
-
-    }
-    self.x = self.scales[0].scale_func.rangePoints([0, self.width], 1);
-
-    //Redraw the chart
-    self = self.set_size().add_svg().add_grid().add_heatmap().add_legend();
-
-};
-
-
-/**
- * Creates a heatmap within a div
- *
- * @param {array} data Either the path to a csv file or inline data in glasseye
- * @param {string} div The div in which the chart will be placed
- * @param {string} size The size (one of several preset sizes)
- * @param {array} labels An array containing the labels of the x and y axes
- */
-
-
-function heatmap(data, div, size) {
-
+  };
+  
+  Skey.prototype = Object.create(GlasseyeChart.prototype);
+  
+  Skey.prototype.add_sankey = function () {
+    // Draw the links
+    this.chart_area
+      .append("g")
+      .attr("class", "links")
+      .selectAll("path")
+      .data(self.sankeyData.links)
+      .enter()
+      .append("path")
+      .attr("d", d3.sankeyLinkHorizontal())
+      .attr("stroke", "steelblue")
+      .attr("stroke-width", (d) => Math.max(1, d["width"]))
+      .attr("fill", "none")
+      .attr("stroke-opacity", 0.2)
+      .on("mouseover", function () {
+        d3.select(this).attr("stroke-opacity", 0.5);
+      })
+      .on("mouseout", function () {
+        d3.select(this).attr("stroke-opacity", 0.2);
+      });
+  
+    // Draw the nodes
+    var node = this.chart_area
+      .append("g")
+      .attr("class", "nodes")
+      .selectAll("g")
+      .data(self.sankeyData.nodes)
+      .enter()
+      .append("g");
+  
+    node
+      .append("rect")
+      .attr("x", (d) => d["x0"])
+      .attr("y", (d) => d["y0"])
+      .attr("height", (d) => d["y1"] - d["y0"])
+      .attr("width", self.sankeyGenerator.nodeWidth())
+      .attr("fill", "steelblue")
+      .attr("stroke", "steelblue");
+  
+    node
+      .append("text")
+      .attr("x", (d) => (d["x0"] < this.width / 2 ? d["x1"] + 6 : d["x0"] - 6))
+      .attr("y", (d) => (d["y1"] + d["y0"]) / 2)
+      .attr("dy", "0.35em")
+      .attr("text-anchor", (d) => (d["x0"] < this.width / 2 ? "start" : "end"))
+      .text((d) => d["name"]);
+  };
+  
+  function skey(data, div, size) {
     var inline_parser = function (data) {
-
+      return data;
     };
-
+  
+    var csv_parser = function (data) {
+      return data;
+    };
+  
     var draw = function (processed_data, div, size) {
-
-        var x_values = [],
-            y_values = [];
-
-
-        x_values = processed_data.map(function (d) {
-            return d.category_x;
-        });
-
-        y_values = processed_data.map(function (d) {
-            return d.category_y;
-        });
-
-        x_values = [].concat.apply([], y_values);
-        y_values = [].concat.apply([], y_values);
-
-
-        var scales = [create_scale(x_values, d3.scale.ordinal()), create_scale(y_values, d3.scale.ordinal())];
-
-
-        var glasseye_chart = new Heatmap(processed_data, div, size, ["label", "value"], scales);
-
-        glasseye_chart.add_svg().add_grid().add_heatmap();
-
-
+      var glasseye_chart = new Skey(processed_data, div, size);
+  
+      glasseye_chart.add_svg().add_sankey();
     };
+  
+    build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
+  }
+/// BarChart.js
 
-    build_chart(data, div, size, undefined, group_label_value_parser, inline_parser, draw);
+var Barchart = function (processed_data, div, size) {
+    this.margin =
+      size === "full_page"
+        ? {
+            top: 5,
+            bottom: 5,
+            left: 100,
+            right: 100,
+          }
+        : {
+            top: 5,
+            bottom: 5,
+            left: 50,
+            right: 50,
+          };
+  
+    GlasseyeChart.call(this, div, size, this.margin, 300);
+  
+    this.processed_data = processed_data;
+  
+    // Declare the x (horizontal position) scale.
+    this.xScale = d3
+      .scaleBand()
+      .domain(
+        d3.groupSort(
+          this.processed_data,
+          ([d]) => -d.value,
+          (d) => d.label.toString()
+        )
+      ) // descending frequency
+      .range([this.margin.left, this.width - this.margin.right])
+      .padding(0.1);
+  
+    // Declare the y (vertical position) scale.
+    this.yScale = d3
+      .scaleLinear()
+      .domain([0, d3.max(this.processed_data, (d) => d.value)])
+      .range([this.height - this.margin.bottom, this.margin.top]);
+  };
+  
+  Barchart.prototype = Object.create(GlasseyeChart.prototype);
+  
+  Barchart.prototype.add_barchart = function () {
+    // this.chart_area
+    //   .attr("viewBox", [0, 0, this.width, this.height])
+    //   .attr("style", "max-width: 100%; height: auto;");
+  
+    // Add a rect for each bar.
+    this.chart_area
+      .append("g")
+      .attr("fill", "steelblue")
+      .selectAll()
+      .data(this.processed_data)
+      .join("rect")
+      .attr("x", (d) => this.xScale(d.label.toString()))
+      .attr("y", (d) => this.yScale(d.value))
+      .attr("height", (d) => this.yScale(0) - this.yScale(d.value))
+      .attr("width", this.xScale.bandwidth());
+    // .on("mouseover", function (event, d) {
+    //   d3.select(this).attr("fill", "orange");
+  
+    //   const tooltipText = `${d.label} - ${d.value}`;
+  
+    //   // Add a tooltip for value display
+    //   this.chart_area
+    //     .append("text")
+    //     .attr("class", "tooltip")
+    //     .attr("x", this.xScale(d.label))
+    //     .attr("y", this.yScale(d.value))
+    //     .attr("text-anchor", "middle")
+    //     .attr("fill", "black")
+    //     .text(tooltipText);
+    // })
+    // .on("mouseout", function (s = 'steelblue') {
+    //   d3.select(this).attr("fill", s);
+  
+    //   // Remove the tooltip
+    //   this.chart_area.selectAll(".tooltip").remove();
+    // });
+  
+    // Add the x-axis and label.
+    this.chart_area
+      .append("g")
+      .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
+      .call(d3.axisBottom(this.xScale).tickSizeOuter(0));
+  
+    // Add the y-axis and label, and remove the domain line.
+    this.chart_area
+      .append("g")
+      .attr("transform", `translate(${this.margin.left},0)`)
+      .call(d3.axisLeft(this.yScale).tickFormat((y) => y.valueOf().toFixed()))
+      .call((g) => g.select(".domain").remove());
+    // .call((g) =>
+    //   g
+    //     .append("text")
+    //     .attr("x", -this.margin.left)
+    //     .attr("y", 10)
+    //     .attr("fill", 'steelblue')
+    //     .attr("text-anchor", "start")
+    //     .text("Amount On Hand")
+    // );
+  };
+  
+  function barchart(data, div, size) {
+    var inline_parser = function (data) {
+      return data;
+    };
+  
+    var csv_parser = function (data) {
+      return data;
+    };
+  
+    var draw = function (processed_data, div, size) {
+      var glasseye_chart = new Barchart(processed_data, div, size);
+  
+      glasseye_chart.add_svg().add_barchart();
+    };
+  
+    build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
+  }
+/// Pie.js
+
+var Pie = function (processed_data, div, size) {
+    var margin =
+      size === "full_page"
+        ? {
+            top: 5,
+            bottom: 5,
+            left: 100,
+            right: 100,
+          }
+        : {
+            top: 5,
+            bottom: 5,
+            left: 50,
+            right: 50,
+          };
+  
+    GlasseyeChart.call(this, div, size, margin, 300);
+  
+    this.processed_data = processed_data;
+  
+    this.radius = Math.min(this.width, this.height) / 2;
+  };
+  
+  Pie.prototype = Object.create(GlasseyeChart.prototype);
+  
+  Pie.prototype.add_pie = function (isDonut = false) {
+    color = d3
+      .scaleOrdinal()
+      .domain(this.processed_data.map((d) => d.label))
+      .range(d3.schemeCategory10);
+  
+    // Create the pie function
+    pie = d3
+      .pie()
+      .value((d) => d.value)
+      .sort(null);
+  
+    // Create the arc generator
+    arc = d3
+      .arc()
+      .innerRadius(isDonut ? this.radius * 0.5 : 0) // For a pie chart, the inner radius is 0 (use for a donut chart)
+      .outerRadius(this.radius);
+  
+    // Bind data to arcs
+    arcs = this.chart_area
+      .selectAll(".arc")
+      .data(pie(this.processed_data))
+      .enter()
+      .append("g")
+      .attr("class", "arc");
+  
+    // Draw the slices
+    arcs
+      .append("path")
+      .attr("d", arc)
+      .attr("fill", (d) => color(d.data.label));
+  
+    // Add labels to the slices
+    arcs
+      .append("text")
+      .attr("transform", (d) => `translate(${arc.centroid(d)})`)
+      .attr("text-anchor", "middle")
+      .text((d) => d.data.label);
+  };
+  
+  function piechart(data, div, size, isDonut = false) {
+    var inline_parser = function (data) {
+      return data;
+    };
+  
+    var csv_parser = function (data) {
+      return data;
+    };
+  
+    var draw = function (processed_data, div, size) {
+      var glasseye_chart = new Pie(processed_data, div, size);
+  
+      glasseye_chart.add_svg().add_pie(isDonut);
+    };
+  
+    build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
+  }
+  
+  function donut(data, div, size) {
+    piechart(data, div, size, true);
+  }
+/// Linechart.js
 
 
-}
+var Linechart = function (processed_data, div, size) {
+    this.margin =
+      size === "full_page"
+        ? {
+            top: 5,
+            bottom: 5,
+            left: 100,
+            right: 100,
+          }
+        : {
+            top: 5,
+            bottom: 5,
+            left: 50,
+            right: 50,
+          };
+  
+    GlasseyeChart.call(this, div, size, this.margin, 300);
+  
+    this.processed_data = processed_data;
+  };
+  
+  Linechart.prototype = Object.create(GlasseyeChart.prototype);
+  
+  Linechart.prototype.add_linechart = function () {
+    x = d3
+      .scaleLinear()
+      .domain([d3.min(this.processed_data, (d) => d.x), d3.max(this.processed_data, (d) => d.x)])
+      .range([0, this.width]);
+  
+    y = d3
+      .scaleLinear()
+      .domain([0, d3.max(this.processed_data, (d) => d.y)])
+      .range([this.height, 0]);
+  
+    line = d3
+      .line()
+      .x((d) => x(d.x))
+      .y((d) => y(d.y));
+  
+    this.chart_area
+      .append("g")
+      .attr("transform", `translate(0,${this.height})`)
+      .call(d3.axisBottom(x).ticks(6));
+  
+    this.chart_area.append("g").call(d3.axisLeft(y));
+  
+    this.chart_area
+      .append("path")
+      .datum(this.processed_data)
+      .attr("class", "line")
+      .attr("d", line);
+  };
+  
+  function linechart(data, div, size) {
+    var inline_parser = function (data) {
+      return data;
+    };
+  
+    var csv_parser = function (data) {
+      return data;
+    };
+  
+    var draw = function (processed_data, div, size) {
+      var glasseye_chart = new Linechart(processed_data, div, size);
+  
+      glasseye_chart.add_svg().add_linechart();
+    };
+  
+    build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
+  }

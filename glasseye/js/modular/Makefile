@@ -21,11 +21,13 @@ SOURCE_FILES = \
 	RandomNumber.js \
 	AnimatedDensity.js \
 	PolygonMap.js \
-	Skey.js
+	Skey.js \
+	BarChart.js \
+	Pie.js \
+	Linechart.js \
 
 # Parsers.js \
 
-# BarChart.js \
 # GridChart.js \
 # Heatmap.js
 # AnimatedBarChart.js \
