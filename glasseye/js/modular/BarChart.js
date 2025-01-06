@@ -1,4 +1,4 @@
-var Barchart = function (processed_data, div, size) {
+var BarChart = function (processed_data, div, size) {
     this.margin =
       size === "full_page"
         ? {
@@ -38,9 +38,9 @@ var Barchart = function (processed_data, div, size) {
       .range([this.height - this.margin.bottom, this.margin.top]);
   };
   
-  Barchart.prototype = Object.create(GlasseyeChart.prototype);
+  BarChart.prototype = Object.create(GlasseyeChart.prototype);
   
-  Barchart.prototype.add_barchart = function () {
+  BarChart.prototype.add_barchart = function () {
     // this.chart_area
     //   .attr("viewBox", [0, 0, this.width, this.height])
     //   .attr("style", "max-width: 100%; height: auto;");
@@ -111,7 +111,7 @@ var Barchart = function (processed_data, div, size) {
     };
   
     var draw = function (processed_data, div, size) {
-      var glasseye_chart = new Barchart(processed_data, div, size);
+      var glasseye_chart = new BarChart(processed_data, div, size);
   
       glasseye_chart.add_svg().add_barchart();
     };

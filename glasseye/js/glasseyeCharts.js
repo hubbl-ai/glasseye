@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Mon Jan  6 14:40:34 CAT 2025
+// Generated Mon Jan  6 15:37:15 CAT 2025
 
 
 /// GlasseyeChart.js
@@ -433,170 +433,101 @@ function create_class_label(prefix, x){
   return prefix + "_" + x.replace(/[.,\/#!$%\^&\*;:{}=+\-_`~()]/g,"").replace(" ","");
 
 }
-/// LinePlot.js
+/// GridChart.js
 
-var LinePlot = function(processed_data, div, size, labels, scales) {
+var GridChart = function (div, size, labels, scales, margin, height) {
 
-  GridChart.call(this, div, size, labels, scales);
+    var self = this;
+    self.scales = scales;
+    self.labels = labels;
 
-  this.processed_data = processed_data;
+    GlasseyeChart.call(self, div, size, margin, height);
 
-  //Some customisations
-  this.margin.left = 4;
-  this.y_axis.tickFormat("");
-
-  this.tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      return d3.format(".3n")(d.y);
-    });
-
-  var x_scale = this.x,
-    y_scale = this.y;
-
-  this.line = d3.svg.line()
-    .x(function(d) {
-      return x_scale(d.x);
-    })
-    .y(function(d) {
-      return y_scale(d.y);
-    });
-
-};
-
-LinePlot.prototype = Object.create(GridChart.prototype);
-
-LinePlot.prototype.add_line = function() {
-
-  this.chart_area.call(this.tip);
-
-  this.chart_area.append("path")
-    .datum(this.processed_data)
-    .attr("class", "line")
-    .attr("d", this.line);
-
-  var x_scale = this.x,
-    y_scale = this.y;
-
-  this.chart_area.selectAll("line_points")
-    .data(this.processed_data)
-    .enter()
-    .append("circle")
-    .attr("class", "line_points")
-    .attr("cx", function(d) {
-      return x_scale(d.x);
-    })
-    .attr("cy", function(d) {
-      return y_scale(d.y);
-    })
-    .attr("r", 10)
-    .attr("opacity", 0)
-    .on('mouseover', this.tip.show)
-    .on('mouseout', this.tip.hide);
-
-  return this;
-
-};
-
-function lineplot(data, div, size, labels) {
-
-
-  var inline_parser = function(data) {
-
-    var processed_data = [];
-
-    for (i = 0; i < data.x.length; i++) {
-      data_item = {
-        "x": +data.x[i],
-        "y": +data.y[i]
-      };
-      processed_data.push(data_item);
+    if (scales[0].scale_type === "ordinal") {
+        self.x = self.scales[0].scale_func.rangePoints([0, self.width], 1);
+    } else {
+        self.x = self.scales[0].scale_func.range([0, self.width]);
     }
 
-    return processed_data;
-  };
+    if (scales[1].scale_type === "ordinal") {
+        self.y = self.scales[1].scale_func.rangePoints([self.height, 0], 1);
+    } else {
+        self.y = self.scales[1].scale_func.range([self.height, 0]);
+    }
 
-  var csv_parser = function(data) {
 
-    var processed_data = data.map(function(d) {
-      return {
-        x: +d.x,
-        y: +d.y
-      };
-    });
+    self.x_axis = d3.svg.axis()
+        .scale(self.x)
+        .orient("bottom")
+        .tickSize(-self.height, 0, 0)
+        .tickPadding(10);
 
-    return processed_data;
+    self.y_axis = d3.svg.axis()
+        .scale(self.y)
+        .orient("left")
+        .tickSize(-self.width, 0, 0);
 
-  };
+    //If the scale is not ordinal apply the universal format
+    if (scales[1].scale_type != "ordinal") {self.y_axis .tickFormat(uni_format_axis)};
 
-  var draw = function draw_lineplot(processed_data, div, size, labels) {
+    self.tooltip_formtter = uni_format;
 
-    var x_values = processed_data.map(function(d) {
-      return d.x;
-    });
-    var y_values = processed_data.map(function(d) {
-      return d.y;
-    });
-    var scales = [create_scale(x_values, d3.scale.linear()), create_scale(y_values, d3.scale.linear())];
-    var glasseye_chart = new LinePlot(processed_data, div, size, labels, scales);
-    glasseye_chart.add_svg().add_grid().add_line();
+};
 
-  };
+GridChart.prototype = Object.create(GlasseyeChart.prototype);
 
-  build_chart(data, div, size, labels, csv_parser, inline_parser, draw);
+GridChart.prototype.set_y_axis_format = function (format) {
+
+    var self = this;
+
+    self.y_axis.tickFormat(format);
+    self.tooltip_formtter = format;
+    return self;
 
 }
 
 
-function lineplot(data, div, size, labels) {
 
+GridChart.prototype.add_grid = function () {
 
-  var inline_parser = function(data) {
+    var self = this;
 
-    var processed_data = [];
+    var x_axis_g = self.chart_area.append("g")
+        .attr("class", "chart_grid x_axis")
+        .attr("transform", "translate(0," + self.height + ")")
+        .call(self.x_axis);
 
-    for (i = 0; i < data.x.length; i++) {
-      data_item = {
-        "x": +data.x[i],
-        "y": +data.y[i]
-      };
-      processed_data.push(data_item);
+    if (self.scales[0].scale_type === "nonlinear") {
+        x_axis_g.selectAll("text")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-90)");
     }
 
-    return processed_data;
-  };
+    self.chart_area.append("g")
+        .attr("class", "chart_grid y_axis")
+        .call(self.y_axis);
 
-  var csv_parser = function(data) {
+    //Add labels if they have been provided
 
-    var processed_data = data.map(function(d) {
-      return {
-        x: +d.x,
-        y: +d.y
-      };
-    });
+    if (typeof self.labels !== "undefined") {
+        self.svg.append("g")
+            .attr("class", "axis_label axis_label_x")
+            .attr("transform", "translate(" + (self.margin.left + self.width + 15) + ", " + (self.height + self.margin.top) + ") rotate(-90)")
+            .append("text")
+            .text(self.labels[0]);
 
-    return processed_data;
+        self.svg.append("g")
+            .attr("class", "axis_label axis_label_y")
+            .attr("transform", "translate(" + self.margin.left + ", " + (self.margin.top - 8) + ")")
+            .append("text")
+            .text(self.labels[1]);
+    }
 
-  };
+    return self;
 
-  var draw = function draw_lineplot(processed_data, div, size, labels) {
-
-    var x_values = processed_data.map(function(d) {
-      return d.x;
-    });
-    var y_values = processed_data.map(function(d) {
-      return d.y;
-    });
-    var scales = [create_scale(x_values, d3.scale.linear()), create_scale(y_values, d3.scale.linear())];
-    var glasseye_chart = new LinePlot(processed_data, div, size, labels, scales);
-    glasseye_chart.add_svg().add_grid().add_line();
-
-  };
-
-  build_chart(data, div, size, labels, csv_parser, inline_parser, draw);
-
-}
+};
 
 /// NonStandard.js
 
@@ -1117,908 +1048,6 @@ function dot_plot(file, div, size) {
   //Put
 
   //ordinal.rangePoints(interval[, padding])
-
-}
-
-/// ScatterPlot.js
-
-var ScatterPlot = function(processed_data, div, size, labels, scales) {
-
-  GridChart.call(this, div, size, labels, scales);
-
-  this.processed_data = processed_data;
-
-
-  this.tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      return d3.format(".3n")(d.y);
-    });
-
-  var x_scale = this.x,
-    y_scale = this.y;
-
-};
-
-ScatterPlot.prototype = Object.create(GridChart.prototype);
-
-ScatterPlot.prototype.add_points = function() {
-
-  this.chart_area.call(this.tip);
-
-  this.chart_area.append("path")
-    .datum(this.processed_data)
-    .attr("class", "line")
-    .attr("d", this.line);
-
-  var x_scale = this.x,
-    y_scale = this.y;
-
-  this.chart_area.selectAll("points")
-    .data(this.processed_data)
-    .enter()
-    .append("circle")
-    .attr("class", "points")
-    .attr("cx", function(d) {
-      return x_scale(d.x);
-    })
-    .attr("cy", function(d) {
-      return y_scale(d.y);
-    })
-    .attr("r", 3)
-    .on('mouseover', this.tip.show)
-    .on('mouseout', this.tip.hide);
-
-  return this;
-
-};
-
-function scatterplot(data, div, size, labels) {
-
-
-  var inline_parser = function(data) {
-
-    var processed_data = [];
-
-    for (i = 0; i < data.x.length; i++) {
-      data_item = {
-        "x": +data.x[i],
-        "y": +data.y[i]
-      };
-      processed_data.push(data_item);
-    }
-
-    return processed_data;
-  };
-
-  var csv_parser = function(data) {
-
-    var processed_data = data.map(function(d) {
-      return {
-        x: +d.x,
-        y: +d.y,
-        point_label: d.label
-      };
-    });
-
-    return processed_data;
-
-  };
-
-  var draw = function draw_scatterplot(processed_data, div, size, labels) {
-
-    var x_values = processed_data.map(function(d) {
-      return d.x;
-    });
-    var y_values = processed_data.map(function(d) {
-      return d.y;
-    });
-    var scales = [create_scale(x_values, d3.scale.linear()), create_scale(y_values, d3.scale.linear())];
-    var glasseye_chart = new ScatterPlot(processed_data, div, size, labels, scales);
-    glasseye_chart.add_svg().add_grid().add_points();
-
-  };
-
-  build_chart(data, div, size, labels, csv_parser, inline_parser, draw);
-
-}
-
-/// Thermometers.js
-
-var Thermometers = function(processed_data, div, size, labels, scales) {
-
-  var self = this;
-
-  var margin = {
-    top: 50,
-    bottom: 80,
-    right: 50,
-    left: 50
-  };
-
-  BarChart.call(self, processed_data, div, size, labels, scales, margin);
-  self.bar_width = self.width/7;
-  self.y_axis.tickFormat(d3.format("0%")).ticks(6).tickSize(6);
-
-};
-
-Thermometers.prototype = Object.create(BarChart.prototype);
-
-Thermometers.prototype.add_thermometers = function() {
-
-  var self = this;
-
-  self.chart_area.call(self.tip);
-
-  //Customisations
-  self.svg.attr("class", "glasseye_chart thermometers");
-
-
-  var therm = self.chart_area.selectAll(".thermometer")
-    .data(self.processed_data)
-    .enter()
-    .append("g")
-    .attr("class", "thermometer")
-    .attr("transform", function(d) {
-      return "translate(" + (self.x(d.category) - self.bar_width / 4) + ", " + 0 + ")";
-    });
-
-
-  var therm_width = self.bar_width / 2;
-  var merc_prop = 0.8;
-
-  therm.append("rect")
-    .attr("class", "glass")
-    .attr("width", therm_width)
-    .attr("height", self.height);
-
-  therm.append("rect")
-    .attr("class", "glass-gap")
-    .attr("x", therm_width * (1 - merc_prop) / 2)
-    .attr("width", therm_width * merc_prop)
-    .attr("height", self.height);
-
-  therm.append("text")
-    .attr("class", "therm_reading")
-    .text(d3.format("%")(0))
-    .attr("transform", "translate(" + (self.bar_width) + ", " + self.height / 2 + ")");
-
-  therm.append("rect")
-    .attr("class", "mercury")
-    .attr("x", self.bar_width / 8)
-    .attr("y", self.y(0))
-    .attr("width", self.bar_width / 4)
-    .attr("height", self.height - self.y(0));
-  self.svg.append("text").attr("class", "context")
-    .attr("y", self.height + self.margin.top + 60)
-    .attr("x", self.margin.left + self.width / 2)
-    .style("text-anchor", "middle");
-
-  return this;
-
-};
-
-Thermometers.prototype.update_thermometers = function(time, variable) {
-
-  var self = this;
-  self.chart_area.selectAll(".mercury")
-    //.attr("class", function(d,i){return("mercury d_"+ i)})
-    .transition()
-    .duration(500)
-    .attr("y", function(d) {
-      var filtered = d.values.filter(function(e) {
-        return e.time.getTime() === time.getTime() & e.variable === variable;
-      });
-      return self.y(filtered[0].value);
-    })
-    .attr("height", function(d) {
-      var filtered = d.values.filter(function(e) {
-        return e.time.getTime() === time.getTime() & e.variable === variable;
-      });
-
-      return self.height - self.y(filtered[0].value);
-    });
-
-  self.chart_area.selectAll(".therm_reading")
-    .text(function(d) {
-      var filtered = d.values.filter(function(e) {
-        return e.time.getTime() === time.getTime() & e.variable === variable;
-      });
-      return d3.format("%")(filtered[0].value);
-    });
-
-  self.svg.selectAll(".context").text("In " + quarter_year(time) + " for " + variable + " households");
-
-
-
-};
-
-Thermometers.prototype.add_title = function(title, subtitle) {
-
-  var self = this;
-  self.title = title;
-  self.svg.append('text').attr("class", "title")
-    .text(title)
-      .attr("y", 20)
-      .attr("x", self.margin.left + self.width / 2)
-      .style("text-anchor", "middle");
-
-  if (subtitle != undefined) {
-
-    self.subtitle = subtitle;
-    self.svg.append('text').attr("class", "subtitle")
-        .text(subtitle)
-        .attr("y", 35)
-        .attr("x", self.margin.left + self.width / 2)
-        .style("text-anchor", "middle");
-
-  } else {
-    self.subtitle = "";
-  }
-
-  return this;
-
-};
-
-
-Thermometers.prototype.redraw_thermometer = function(title) {
-
-  //Note no longer uses argument!
-
-  var self = this;
-
-  //Delete the existing svg and commentary
-  d3.select(self.div).selectAll("svg").remove();
-
-  //Reset the size
-  self.set_size();
-  self.bar_width = self.width /7;
-  self.x = self.scales[0].scale_func.rangePoints([0, self.width], 1);
-
-  //Redraw the chart
-  self.add_svg().add_grid().add_thermometers().add_title(self.title, self.subtitle);
-
-};
-
-function thermometers(data, div, size) {
-
-  var inline_parser = function(data) {
-
-    processed_data = [];
-
-    for (i = 0; i < data.value.length; i++) {
-      data_item = {
-        "category": data.category[i],
-        "value": +data.value[i]
-      };
-      processed_data.push(data_item);
-
-    }
-
-    return processed_data;
-
-  };
-
-  var csv_parser = function(data) {
-
-    var parse_date = d3.time.format("%d/%m/%Y").parse;
-    var processed_data = data.map(function(d) {
-      return {
-        category: d.category,
-        filter: d.filter,
-        value: d.value,
-        time: parse_date(d.time)
-      };
-    });
-
-    return processed_data;
-
-  };
-
-  var draw = function(processed_data, div, size) {
-
-    var x_values = processed_data.map(function(d) {
-      return d.category;
-    });
-    var y_values = processed_data.map(function(d) {
-      return d.value;
-    });
-
-    var scales = [create_scale(x_values, d3.scale.ordinal()), create_scale(y_values, d3.scale.linear())];
-
-    var glasseye_chart = new Thermometers(processed_data, div, size, ["category", "value"], scales);
-
-    glasseye_chart.add_svg().add_grid().add_thermometers();
-
-  };
-
-  build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
-
-
-}
-
-/// TimeSeries.js
-
-/**
- * Builds an TimeSeries object
- * @constructor
- * @param {array} processed_data Data that has been given a structure appropriate to the chart
- * @param {string} div The div in which the chart will be placed
- * @param {string} size The size (one of several preset sizes)
- * @param {array} labels An array containing the labels of the x and y axes
- * @param {object} scales An object describing the x and y scales
- * @param {function} tooltip_function A function that is called when the tooltip is on any of the points on the time series charts)
- */
-
-var TimeSeries = function(processed_data, div, size, labels, scales, tooltip_function) {
-
-  var self = this;
-
-  var margin = {
-    top: 50,
-    bottom: 80,
-    right: 30,
-    left: 130
-  };
-
-  GridChart.call(self, div, size, undefined, scales, margin);
-
-  self.processed_data = processed_data;
-  self.tooltip_function = (tooltip_function===undefined)?function(time, variable){}:tooltip_function;
-
-  //Some customisations
-  self.y_axis.ticks(4).tickFormat(uni_format_axis).tickSize(0);
-  self.x_axis.tickFormat(d3.time.format("%Y")).ticks(d3.time.month, 1).tickSize(6, 0).tickPadding(10);
-
-  self.tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      return quarter_year(d.time) + "<br>" + d.group + "<br>" + ((d.variable==="share")? d3.format(".1%")(d.value): self.tooltip_formtter(d.value));
-    });
-
-  //Reorder processed data in order of max value
-  //self.processed_data =  self.processed_data.sort(function(a,b){return a.group < b.group});
-
-
-  //Function to create line path
-  self.line = d3.svg.line()
-    .x(function(d) {
-      return self.x(d.time);
-    })
-    .y(function(d) {
-      return self.y(d.value);
-    });
-
-  //Function to create areas
-  self.area = d3.svg.area()
-    .x(function(d) {
-      return self.x(d.time);
-    })
-    .y0(self.height)
-    .y1(function(d) {
-      return self.y(d.value);
-    });
-
-  //Function to create stacked areas
-  self.area_stacked = d3.svg.area()
-    .x(function(d) {
-      return self.x(d.time);
-    })
-    .y0(function(d) {
-      return self.y(d.y0);
-    })
-    .y1(function(d) {
-      return self.y(d.y0 + d.y);
-    });
-
-  //Stacked layout
-  self.stack = d3.layout.stack()
-    .x(function(d) {
-      return d.time;
-    })
-    .y(function(d) {
-      return d.value;
-    })
-    .values(function(d) {
-      return d.values;
-    }).order("reverse");
-
-
-
-  self.color = d3.scale.ordinal()
-      .range(colorbrewer.RdYlBu[self.processed_data.length]);
-
-};
-
-TimeSeries.prototype = Object.create(GridChart.prototype);
-
-/**
- * Adds the SVGs that create the times series graph
- * @method
- * @returns {object} The modified TimeSeries object
- */
-
-TimeSeries.prototype.add_timeseries = function() {
-
-  var self = this;
-
-  self.chart_area.call(self.tip);
-
-  //Filter the data
-  self.filtered_data = self.processed_data.map(function(g) {
-    return {
-      group: g.group,
-      values: g.values.filter(function(e) {
-        return e.variable === "absolute";
-      })
-    };
-  });
-
-
-  self.chart_area.selectAll(".groups")
-    .data(self.filtered_data)
-    .enter()
-    .append("path")
-    .attr("stroke", function(d) {
-      return (self.color(d.group));
-    })
-    .attr("class", function(d, i) {
-      return ("timeseries_line c_" + i + " " + create_class_label("c", d.group));
-    })
-    .attr("d", function(d) {
-      return self.line(d.values);
-    });
-
-
-  //Add the areas
-  self.chart_area.selectAll(".timeseries_area")
-    .data(self.filtered_data)
-    .enter()
-    .append("path")
-    .attr("class", function(d, i) {
-      return ("timeseries_area d_" + i + " " +create_class_label("d", d.group));
-    })
-    .attr("d", function(d) {
-      return self.area(d.values);
-    })
-    .style("opacity", 0);
-
-  self.create_linepoints("absolute");
-
-  //Structure the x axis
-  self.chart_area.selectAll("g.x_axis g.tick line")
-    .attr("y2", function(d) {
-      var month_no = d.getMonth();
-      if (month_no % 12 === 0)
-        return 6;
-      else if (month_no % 3 === 0)
-        return 2;
-      else
-        return 0;
-    });
-
-
-  var domain_in_days = (self.x.domain()[1] - self.x.domain()[0]) / (24 * 60 * 60 * 1000);
-
-   self.chart_area.selectAll("g.x_axis g.tick text")
-    .text(function(d, i) {
-      var month_no = d.getMonth();
-      if (month_no % 12 === 0) {
-        return d3.time.format("%Y")(d);
-      }
-      else if (month_no % 3 === 0) {
-
-        if (domain_in_days > 1200) {
-          return "";
-        } else {
-          console.log(month_no/3);
-          return "Q" + Math.floor(month_no/3);
-        }
-      } else {
-        return "";
-      }
-    });
-
-
-    if (typeof self.labels !== "undefined") {
-      self.chart_area.append("g")
-        .attr("class", "axis_label")
-        .attr("transform", "translate(0, " + (self.height + self.margin.top) + ") rotate(-90)")
-        .append("text")
-        .text(self.labels[0]);
-      }
-
-  return this;
-
-};
-
-/**
- * Places transparent circles on the points of the time series so that they can trigger the tooltip
- * @method
- * @param {string} to_variable The variable that will be represented on the y axis
- * @returns {object} The modified TimeSeries object
- */
-
-TimeSeries.prototype.create_linepoints = function(to_variable) {
-
-  var self = this;
-
-  //Create the line point data
-  var line_points = self.filtered_data.map(function(d) {
-
-    return (d.values.map(function(e) {
-      return {
-        time: e.time,
-        value: e.value,
-        group: d.group,
-        variable: e.variable,
-        y: e.y,
-        y0: e.y0
-      };
-    }));
-  });
-
-
-  line_points = [].concat.apply([], line_points).filter(function(d) {
-    return d !== undefined;
-  });
-
-  self.chart_area.selectAll(".line_points")
-    .data(line_points)
-    .enter()
-    .append("g")
-    .attr("class", "line_point_group")
-    .append("circle")
-    .attr("class", "line_points")
-    .attr("cx", function(d) {
-      return self.x(d.time);
-    })
-    .attr("cy", function(d) {
-      if (to_variable === "share") {
-        return self.y(d.y0 + d.y);
-      } else {
-        return self.y(d.value);
-      }
-    })
-    .attr("r", 10)
-    .on('mouseover', function(d) {
-      self.tooltip_function(d.time, d.group);
-      self.tip.show(d);
-    })
-    .on('mouseout', self.tip.hide);
-
-};
-
-
-/**
- * Changes the variable mapped to the y axis
- * @method
- * @param {string} to_variable The variable that will be represented on the y axis
- * @param {int} duration Duration of the transformation in milliseconds
- * @returns {object} The modified TimeSeries object
- */
-
-TimeSeries.prototype.flip_variable = function(to_variable, duration) {
-
-  var self = this;
-  self.current_y_axis = to_variable;
-
-  duration = (duration === undefined)? 1000: duration;
-
-  //Filter the data
-  self.filtered_data = self.processed_data.map(function(g) {
-    return {
-      group: g.group,
-      values: g.values.filter(function(e) {
-        return e.variable === to_variable;
-      })
-    };
-  });
-
-  //Update y axis
-  self.y.domain(minmax_across_groups(self.processed_data, to_variable));
-
-  //Some defaults
-  var select_area = self.area;
-  var area_opacity = 0;
-
-  if (to_variable === "absolute") {
-
-    self.y_axis.tickFormat(uni_format_axis).ticks(6);
-
-
-  } else if (to_variable === "share") {
-
-    self.y_axis.tickFormat(d3.format("0%")).ticks(6);
-    self.filtered_data = self.stack(self.filtered_data);
-    self.y.domain([0, 1]);
-    select_area = self.area_stacked;
-    area_opacity = 1;
-
-  } else {
-    self.y_axis.tickFormat(d3.format(".2n")).ticks(6);
-  }
-
-  self.chart_area.selectAll(".y_axis")
-    .call(self.y_axis);
-
-  //Update paths
-  self.chart_area.selectAll(".timeseries_line")
-    .data(self.filtered_data)
-    .transition()
-    .duration(duration)
-    .attr("d", function(d) {
-      if (to_variable === "share") {
-        return self.line(d.values.map(function(e) {
-            return {
-              time: e.time,
-              value: (e.y + e.y0)
-            };
-        }));
-      } else {
-        return self.line(d.values);
-      }
-    });
-
-  self.chart_area.selectAll(".timeseries_area")
-    .data(self.filtered_data)
-    .transition()
-    .duration(duration)
-    .attr("d", function(d) {
-      return select_area(d.values);
-    })
-    .style("opacity", area_opacity);
-
-
-  //Update points
-  self.chart_area.selectAll('.line_points').remove();
-
-  //Create the line point data
-  self.create_linepoints(to_variable);
-
-  self.update_line_labels(to_variable);
-
-  return this;
-
-};
-
-/**
- * Adds a legend to the TimeSeries object
- * @method
- * @returns {object} The modified TimeSeries object
- */
-
-TimeSeries.prototype.add_legend = function() {
-
-  var self = this;
-
-
-  if (self.processed_data.length > 1) {
-    add_legend(self.svg, 0, self.margin.top, self.processed_data.map(function(v, i) {
-      return {
-        "label": v.group,
-        "colour": self.color(v.group),
-        "class": create_class_label("d", v.group)
-      };
-    }));
-  }
-
-  return this;
-
-};
-
-/**
- * Adds a label to the TimeSeries object
- * @method
- * @param {string} title The title to be placed at the top of the chart
- * @returns {object} The modified TimeSeries object
- */
-
-TimeSeries.prototype.add_title = function(title, subtitle) {
-
-  var self = this;
-  self.title = title;
-  self.svg.append('text').attr("class", "title")
-    .text(title)
-    .attr("transform", "translate(" + (self.margin.left - 10) + ",20)");
-
-  if (subtitle != undefined) {
-
-    self.subtitle = subtitle;
-    self.svg.append('text').attr("class", "subtitle")
-        .text(subtitle)
-        .attr("transform", "translate(" + (self.margin.left - 10) + ",35)");
-
-  }
-
-  return this;
-
-};
-
-/**
- * Adds labels at the end of each line (as an alretantive to having a legend)
- * @method
- * @returns {object} The modified TimeSeries object
- */
-
-TimeSeries.prototype.add_line_labels = function() {
-
-  var self = this;
-
-  self.chart_area.attr("transform", "translate(50,50)");
-
-  var end_point = self.x.domain()[1].getTime();
-
-  var end_point_data = self.processed_data.map(function(d){
-    return {
-      group: d.group,
-      value: d.values.filter(function(e) { return e.time.getTime()===end_point && e.variable==="absolute";})[0].value
-    };
-  });
-
-  self.chart_area.selectAll(".line_labels")
-  .data(end_point_data)
-  .enter()
-  .append("text")
-  .attr("class", "line_labels")
-  .attr("x", self.width+10)
-  .attr("y", function(d){return self.y(d.value);})
-  .text(function(d){return d.group;});
-
-  return this;
-
-};
-
-/**
- * Updates the labels of the lines as they move
- * @method
- * @returns {object} The modified TimeSeries object
- */
-
-TimeSeries.prototype.update_line_labels = function(variable) {
-
-  var self = this;
-
-  var end_point = self.x.domain()[1].getTime();
-
-  var end_point_data = self.processed_data.map(function(d){
-    return {
-      group: d.group,
-      value: d.values.filter(function(e) { return e.time.getTime()===end_point && e.variable===variable;})[0].value
-    };
-  });
-
-
-  self.chart_area.selectAll(".line_labels")
-  .transition()
-  .duration(1000)
-  .attr("y", function(d, i){return self.y(end_point_data[i].value);});
-
-};
-
-/**
- * Redraws the time series (for example after a resize of the div)
- * @method
- * @returns {object} The modified TimeSeries object
- */
-
-TimeSeries.prototype.redraw_timeseries = function(title) {
-
-  var self = this;
-
-  //Delete the existing svg and commentary
-  d3.select(self.div).selectAll("svg").remove();
-
-  //Reset the size
-  self.set_size();
-
-  if (self.scales[0].scale_type === "ordinal") {
-    self.x = self.scales[0].scale_func.rangePoints([0, self.width], 1);
-  } else {
-    self.x = self.scales[0].scale_func.range([0, self.width]);
-  }
-
-    //Commented out as it seemed to be affecting the tick marks and I con't remember what it does!
-    //self.x_axis = d3.svg.axis()
-    //  .scale(self.x);
-
-
-  var current_y_axis = (self.current_y_axis === undefined) ? "absolute": self.current_y_axis;
-
-  self.y.domain(minmax_across_groups(self.processed_data, current_y_axis));
-
-  //Redraw the chart
-  self.add_svg().add_grid().add_timeseries().add_legend().add_title(self.title, self.subtitle).flip_variable(current_y_axis, 0);
-
-};
-
-
-/**
- * Builds a TimeSeries object
- * @param {array} data Either the path to a csv file or inline data in glasseye
- * @param {string} div The div in which the chart will be placed
- * @param {string} size The size (one of several preset sizes)
- * @param {array} labels An array containing the labels of the x and y axes
- */
-
-
-function timeseries(data, div, size, labels) {
-
-
-  var inline_parser = function(data) {
-
-    return data;
-
-  };
-
-  var csv_parser = function(data) {
-
-    //Read in the different groups
-    var groups = [];
-    data.map(function(d) {
-      if (groups.indexOf(d.group) === -1) {
-        groups.push(d.group);
-      }
-    });
-
-
-    //Try some date formats
-    var parse_date= d3.time.format("%d/%m/%Y").parse;
-
-    //Create the json data from the csv data
-    var processed_data = groups.map(function(g) {
-
-      return {
-        group: g,
-        values: data.filter(function(d) {
-          return d.group === g;
-        }).map(function(e) {
-          return {
-            value: +e.value,
-            time: parse_date(e.time),
-            variable: e.variable
-          };
-        })
-      };
-    });
-
-    return processed_data;
-
-  };
-
-  var draw = function draw_timeseries(processed_data, div, size, labels) {
-
-    var x_values = [],
-      y_values = [];
-
-    x_values = processed_data.map(function(d) {
-      return (d.values.map(function(e) {
-        return e.time;
-      }));
-    });
-    x_values = [].concat.apply([], x_values);
-
-    y_values = processed_data.map(function(d) {
-      return (d.values.map(function(e) {
-        return e.value;
-      }));
-    });
-    y_values = [].concat.apply([], y_values);
-
-    var tooltip_function = function(time, variable) {
-
-    }
-
-    var scales = [create_scale(x_values, d3.time.scale()), create_scale(y_values, d3.scale.linear())];
-    var glasseye_chart = new TimeSeries(processed_data, div, size, labels, scales, tooltip_function);
-
-    glasseye_chart.add_svg().add_grid().add_timeseries().add_legend();
-
-  };
-
-  build_chart(data, div, size, labels, csv_parser, inline_parser, draw);
 
 }
 
@@ -2967,7 +1996,7 @@ var Skey = function (processed_data, div, size) {
   }
 /// BarChart.js
 
-var Barchart = function (processed_data, div, size) {
+var BarChart = function (processed_data, div, size) {
     this.margin =
       size === "full_page"
         ? {
@@ -3007,9 +2036,9 @@ var Barchart = function (processed_data, div, size) {
       .range([this.height - this.margin.bottom, this.margin.top]);
   };
   
-  Barchart.prototype = Object.create(GlasseyeChart.prototype);
+  BarChart.prototype = Object.create(GlasseyeChart.prototype);
   
-  Barchart.prototype.add_barchart = function () {
+  BarChart.prototype.add_barchart = function () {
     // this.chart_area
     //   .attr("viewBox", [0, 0, this.width, this.height])
     //   .attr("style", "max-width: 100%; height: auto;");
@@ -3080,7 +2109,7 @@ var Barchart = function (processed_data, div, size) {
     };
   
     var draw = function (processed_data, div, size) {
-      var glasseye_chart = new Barchart(processed_data, div, size);
+      var glasseye_chart = new BarChart(processed_data, div, size);
   
       glasseye_chart.add_svg().add_barchart();
     };

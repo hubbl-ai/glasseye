@@ -9,11 +9,8 @@ GENERATED_FILES = $(patsubst %, ../%, $(GENERATED_FILE_NAMES))
 SOURCE_FILES = \
 	GlasseyeChart.js \
 	GlobalFunctionsAndVariable.js \
-	LinePlot.js \
+	GridChart.js \
 	NonStandard.js \
-	ScatterPlot.js \
-	Thermometers.js \
-	TimeSeries.js \
 	Tree.js \
 	Venn.js \
 	Dial.js \
@@ -27,8 +24,6 @@ SOURCE_FILES = \
 	Linechart.js \
 
 # Parsers.js \
-
-# GridChart.js \
 # Heatmap.js
 # AnimatedBarChart.js \
 # AnimatedDonut.js \
@@ -37,6 +32,10 @@ SOURCE_FILES = \
 # Donut.js \
 # Force.js \
 # Gant.js \
+# TimeSeries.js \
+# LinePlot.js \
+# ScatterPlot.js \
+# Thermometers.js \
 
 all: $(GENERATED_FILES)
 
