@@ -22,6 +22,7 @@ SOURCE_FILES = \
 	BarChart.js \
 	Pie.js \
 	Linechart.js \
+	Force.js \
 
 # Parsers.js \
 # Heatmap.js
@@ -30,7 +31,6 @@ SOURCE_FILES = \
 # AnimatedVenn.js \
 # DrillableVenn.js \
 # Donut.js \
-# Force.js \
 # Gant.js \
 # TimeSeries.js \
 # LinePlot.js \
@@ -38,6 +38,7 @@ SOURCE_FILES = \
 # Thermometers.js \
 
 all: $(GENERATED_FILES)
+	cp ../glasseyeCharts.js ../../demo/js
 
 clean:
 	rm -f $(GENERATED_FILES)
