@@ -130,28 +130,31 @@ In no particular order here are the d3 charts I have added so far.<sidenote>You 
 
 I've used Ben Frederickson's [Venn.js](https://github.com/benfred/venn.js) package for laying out proportional Venn diagrams. It searches for the best possible representation and does a great job when there's three sets and quite often when there's four.<sidenote>A description of the algorithm he uses can be found on his [blog](http://www.benfrederickson.com/venn-diagrams-with-d3.js/)</sidenote>
 
-You'll just need to put the json describing your sets between `<venn>` tags as in this example. The result can be seen in the margin.<sidenote>An example of a proportional Venn diagram created using Ben Frederickson's [Venn.js](https://github.com/benfred/venn.js) package <venn>
-[ {sets: ['Badgers'], size: 300},
-{sets: ['Peanuts'], size: 42},
-{sets: ['Mushrooms'], size: 130},
-{sets: ['Badgers','Mushrooms'], size: 67},
-{sets: ['Peanuts','Mushrooms'], size: 2},
-{sets: ['Peanuts','Badgers'], size: 0}
+You'll just need to put the json describing your sets between `<venn>` tags as in this example. The result can be seen in the margin.<sidenote>An example of a proportional Venn diagram.
+<vennchart>
+[ 
+    {sets: ['Badgers'], size: 300},
+    {sets: ['Peanuts'], size: 42},
+    {sets: ['Mushrooms'], size: 130},
+    {sets: ['Badgers','Mushrooms'], size: 67},
+    {sets: ['Peanuts','Mushrooms'], size: 2},
+    {sets: ['Peanuts','Badgers'], size: 0}
 ]
-</venn>
+</vennchart>
 </sidenote>
 
 ```
 
-<venn>
-[ {sets: ['Badgers'], size: 300},
+<vennchart>
+[ 
+  {sets: ['Badgers'], size: 300},
   {sets: ['Peanuts'], size: 42},
   {sets: ['Mushrooms'], size: 130},
   {sets: ['Badgers','Mushrooms'], size: 67},
   {sets: ['Peanuts','Mushrooms'], size: 2},
   {sets: ['Peanuts','Badgers'], size: 0}
- ]
-</venn>
+]
+</vennchart>
 ```
 
 ### A tree layout

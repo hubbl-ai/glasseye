@@ -161,3 +161,9 @@ text {
     fill: steelblue;
     stroke: none;
 }
+
+
+.venn-circle path {
+    stroke: #000;
+    stroke-width: 2px;
+}

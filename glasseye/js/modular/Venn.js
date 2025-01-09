@@ -25,7 +25,7 @@ Venn.prototype.add_venn = function () {
     .style("fill", "#000");
 };
 
-function venn(data, div, size) {
+function vennchart(data, div, size) {
   var inline_parser = function (data) {
     return data;
   };

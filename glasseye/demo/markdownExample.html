@@ -5,9 +5,9 @@
   <link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Droid%20Sans' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="css/tufte.css"/>
   <link rel="stylesheet" href="css/glasseyeCharts.css"/>
-  <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <script src="https://unpkg.com/d3-array@1"></script>
   <script src="https://unpkg.com/d3-collection@1"></script>
@@ -15,9 +15,9 @@
   <script src="https://unpkg.com/d3-shape@1"></script>
   <script src="https://unpkg.com/d3-sankey@0"></script>
   <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+  <script src="https://benfred.github.io/venn.js/venn.js"></script>
   <script src="js/glasseyeCharts.js"></script>
   <script src="js/colorbrewer.js"></script>
-  <script src="js/venn.js"></script>
 </head>
 <body>
   <p>Tufte Template</p>
@@ -208,22 +208,19 @@ often when there’s four.<sup>14</sup><span class="marginnote">14. A descriptio
 can be found on his <a href="http://www.benfrederickson.com/venn-diagrams-with-d3.js/">blog</a></span></p>
 <p>You’ll just need to put the json describing your sets between
 <code>&lt;venn&gt;</code> tags as in this example. The result can be
-seen in the margin.<sup>15</sup><span class="marginnote">15. An example of a proportional Venn diagram
-created using Ben Frederickson’s <a href="https://github.com/benfred/venn.js">Venn.js</a> package <venn> [
-{sets: [‘Badgers’], size: 300}, {sets: [‘Peanuts’], size: 42}, {sets:
-[‘Mushrooms’], size: 130}, {sets: [‘Badgers’,‘Mushrooms’], size: 67},
-{sets: [‘Peanuts’,‘Mushrooms’], size: 2}, {sets: [‘Peanuts’,‘Badgers’],
-size: 0}] </venn> </span></p>
+seen in the margin.<sup>15</sup><span class="marginnote">15. An example of a proportional Venn diagram.
+<span id="vennchart_0"></span><br/> </span></p>
 <pre><code>
-&lt;venn&gt;
-[ {sets: ['Badgers'], size: 300},
+&lt;vennchart&gt;
+[ 
+  {sets: ['Badgers'], size: 300},
   {sets: ['Peanuts'], size: 42},
   {sets: ['Mushrooms'], size: 130},
   {sets: ['Badgers','Mushrooms'], size: 67},
   {sets: ['Peanuts','Mushrooms'], size: 2},
   {sets: ['Peanuts','Badgers'], size: 0}
- ]
-&lt;/venn&gt;</code></pre>
+]
+&lt;/vennchart&gt;</code></pre>
 <h3 id="a-tree-layout">A tree layout</h3>
 <p>This ia a fairly standard layout for a hierarchy, adapated from Mike
 Bostocks <a href="http://bl.ocks.org/mbostock/4063570">original
@@ -440,11 +437,15 @@ tree(
 "political", "children": [{ "name": "flatbat.com" }, { "name":
 "netfrog.co.uk" }]}, { "name": "squarespider.com" } ] }]}
 , '#tree_1', 'margin'); 
+vennchart( [ {sets: ['Badgers'], size: 300}, {sets: ['Peanuts'], size:
+42}, {sets: ['Mushrooms'], size: 130}, {sets: ['Badgers','Mushrooms'],
+size: 67}, {sets: ['Peanuts','Mushrooms'], size: 2}, {sets:
+['Peanuts','Badgers'], size: 0}] , '#vennchart_0', 'margin'); 
 </script><script type="text/javascript">
 (function () {
   var script = document.createElement("script");
   script.type = "text/javascript";
-  script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+  script.src  = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
   document.getElementsByTagName("head")[0].appendChild(script);
 })();
 </script>

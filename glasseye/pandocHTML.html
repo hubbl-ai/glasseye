@@ -192,23 +192,22 @@ can be found on his <a
 href="http://www.benfrederickson.com/venn-diagrams-with-d3.js/">blog</a></sidenote></p>
 <p>You’ll just need to put the json describing your sets between
 <code>&lt;venn&gt;</code> tags as in this example. The result can be
-seen in the margin.<sidenote>An example of a proportional Venn diagram
-created using Ben Frederickson’s <a
-href="https://github.com/benfred/venn.js">Venn.js</a> package <venn> [
-{sets: [‘Badgers’], size: 300}, {sets: [‘Peanuts’], size: 42}, {sets:
-[‘Mushrooms’], size: 130}, {sets: [‘Badgers’,‘Mushrooms’], size: 67},
-{sets: [‘Peanuts’,‘Mushrooms’], size: 2}, {sets: [‘Peanuts’,‘Badgers’],
-size: 0}] </venn> </sidenote></p>
+seen in the margin.<sidenote>An example of a proportional Venn diagram.
+<vennchart> [ {sets: [‘Badgers’], size: 300}, {sets: [‘Peanuts’], size:
+42}, {sets: [‘Mushrooms’], size: 130}, {sets: [‘Badgers’,‘Mushrooms’],
+size: 67}, {sets: [‘Peanuts’,‘Mushrooms’], size: 2}, {sets:
+[‘Peanuts’,‘Badgers’], size: 0}] </vennchart> </sidenote></p>
 <pre><code>
-&lt;venn&gt;
-[ {sets: [&#39;Badgers&#39;], size: 300},
+&lt;vennchart&gt;
+[ 
+  {sets: [&#39;Badgers&#39;], size: 300},
   {sets: [&#39;Peanuts&#39;], size: 42},
   {sets: [&#39;Mushrooms&#39;], size: 130},
   {sets: [&#39;Badgers&#39;,&#39;Mushrooms&#39;], size: 67},
   {sets: [&#39;Peanuts&#39;,&#39;Mushrooms&#39;], size: 2},
   {sets: [&#39;Peanuts&#39;,&#39;Badgers&#39;], size: 0}
- ]
-&lt;/venn&gt;</code></pre>
+]
+&lt;/vennchart&gt;</code></pre>
 <h3 id="a-tree-layout">A tree layout</h3>
 <p>This ia a fairly standard layout for a hierarchy, adapated from Mike
 Bostocks <a href="http://bl.ocks.org/mbostock/4063570">original

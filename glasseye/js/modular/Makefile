@@ -39,9 +39,11 @@ SOURCE_FILES = \
 
 all: $(GENERATED_FILES)
 	cp ../glasseyeCharts.js ../../demo/js
+	cp ../../css/GlasseyeCharts.css ../../demo/css
 
 clean:
 	rm -f $(GENERATED_FILES)
+	rm -f ../../css/GlasseyeCharts.css
 
 ../glasseyeCharts.js: $(SOURCE_FILES)
 	@ echo Building bundle
