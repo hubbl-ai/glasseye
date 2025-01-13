@@ -1,12 +1,31 @@
-var Gantt = function (processed_data, div, size, scales) {
-  this.div = div;
+var Gantt = function (processed_data, div, size) {
+  var margin =
+    size === "full_page"
+      ? {
+          top: 5,
+          bottom: 5,
+          left: 100,
+          right: 100,
+        }
+      : {
+          top: 5,
+          bottom: 5,
+          left: 50,
+          right: 50,
+        };
+
+  GlasseyeChart.call(this, div, size, margin, 300);
+
   this.processed_data = processed_data;
 
   // Scales
   this.xScale = d3
     .scaleTime()
-    .domain([d3.min(this.processed_data, (d) => d.start), d3.max(this.processed_data, (d) => d.end)])
-    .range([0, width]);
+    .domain([
+      d3.min(this.processed_data, (d) => d.start),
+      d3.max(this.processed_data, (d) => d.end),
+    ])
+    .range([0, this.width]);
 
   this.yScale = d3
     .scaleBand()
@@ -16,17 +35,15 @@ var Gantt = function (processed_data, div, size, scales) {
 
   // Axes
   this.xAxis = d3
-    .axisBottom(xScale)
+    .axisBottom(this.xScale)
     .ticks(d3.timeWeek.every(1))
     .tickFormat(d3.timeFormat("%d/%m/%Y"));
-  this.yAxis = d3.axisLeft(yScale);
-
+  this.yAxis = d3.axisLeft(this.yScale);
 };
 
-Gantt.prototype = Object.create(GridChart.prototype);
+Gantt.prototype = Object.create(GlasseyeChart.prototype);
 
 Gantt.prototype.add_tasks = function () {
-
   this.chart_area
     .append("g")
     .attr("class", "x-axis")
@@ -45,10 +62,10 @@ Gantt.prototype.add_tasks = function () {
     .enter()
     .append("rect")
     .attr("class", "bar")
-    .attr("x", (d) => xScale(d.start))
-    .attr("y", (d) => yScale(d.task))
-    .attr("width", (d) => xScale(d.end) - xScale(d.start))
-    .attr("height", yScale.bandwidth());
+    .attr("x", (d) => this.xScale(d.start))
+    .attr("y", (d) => this.yScale(d.task))
+    .attr("width", (d) => this.xScale(d.end) - this.xScale(d.start))
+    .attr("height", this.yScale.bandwidth());
 };
 
 function gantt(data, div, size) {
@@ -68,7 +85,7 @@ function gantt(data, div, size) {
   };
 
   var draw = function (processed_data, div, size) {
-    var glasseye_chart = new Gantt(processed_data, div, size, scales);
+    var glasseye_chart = new Gantt(processed_data, div, size);
     glasseye_chart.add_svg().add_tasks();
   };
 

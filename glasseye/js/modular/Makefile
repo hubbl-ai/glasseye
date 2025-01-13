@@ -21,7 +21,6 @@ SOURCE_FILES = \
 	Skey.js \
 	BarChart.js \
 	Pie.js \
-	Donut.js \
 	Linechart.js \
 	Force.js \
 	Gant.js \
@@ -57,7 +56,7 @@ clean:
 
 ../glasseyeCharts.min.js: ../glasseyeCharts.js
 	@echo Minifying bundle
-	minify $^ > $@  
+	uglifyjs $^ -o $@  -c -m
 
 install: $(SETUP) $(GENERATED_FILES)
 	@echo Running setup

@@ -281,18 +281,18 @@ I find a simple version of a Gantt chart useful when creating plans and proposal
 
 ```
 <gantt>
-		[{"task": "Analysis phase", "start": "01/03/2015", "end": "12/03/2015"},
-		{"task": "Build phase", "start": "13/03/2015", "end": "24/03/2015"},
-		{"task": "Testing phase", "start": "25/03/2015", "end": "15/04/2015"}]
+		[{"task": "Analysis phase", "start": "2015-03-01", "end": "2015-03-12"},
+		{"task": "Build phase", "start": "2015-03-13", "end": "2015-03-24"},
+		{"task": "Testing phase", "start": "2015-03-25", "end": "2015-04-15"}]
 </gantt>
 ```
 
 This will give you the following
 
 <gantt>
-		[{"task": "Analysis phase", "start": "01/03/2015", "end": "12/03/2015"},
-		{"task": "Build phase", "start": "13/03/2015", "end": "24/03/2015"},
-		{"task": "Testing phase", "start": "25/03/2015", "end": "15/04/2015"}]
+		[{"task": "Analysis phase", "start": "2015-03-01", "end": "2015-03-12"},
+		{"task": "Build phase", "start": "2015-03-13", "end": "2015-03-24"},
+		{"task": "Testing phase", "start": "2015-03-25", "end": "2015-04-15"}]
 </gantt>
 
 ### A pie chart

@@ -307,15 +307,12 @@ A force directed layout of a graph. <force> { “nodes”: [{ “name”:
 and proposals. It gives a rough idea of the time scales involved. The
 syntax is as follows:</p>
 <pre><code>&lt;gantt&gt;
-        [{"task": "Analysis phase", "start": "01/03/2015", "end": "12/03/2015"},
-        {"task": "Build phase", "start": "13/03/2015", "end": "24/03/2015"},
-        {"task": "Testing phase", "start": "25/03/2015", "end": "15/04/2015"}]
+        [{"task": "Analysis phase", "start": "2015-03-01", "end": "2015-03-12"},
+        {"task": "Build phase", "start": "2015-03-13", "end": "2015-03-24"},
+        {"task": "Testing phase", "start": "2015-03-25", "end": "2015-04-15"}]
 &lt;/gantt&gt;</code></pre>
 <p>This will give you the following</p>
-<p><gantt> [{“task”: “Analysis phase”, “start”: “01/03/2015”, “end”:
-“12/03/2015”}, {“task”: “Build phase”, “start”: “13/03/2015”, “end”:
-“24/03/2015”}, {“task”: “Testing phase”, “start”: “25/03/2015”, “end”:
-“15/04/2015”}] </gantt></p>
+<p><span id="gantt_0"></span><br/></p>
 <h3 id="a-pie-chart">A pie chart</h3>
 <p>As seen above, you can create a donut plot from a csv file (you just
 need columns with headings <code>label</code> and <code>value</code>).
@@ -441,6 +438,10 @@ vennchart( [ {sets: ['Badgers'], size: 300}, {sets: ['Peanuts'], size:
 42}, {sets: ['Mushrooms'], size: 130}, {sets: ['Badgers','Mushrooms'],
 size: 67}, {sets: ['Peanuts','Mushrooms'], size: 2}, {sets:
 ['Peanuts','Badgers'], size: 0}] , '#vennchart_0', 'margin'); 
+gantt( [{"task": "Analysis phase", "start": "2015-03-01", "end":
+"2015-03-12"}, {"task": "Build phase", "start": "2015-03-13", "end":
+"2015-03-24"}, {"task": "Testing phase", "start": "2015-03-25", "end":
+"2015-04-15"}] , '#gantt_0', 'full_page'); 
 </script><script type="text/javascript">
 (function () {
   var script = document.createElement("script");
