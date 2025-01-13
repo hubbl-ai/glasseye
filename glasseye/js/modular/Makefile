@@ -21,8 +21,10 @@ SOURCE_FILES = \
 	Skey.js \
 	BarChart.js \
 	Pie.js \
+	Donut.js \
 	Linechart.js \
 	Force.js \
+	Gant.js \
 
 # Parsers.js \
 # Heatmap.js
@@ -30,20 +32,18 @@ SOURCE_FILES = \
 # AnimatedDonut.js \
 # AnimatedVenn.js \
 # DrillableVenn.js \
-# Donut.js \
-# Gant.js \
 # TimeSeries.js \
-# LinePlot.js \
 # ScatterPlot.js \
 # Thermometers.js \
 
-all: $(GENERATED_FILES)
+all: $(GENERATED_FILES) copydemo
+
+copydemo: ../glasseyeCharts.js ../../css/GlasseyeCharts.css
 	cp ../glasseyeCharts.js ../../demo/js
 	cp ../../css/GlasseyeCharts.css ../../demo/css
 
 clean:
 	rm -f $(GENERATED_FILES)
-	rm -f ../../css/GlasseyeCharts.css
 
 ../glasseyeCharts.js: $(SOURCE_FILES)
 	@ echo Building bundle
@@ -57,7 +57,7 @@ clean:
 
 ../glasseyeCharts.min.js: ../glasseyeCharts.js
 	@echo Minifying bundle
-	@minify -o $@ $^ 
+	minify $^ > $@  
 
 install: $(SETUP) $(GENERATED_FILES)
 	@echo Running setup
