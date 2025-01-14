@@ -122,15 +122,7 @@ This plot was created by inserting the following line into the markdown.
 <code>&lt;linechart&gt;"data/lineplotExample.csv", ["Size", "Number of explosions"]&lt;/linechart&gt;</code></span></p>
 <p>Alternatively you can write the data in json into the markdown. For
 example we can create an interactive treemap<sup>9</sup><span class="marginnote">9. An example of an
-intreactive treemap. Click on the rectangles to zoom in <treemap>{
-“name”: “All”, “children”: [{ “name”: “Bakery”, “size”: 34 }, { “name”:
-“Tinned Goods”, “children”: [{ “name”: “Beans”, “size”: 34 }, { “name”:
-“Soups”, “size”: 56 }, { “name”: “Puddings”, “children”: [{ “name”:
-“Fruit”, “children”: [{ “name”: “Tangerines”, “size”: 15 }, { “name”:
-“Pears”, “size”: 17 }]}, { “name”: “Apricots”, “size”: 89 } ] }] }, {
-“name”: “Meat and Fish”, “children”: [{ “name”: “Meat”, “children”: [{
-“name”: “Poultry”, “size”: 15 }, { “name”: “Beef”, “size”: 17 }]}, {
-“name”: “Fish”, “size”: 89 } ] }] }</treemap> </span> by inserting
+intreactive treemap. Click on the rectangles to zoom in <span id="treemap_0"></span><br/> </span> by inserting
 the following into the markdown<sup>10</sup><span class="marginnote">10. See the section below for the
 full json</span></p>
 <pre><code>
@@ -404,6 +396,7 @@ the full json.</p>
             ]
 }
 &lt;/treemap&gt;</code></pre>
+<p><span id="treemap_1"></span><br/></p>
     </div>
 
 <script>skey( { nodes: [ { name: "Product 1" }, { name: "Product 2" }, {
@@ -442,6 +435,23 @@ gantt( [{"task": "Analysis phase", "start": "2015-03-01", "end":
 "2015-03-12"}, {"task": "Build phase", "start": "2015-03-13", "end":
 "2015-03-24"}, {"task": "Testing phase", "start": "2015-03-25", "end":
 "2015-04-15"}] , '#gantt_0', 'full_page'); 
+treemap({
+"name": "All", "children": [{ "name": "Bakery", "size": 34 }, { "name":
+"Tinned Goods", "children": [{ "name": "Beans", "size": 34 }, { "name":
+"Soups", "size": 56 }, { "name": "Puddings", "children": [{ "name":
+"Fruit", "children": [{ "name": "Tangerines", "size": 15 }, { "name":
+"Pears", "size": 17 }]}, { "name": "Apricots", "size": 89 } ] }] }, {
+"name": "Meat and Fish", "children": [{ "name": "Meat", "children": [{
+"name": "Poultry", "size": 15 }, { "name": "Beef", "size": 17 }]}, {
+"name": "Fish", "size": 89 } ] }] }, '#treemap_0', 'margin'); 
+treemap( { "name": "All", "children": [ {"name": "Bakery", "size":
+34}, {"name": "Tinned Goods", "children": [ {"name": "Beans", "size":
+34}, {"name": "Soups", "size": 56}, {"name": "Puddings", "children": [
+{"name": "Fruit", "children": [ {"name": "Tangerines", "size": 15},
+{"name": "Pears", "size": 17} ] }, {"name": "Apricots", "size": 89} ] }]
+}, { "name": "Meat and Fish", "children": [ { "name": "Meat",
+"children": [ { "name": "Poultry", "size": 15 }, { "name": "Beef",
+"size": 17 } ]}, { "name": "Fish", "size": 89 } ] } ] } , '#treemap_1', 'full_page'); 
 </script><script type="text/javascript">
 (function () {
   var script = document.createElement("script");

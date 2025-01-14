@@ -428,3 +428,46 @@ At present the treemap can only be generated from inline json. Here's the full j
 }
 </treemap>
 ```
+
+
+<treemap>
+{
+    "name": "All",
+    "children": [
+        {"name": "Bakery",
+         "size": 34},
+        {"name": "Tinned Goods",
+         "children": [
+                {"name": "Beans",
+                 "size": 34},
+                {"name": "Soups",
+                 "size": 56},
+                {"name": "Puddings",
+                 "children": [
+                        {"name": "Fruit",
+                         "children": [
+                               	{"name": "Tangerines",
+                                 "size": 15},
+                                {"name": "Pears",
+                                 "size": 17}
+                            ]
+                        },
+                        {"name": "Apricots",
+                         "size": 89}
+                         		] }] },
+                { "name": "Meat and Fish",
+                   "children": [
+                   		{ "name": "Meat",
+                   		  "children": [
+                   		  		{ "name": "Poultry",
+                   		  		  "size": 15 },
+                   		  		{ "name": "Beef",
+                   		  		  "size": 17 }
+                   		  		       ]},
+                        { "name": "Fish",
+                          "size": 89 }
+                                ]
+                }
+            ]
+}
+</treemap>

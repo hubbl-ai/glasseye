@@ -12,6 +12,7 @@ SOURCE_FILES = \
 	GridChart.js \
 	NonStandard.js \
 	Tree.js \
+	Treemap.js \
 	Venn.js \
 	Dial.js \
 	LogReg.js \
