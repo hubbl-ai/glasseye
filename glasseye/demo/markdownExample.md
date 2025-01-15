@@ -351,6 +351,49 @@ A donut created from inline json.
 </donut>
 ```
 
+
+
+### A Heatmap
+
+As seen above, you can create a donut plot from a csv file (you just need columns with headings `label` and `value`). Alternatively you can use inline json as in this example.
+
+<sidenote>
+
+<heatmap>
+[
+            { x: 1, y: 1, value: 10 },
+            { x: 2, y: 1, value: 20 },
+            { x: 3, y: 1, value: 30 },
+            { x: 1, y: 2, value: 40 },
+            { x: 2, y: 2, value: 50 },
+            { x: 3, y: 2, value: 60 },
+            { x: 1, y: 3, value: 70 },
+            { x: 2, y: 3, value: 80 },
+            { x: 3, y: 3, value: 90 },
+        ]
+</heatmap>
+</sidenote>
+
+```
+
+<heatmap>
+[
+            { x: 1, y: 1, value: 10 },
+            { x: 2, y: 1, value: 20 },
+            { x: 3, y: 1, value: 30 },
+            { x: 1, y: 2, value: 40 },
+            { x: 2, y: 2, value: 50 },
+            { x: 3, y: 2, value: 60 },
+            { x: 1, y: 3, value: 70 },
+            { x: 2, y: 3, value: 80 },
+            { x: 3, y: 3, value: 90 },
+        ]
+</heatmap>
+
+```
+
+
+
 ### A line chart
 
 Similarly the line chart can be either created from a csv file (as long as it has columns with heading x and y) or from in line json. Here is an example.
@@ -381,6 +424,48 @@ Similarly the line chart can be either created from a csv file (as long as it ha
 </linechart>
 
 ### A tree map
+
+<treemap>
+{
+    "name": "All",
+    "children": [
+        {"name": "Bakery",
+         "size": 34},
+        {"name": "Tinned Goods",
+         "children": [
+                {"name": "Beans",
+                 "size": 34},
+                {"name": "Soups",
+                 "size": 56},
+                {"name": "Puddings",
+                 "children": [
+                        {"name": "Fruit",
+                         "children": [
+                               	{"name": "Tangerines",
+                                 "size": 15},
+                                {"name": "Pears",
+                                 "size": 17}
+                            ]
+                        },
+                        {"name": "Apricots",
+                         "size": 89}
+                         		] }] },
+                { "name": "Meat and Fish",
+                   "children": [
+                   		{ "name": "Meat",
+                   		  "children": [
+                   		  		{ "name": "Poultry",
+                   		  		  "size": 15 },
+                   		  		{ "name": "Beef",
+                   		  		  "size": 17 }
+                   		  		       ]},
+                        { "name": "Fish",
+                          "size": 89 }
+                                ]
+                }
+            ]
+}
+</treemap>
 
 At present the treemap can only be generated from inline json. Here's the full json.
 
@@ -428,46 +513,3 @@ At present the treemap can only be generated from inline json. Here's the full j
 }
 </treemap>
 ```
-
-
-<treemap>
-{
-    "name": "All",
-    "children": [
-        {"name": "Bakery",
-         "size": 34},
-        {"name": "Tinned Goods",
-         "children": [
-                {"name": "Beans",
-                 "size": 34},
-                {"name": "Soups",
-                 "size": 56},
-                {"name": "Puddings",
-                 "children": [
-                        {"name": "Fruit",
-                         "children": [
-                               	{"name": "Tangerines",
-                                 "size": 15},
-                                {"name": "Pears",
-                                 "size": 17}
-                            ]
-                        },
-                        {"name": "Apricots",
-                         "size": 89}
-                         		] }] },
-                { "name": "Meat and Fish",
-                   "children": [
-                   		{ "name": "Meat",
-                   		  "children": [
-                   		  		{ "name": "Poultry",
-                   		  		  "size": 15 },
-                   		  		{ "name": "Beef",
-                   		  		  "size": 17 }
-                   		  		       ]},
-                        { "name": "Fish",
-                          "size": 89 }
-                                ]
-                }
-            ]
-}
-</treemap>

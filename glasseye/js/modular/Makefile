@@ -25,9 +25,9 @@ SOURCE_FILES = \
 	Linechart.js \
 	Force.js \
 	Gant.js \
+	Heatmap.js \
 
 # Parsers.js \
-# Heatmap.js
 # AnimatedBarChart.js \
 # AnimatedDonut.js \
 # AnimatedVenn.js \
