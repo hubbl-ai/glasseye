@@ -513,3 +513,18 @@ At present the treemap can only be generated from inline json. Here's the full j
 }
 </treemap>
 ```
+
+
+### A Dotplot
+
+Below is an axample of how to do tags for dotplot and the output chart
+
+<dotplot>
+    [85, 87, 87, 90, 90, 90, 92, 95]
+</dotplot>
+
+```
+<dotplot>
+    [85, 87, 87, 90, 90, 90, 92, 95]
+</dotplot>
+```

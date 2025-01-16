@@ -26,6 +26,7 @@ SOURCE_FILES = \
 	Force.js \
 	Gant.js \
 	Heatmap.js \
+	Dotplot.js \
 
 # Parsers.js \
 # AnimatedBarChart.js \

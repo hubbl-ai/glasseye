@@ -167,3 +167,13 @@ text {
     stroke: #000;
     stroke-width: 2px;
 }
+
+.dot {
+    fill: steelblue;
+}
+.axis-label {
+    font-size: 12px;
+}
+.grid line {
+    stroke: #e0e0e0;
+}
