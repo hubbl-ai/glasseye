@@ -155,7 +155,7 @@ full json</span></p>
 useful. I created a chart type <code>&lt;sim_plot&gt;</code> for a
 project using agent based simulation. It animates a time line which
 helps bring home the fact that the data is computer generated</p>
-<p><simplot>“data/activeDecidedSim.csv”</simplot></p>
+<p><span id="simplot_0"></span><br/></p>
 <h2 id="how-it-works">How it works</h2>
 <p>Glasseye is built using pandoc and the python beautifulsoup library.
 Pandoc is used to generate the html from the markdown and beautifulsoup
@@ -371,6 +371,8 @@ is an example.</p>
         ]
 &lt;/linechart&gt;</code></pre>
 <p><span id="linechart_0"></span><br/></p>
+<h3 id="a-simplot">A simplot</h3>
+<p>Using sample data from line chart above <span id="simplot_1"></span><br/></p>
 <h3 id="a-tree-map">A tree map</h3>
 <p><span id="treemap_1"></span><br/></p>
 <p>At present the treemap can only be generated from inline json. Here’s
@@ -484,6 +486,10 @@ x: 3, y: 1, value: 30 }, { x: 1, y: 2, value: 40 }, { x: 2, y: 2, value:
 50 }, { x: 3, y: 2, value: 60 }, { x: 1, y: 3, value: 70 }, { x: 2, y:
 3, value: 80 }, { x: 3, y: 3, value: 90 }, ] , '#heatmap_0', 'full_page'); 
 dotplot( [85, 87, 87, 90, 90, 90, 92, 95] , '#dotplot_0', 'full_page'); 
+simplot("data/activeDecidedSim.csv", '#simplot_0', 'full_page'); 
+simplot( [ { x: 1, y: 10 },
+{ x: 2, y: 20 }, { x: 3, y: 15 }, { x: 4, y: 25 }, { x: 5, y: 30 }, { x:
+6, y: 35 } ] , '#simplot_1', 'full_page'); 
 </script><script type="text/javascript">
 (function () {
   var script = document.createElement("script");

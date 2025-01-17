@@ -22,7 +22,7 @@ var Linechart = function (processed_data, div, size) {
   
   Linechart.prototype = Object.create(GlasseyeChart.prototype);
   
-  Linechart.prototype.add_linechart = function () {
+  Linechart.prototype.add_linechart = function (isCurved = false) {
     x = d3
       .scaleLinear()
       .domain([d3.min(this.processed_data, (d) => d.x), d3.max(this.processed_data, (d) => d.x)])
@@ -33,10 +33,19 @@ var Linechart = function (processed_data, div, size) {
       .domain([0, d3.max(this.processed_data, (d) => d.y)])
       .range([this.height, 0]);
   
-    line = d3
+    line = isCurved ?
+       d3
+      .line()
+      .x((d) => x(d.x))
+      .y((d) => y(d.y))
+      .curve(d3.curveBasis)
+      :
+      d3
       .line()
       .x((d) => x(d.x))
       .y((d) => y(d.y));
+
+
   
     this.chart_area
       .append("g")
@@ -52,7 +61,7 @@ var Linechart = function (processed_data, div, size) {
       .attr("d", line);
   };
   
-  function linechart(data, div, size) {
+  function linechart(data, div, size, isCurved = false) {
     var inline_parser = function (data) {
       return data;
     };
@@ -64,8 +73,12 @@ var Linechart = function (processed_data, div, size) {
     var draw = function (processed_data, div, size) {
       var glasseye_chart = new Linechart(processed_data, div, size);
   
-      glasseye_chart.add_svg().add_linechart();
+      glasseye_chart.add_svg().add_linechart(isCurved);
     };
   
     build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
+  }
+
+  function simplot(data, div, size) {
+    linechart(data, div, size, true);
   }
