@@ -27,6 +27,7 @@ SOURCE_FILES = \
 	Gant.js \
 	Heatmap.js \
 	Dotplot.js \
+	ScatterPlot.js \
 
 # Parsers.js \
 # AnimatedBarChart.js \
@@ -34,7 +35,6 @@ SOURCE_FILES = \
 # AnimatedVenn.js \
 # DrillableVenn.js \
 # TimeSeries.js \
-# ScatterPlot.js \
 # Thermometers.js \
 
 all: $(GENERATED_FILES) copydemo

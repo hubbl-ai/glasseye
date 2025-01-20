@@ -1,101 +1,118 @@
-var ScatterPlot = function(processed_data, div, size, labels, scales) {
+var ScatterPlot = function (processed_data, div, size) {
+  var margin =
+    size === "full_page"
+      ? {
+          top: 5,
+          bottom: 5,
+          left: 100,
+          right: 100,
+        }
+      : {
+          top: 5,
+          bottom: 5,
+          left: 50,
+          right: 50,
+        };
 
-  GridChart.call(this, div, size, labels, scales);
-
+  GlasseyeChart.call(this, div, size, margin, undefined);
   this.processed_data = processed_data;
+  // Scales
+  this.xScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(this.processed_data, (d) => d.xScore) + 1])
+    .range([0, this.width]);
 
-
-  this.tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .offset([-10, 0])
-    .html(function(d) {
-      return d3.format(".3n")(d.y);
-    });
-
-  var x_scale = this.x,
-    y_scale = this.y;
-
+  this.yScale = d3
+    .scaleLinear()
+    .domain([40, d3.max(this.processed_data, (d) => d.yScore) + 10])
+    .range([this.height, 0]);
 };
 
-ScatterPlot.prototype = Object.create(GridChart.prototype);
+ScatterPlot.prototype = Object.create(GlasseyeChart.prototype);
 
-ScatterPlot.prototype.add_points = function() {
+ScatterPlot.prototype.add_Scatterplot = function () {
+  this.chart_area
+    .append("g")
+    .attr("transform", `translate(0, ${this.height})`)
+    .call(d3.axisBottom(this.xScale).ticks(10));
 
-  this.chart_area.call(this.tip);
+  this.chart_area.append("g").call(d3.axisLeft(this.yScale));
 
-  this.chart_area.append("path")
-    .datum(this.processed_data)
-    .attr("class", "line")
-    .attr("d", this.line);
+  // Add gridlines
+  this.chart_area
+    .append("g")
+    .attr("class", "grid")
+    .call(d3.axisLeft(this.yScale).tickSize(-this.width).tickFormat(""))
+    .selectAll("line")
+    .attr("stroke", "#e0e0e0");
 
-  var x_scale = this.x,
-    y_scale = this.y;
-
-  this.chart_area.selectAll("points")
+  // Add dots to scatter plot
+  this.chart_area
+    .selectAll(".dot")
     .data(this.processed_data)
     .enter()
     .append("circle")
-    .attr("class", "points")
-    .attr("cx", function(d) {
-      return x_scale(d.x);
-    })
-    .attr("cy", function(d) {
-      return y_scale(d.y);
-    })
-    .attr("r", 3)
-    .on('mouseover', this.tip.show)
-    .on('mouseout', this.tip.hide);
+    .attr("class", "dot")
+    .attr("cx", (d) => this.xScale(d.xScore))
+    .attr("cy", (d) => this.yScale(d.yScore))
+    .attr("r", 6);
 
-  return this;
+  // Add axis labels
+  this.chart_area
+    .append("text")
+    .attr("x", this.width / 2)
+    .attr("y", this.height + this.margin.bottom - 10)
+    .attr("text-anchor", "middle")
+    .attr("class", "axis-label")
+    .text("X Score");
 
+  this.chart_area
+    .append("text")
+    .attr("x", -this.height / 2)
+    .attr("y", -this.margin.left + 20)
+    .attr("text-anchor", "middle")
+    .attr("class", "axis-label")
+    .attr("transform", "rotate(-90)")
+    .text("Y Score");
+
+  // Add trendline (simple linear regression)
+  xMean = d3.mean(this.processed_data, (d) => d.xScore);
+  yMean = d3.mean(this.processed_data, (d) => d.yScore);
+  slope =
+    d3.sum(this.processed_data, (d) => (d.xScore - xMean) * (d.yScore - yMean)) /
+    d3.sum(this.processed_data, (d) => (d.xScore - xMean) ** 2);
+  intercept = yMean - slope * xMean;
+
+  trendline = [
+    { xScore: 1, yScore: slope * 1 + intercept },
+    { xScore: 10, yScore: slope * 10 + intercept },
+  ];
+
+  this.chart_area
+    .append("line")
+    .attr("x1", this.xScale(trendline[0].xScore))
+    .attr("y1", this.yScale(trendline[0].yScore))
+    .attr("x2", this.xScale(trendline[1].xScore))
+    .attr("y2", this.yScale(trendline[1].yScore))
+    .attr("stroke", "red")
+    .attr("stroke-width", 2)
+    .attr("stroke-dasharray", "5,5");
 };
 
-function scatterplot(data, div, size, labels) {
-
-
-  var inline_parser = function(data) {
-
-    var processed_data = [];
-
-    for (i = 0; i < data.x.length; i++) {
-      data_item = {
-        "x": +data.x[i],
-        "y": +data.y[i]
-      };
-      processed_data.push(data_item);
-    }
-
-    return processed_data;
+function scatterplot(data, div, size) {
+  var inline_parser = function (data) {
+    return data;
   };
 
-  var csv_parser = function(data) {
-
-    var processed_data = data.map(function(d) {
-      return {
-        x: +d.x,
-        y: +d.y,
-        point_label: d.label
-      };
-    });
-
-    return processed_data;
-
+  var csv_parser = function (data) {
+    return data;
   };
 
-  var draw = function draw_scatterplot(processed_data, div, size, labels) {
+  var draw = function (processed_data, div, size) {
+    var glasseye_chart = new ScatterPlot(processed_data, div, size);
 
-    var x_values = processed_data.map(function(d) {
-      return d.x;
-    });
-    var y_values = processed_data.map(function(d) {
-      return d.y;
-    });
-    var scales = [create_scale(x_values, d3.scale.linear()), create_scale(y_values, d3.scale.linear())];
-    var glasseye_chart = new ScatterPlot(processed_data, div, size, labels, scales);
-    glasseye_chart.add_svg().add_grid().add_points();
-
+    glasseye_chart.add_svg().add_Scatterplot();
   };
 
-  build_chart(data, div, size, labels, csv_parser, inline_parser, draw);
-
+  build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
 }

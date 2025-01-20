@@ -546,3 +546,42 @@ Below is an axample of how to do tags for dotplot and the output chart
     [85, 87, 87, 90, 90, 90, 92, 95]
 </dotplot>
 ```
+
+
+
+
+### A Scatterplot
+
+Below is an axample of how to do tags for Scatterplot and the output chart
+
+<scatterplot>
+[
+    { xScore: 1, yScore: 50 },
+    { xScore: 2, yScore: 55 },
+    { xScore: 3, yScore: 65 },
+    { xScore: 4, yScore: 70 },
+    { xScore: 5, yScore: 72 },
+    { xScore: 6, yScore: 78 },
+    { xScore: 7, yScore: 80 },
+    { xScore: 8, yScore: 85 },
+    { xScore: 9, yScore: 88 },
+    { xScore: 10, yScore: 95 }
+]
+</scatterplot>
+
+```
+<scatterplot>
+[
+    { xScore: 1, yScore: 50 },
+    { xScore: 2, yScore: 55 },
+    { xScore: 3, yScore: 65 },
+    { xScore: 4, yScore: 70 },
+    { xScore: 5, yScore: 72 },
+    { xScore: 6, yScore: 78 },
+    { xScore: 7, yScore: 80 },
+    { xScore: 8, yScore: 85 },
+    { xScore: 9, yScore: 88 },
+    { xScore: 10, yScore: 95 }
+]
+</scatterplot>
+```
