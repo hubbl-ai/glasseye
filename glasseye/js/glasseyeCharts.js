@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Tue Jan 21 16:27:23 CAT 2025
+// Generated Tue Jan 21 18:06:33 CAT 2025
 
 
 /// GlasseyeChart.js
@@ -77,6 +77,7 @@ GlasseyeChart.prototype.add_svg = function (x=undefined, y=undefined) {
   var self = this;
   x = x == undefined ? self.margin.left : x; 
   y = y == undefined ? self.margin.top : y; 
+
   //Add the svg to the div
   self.svg = d3
     .select(self.div)
@@ -86,12 +87,13 @@ GlasseyeChart.prototype.add_svg = function (x=undefined, y=undefined) {
     .attr("height", self.svg_height);
 
   //Add the chart area to the svg
+  var scaleFactor = 0.9;
   self.chart_area = self.svg
     .append("g")
     .attr("class", "chart_area")
     .attr(
       "transform",
-      "translate(" + x + "," + y + ")"
+      "translate(" + x + "," + y + ") scale("+ scaleFactor +")"
     );
 
   return self;
@@ -2294,7 +2296,7 @@ var Linechart = function (processed_data, div, size) {
             right: 50,
           };
   
-    GlasseyeChart.call(this, div, size, this.margin, 300);
+    GlasseyeChart.call(this, div, size, this.margin, undefined);
   
     this.processed_data = processed_data;
   };

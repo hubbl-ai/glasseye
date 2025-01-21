@@ -15,7 +15,7 @@ var Linechart = function (processed_data, div, size) {
             right: 50,
           };
   
-    GlasseyeChart.call(this, div, size, this.margin, 300);
+    GlasseyeChart.call(this, div, size, this.margin, undefined);
   
     this.processed_data = processed_data;
   };

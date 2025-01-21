@@ -71,6 +71,7 @@ GlasseyeChart.prototype.add_svg = function (x=undefined, y=undefined) {
   var self = this;
   x = x == undefined ? self.margin.left : x; 
   y = y == undefined ? self.margin.top : y; 
+
   //Add the svg to the div
   self.svg = d3
     .select(self.div)
@@ -80,12 +81,13 @@ GlasseyeChart.prototype.add_svg = function (x=undefined, y=undefined) {
     .attr("height", self.svg_height);
 
   //Add the chart area to the svg
+  var scaleFactor = 0.9;
   self.chart_area = self.svg
     .append("g")
     .attr("class", "chart_area")
     .attr(
       "transform",
-      "translate(" + x + "," + y + ")"
+      "translate(" + x + "," + y + ") scale("+ scaleFactor +")"
     );
 
   return self;
