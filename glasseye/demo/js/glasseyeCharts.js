@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Mon Jan 20 14:14:48 CAT 2025
+// Generated Tue Jan 21 16:27:23 CAT 2025
 
 
 /// GlasseyeChart.js
@@ -35,7 +35,7 @@ GlasseyeChart.prototype.set_size = function () {
   }
 
   var fullpage_width = 500;
-  var margin_width = 300;
+  var margin_width_height = 300;
   var double_plot_width = 600;
   var min_height = 500;
 
@@ -47,20 +47,20 @@ GlasseyeChart.prototype.set_size = function () {
     self.svg_height =
       self.custom_height === undefined ? min_height : self.custom_height;
   } else if (self.size === "margin") {
-    self.svg_width = margin_width;
+    self.svg_width = margin_width_height;
     self.svg_height =
-      self.custom_height === undefined ? margin_width : self.custom_height;
+      self.custom_height === undefined ? margin_width_height : self.custom_height;
   } else if (self.size === "double_plot_wide") {
     self.svg_width =
       rect.width < double_plot_width ? rect.width : double_plot_width;
     self.svg_height =
       self.custom_height === undefined ? min_height : self.custom_height;
   } else if (self.size === "double_plot_narrow") {
-    self.svg_width = rect.width < margin_width ? rect.width : margin_width;
+    self.svg_width = rect.width < margin_width_height ? rect.width : margin_width_height;
     self.svg_height =
       self.custom_height === undefined ? min_height : self.custom_height;
   } else {
-    self.svg_width = margin_width;
+    self.svg_width = margin_width_height;
     self.svg_height =
       self.custom_height === undefined ? min_height : self.custom_height;
   }
@@ -73,9 +73,10 @@ GlasseyeChart.prototype.set_size = function () {
   return self;
 };
 
-GlasseyeChart.prototype.add_svg = function () {
+GlasseyeChart.prototype.add_svg = function (x=undefined, y=undefined) {
   var self = this;
-
+  x = x == undefined ? self.margin.left : x; 
+  y = y == undefined ? self.margin.top : y; 
   //Add the svg to the div
   self.svg = d3
     .select(self.div)
@@ -90,7 +91,7 @@ GlasseyeChart.prototype.add_svg = function () {
     .attr("class", "chart_area")
     .attr(
       "transform",
-      "translate(" + self.margin.left + "," + self.margin.top + ")"
+      "translate(" + x + "," + y + ")"
     );
 
   return self;
@@ -2265,7 +2266,7 @@ var Pie = function (processed_data, div, size) {
     var draw = function (processed_data, div, size) {
       var glasseye_chart = new Pie(processed_data, div, size);
   
-      glasseye_chart.add_svg().add_pie(isDonut);
+      glasseye_chart.add_svg(glasseye_chart.width/2 , glasseye_chart.height/2).add_pie(isDonut);
     };
   
     build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);

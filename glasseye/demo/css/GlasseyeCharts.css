@@ -177,3 +177,16 @@ text {
 .grid line {
     stroke: #e0e0e0;
 }
+
+.dot {
+    fill: steelblue;
+    stroke: black;
+    stroke-width: 1px;
+}
+.axis-label {
+    font-size: 14px;
+    font-weight: bold;
+}
+.grid line {
+    stroke: #e0e0e0;
+}

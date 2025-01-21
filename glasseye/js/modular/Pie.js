@@ -75,7 +75,7 @@ var Pie = function (processed_data, div, size) {
     var draw = function (processed_data, div, size) {
       var glasseye_chart = new Pie(processed_data, div, size);
   
-      glasseye_chart.add_svg().add_pie(isDonut);
+      glasseye_chart.add_svg(glasseye_chart.width/2 , glasseye_chart.height/2).add_pie(isDonut);
     };
   
     build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);

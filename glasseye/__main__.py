@@ -100,7 +100,6 @@ def main():
 
     #Standard charts
 
-    # standard_charts = ["simplot", "treemap", "dot_plot", "gantt", "donut", "barchart", "tree", "force", "venn", "scatterplot", "timeseries", "skey"]
     standard_charts = ["skey","barchart","piechart","donut","linechart", "tree", "vennchart", "gantt", "treemap", "heatmap", "dotplot", "simplot", "scatterplot"]
 
     for s in standard_charts:
