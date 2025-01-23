@@ -192,17 +192,9 @@ follow!</span>. Some of them can be generated from csv files some
 from inline json, some from both. The aim is for all to be generated
 from both.</p>
 <h3 id="a-venn-diagram">A Venn diagram</h3>
-<p>I’ve used Ben Frederickson’s <a href="https://github.com/benfred/venn.js">Venn.js</a> package for laying
-out proportional Venn diagrams. It searches for the best possible
-representation and does a great job when there’s three sets and quite
-often when there’s four.<sup>14</sup><span class="marginnote">14. A description of the algorithm he uses
-can be found on his <a href="http://www.benfrederickson.com/venn-diagrams-with-d3.js/">blog</a></span></p>
 <p>You’ll just need to put the json describing your sets between
-<code>&lt;venn&gt;</code> tags as in this example. The result can be
-seen in the margin.<sup>15</sup><span class="marginnote">15. An example of a proportional Venn diagram.
-<span id="vennchart_0"></span><br/> </span></p>
-<pre><code>
-&lt;vennchart&gt;
+<code>&lt;venn&gt;</code> tags as in this example.</p>
+<pre><code>&lt;vennchart&gt;
 [ 
   {sets: ['Badgers'], size: 300},
   {sets: ['Peanuts'], size: 42},
@@ -212,13 +204,14 @@ seen in the margin.<sup>15</sup><span class="marginnote">15. An example of a pro
   {sets: ['Peanuts','Badgers'], size: 0}
 ]
 &lt;/vennchart&gt;</code></pre>
+<p><span id="vennchart_0"></span><br/></p>
 <h3 id="a-tree-layout">A tree layout</h3>
 <p>This ia a fairly standard layout for a hierarchy, adapated from Mike
 Bostocks <a href="http://bl.ocks.org/mbostock/4063570">original
 design</a>.</p>
 <p><span id="tree_0"></span><br/></p>
 <p>Like all of the charts it can appear in the main body or in the
-margin.<sup>16</sup><span class="marginnote">16. The same tree layout as it appears in the margin.<span id="tree_1"></span><br/></span></p>
+margin.<sup>14</sup><span class="marginnote">14. The same tree layout as it appears in the margin.<span id="tree_1"></span><br/></span></p>
 <p>To create a treelayout include some nested json within the tree
 tags.</p>
 <pre><code>
@@ -245,7 +238,7 @@ tags.</p>
 <h3 id="sankey-chart">SANKEY chart</h3>
 <p><span id="skey_0"></span><br/></p>
 <h3 id="a-simple-bar-chart">A simple bar chart</h3>
-<p>A simple bar chart can be created using the barchart tags.<sup>17</sup><span class="marginnote">17. 
+<p>A simple bar chart can be created using the barchart tags.<sup>15</sup><span class="marginnote">15. 
 A bar chart as it appears in the margin. <span id="barchart_0"></span><br/> </span></p>
 <pre><code>[
     {"label":"Apples", "value":"33"},
@@ -255,7 +248,7 @@ A bar chart as it appears in the margin. <span id="barchart_0"></span><br/> </sp
 </code></pre>
 <h3 id="a-force-directed-layout">A force directed layout</h3>
 <p>Another fairly standard chart in the d3 world, you can create a force
-directed layout of a graph using the force tags and some json.<sup>18</sup><span class="marginnote">18. 
+directed layout of a graph using the force tags and some json.<sup>16</sup><span class="marginnote">16. 
 A force directed layout of a graph. <force> { “nodes”: [{ “name”:
 “squishedfish.com”, “group”: 1 }, { “name”: “reddog.co.uk”, “group”: 1
 }, { “name”: “blankcat.com”, “group”: 2 }, { “name”:
@@ -307,7 +300,7 @@ syntax is as follows:</p>
 <h3 id="a-pie-chart">A pie chart</h3>
 <p>As seen above, you can create a donut plot from a csv file (you just
 need columns with headings <code>label</code> and <code>value</code>).
-Alternatively you can use inline json as in this example.<sup>19</sup><span class="marginnote">19.  A
+Alternatively you can use inline json as in this example.<sup>17</sup><span class="marginnote">17.  A
 pie created from inline json. <span id="piechart_0"></span><br/> </span></p>
 <pre><code>
 &lt;piechart&gt;
@@ -322,7 +315,7 @@ pie created from inline json. <span id="piechart_0"></span><br/> </span></p>
 <h3 id="a-donut-chart">A donut chart</h3>
 <p>As seen above, you can create a donut plot from a csv file (you just
 need columns with headings <code>label</code> and <code>value</code>).
-Alternatively you can use inline json as in this example.<sup>20</sup><span class="marginnote">20.  A
+Alternatively you can use inline json as in this example.<sup>18</sup><span class="marginnote">18.  A
 donut created from inline json. <span id="donut_0"></span><br/> </span></p>
 <pre><code>
 &lt;donut&gt;
@@ -338,7 +331,7 @@ donut created from inline json. <span id="donut_0"></span><br/> </span></p>
 <p>As seen above, you can create a donut plot from a csv file (you just
 need columns with headings <code>label</code> and <code>value</code>).
 Alternatively you can use inline json as in this example.</p>
-<p><sup>21</sup><span class="marginnote">21. </span></p>
+<p><sup>19</sup><span class="marginnote">19. </span></p>
 <p><span id="heatmap_0"></span><br/> </p>
 <pre><code>
 &lt;heatmap&gt;
@@ -444,6 +437,13 @@ chart</p>
     { xScore: 10, yScore: 95 }
 ]
 &lt;/scatterplot&gt;</code></pre>
+<h3 id="a-boxplot">A boxplot</h3>
+<p>Below is an axample of how to do tags for boxplot and the output
+chart</p>
+<p><span id="boxplot_0"></span><br/></p>
+<pre><code>&lt;boxplot&gt;
+    [5, 7, 8, 9, 10, 11, 13, 14, 15, 18, 20]
+&lt;/boxplot&gt;</code></pre>
     </div>
 
 <script>skey( { nodes: [ { name: "Product 1" }, { name: "Product 2" }, {
@@ -474,10 +474,10 @@ tree(
 "political", "children": [{ "name": "flatbat.com" }, { "name":
 "netfrog.co.uk" }]}, { "name": "squarespider.com" } ] }]}
 , '#tree_1', 'margin'); 
-vennchart( [ {sets: ['Badgers'], size: 300}, {sets: ['Peanuts'], size:
-42}, {sets: ['Mushrooms'], size: 130}, {sets: ['Badgers','Mushrooms'],
-size: 67}, {sets: ['Peanuts','Mushrooms'], size: 2}, {sets:
-['Peanuts','Badgers'], size: 0}] , '#vennchart_0', 'margin'); 
+vennchart( [ {sets: ['Badgers'], size: 300}, {sets: ['Peanuts'],
+size: 42}, {sets: ['Mushrooms'], size: 130}, {sets:
+['Badgers','Mushrooms'], size: 67}, {sets: ['Peanuts','Mushrooms'],
+size: 2}, {sets: ['Peanuts','Badgers'], size: 0}] , '#vennchart_0', 'full_page'); 
 gantt( [{"task": "Analysis phase", "start": "2015-03-01", "end":
 "2015-03-12"}, {"task": "Build phase", "start": "2015-03-13", "end":
 "2015-03-24"}, {"task": "Testing phase", "start": "2015-03-25", "end":
@@ -513,6 +513,7 @@ scatterplot( [ { xScore: 1, yScore: 50 }, { xScore: 2, yScore: 55 },
 yScore: 72 }, { xScore: 6, yScore: 78 }, { xScore: 7, yScore: 80 }, {
 xScore: 8, yScore: 85 }, { xScore: 9, yScore: 88 }, { xScore: 10,
 yScore: 95 }] , '#scatterplot_0', 'full_page'); 
+boxplot( [5, 7, 8, 9, 10, 11, 13, 14, 15, 18, 20] , '#boxplot_0', 'full_page'); 
 </script><script type="text/javascript">
 (function () {
   var script = document.createElement("script");

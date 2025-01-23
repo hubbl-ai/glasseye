@@ -190,3 +190,8 @@ text {
 .grid line {
     stroke: #e0e0e0;
 }
+
+.box { fill: lightblue; stroke: black; stroke-width: 2; }
+.whisker { stroke: black; stroke-width: 2; }
+.median { stroke: red; stroke-width: 2; }
+.outlier { fill: red; stroke: black; }

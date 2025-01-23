@@ -27,6 +27,7 @@ SOURCE_FILES = \
 	Gant.js \
 	Heatmap.js \
 	Dotplot.js \
+	Boxplot.js \
 	ScatterPlot.js \
 
 # Parsers.js \

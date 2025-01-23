@@ -183,22 +183,9 @@ follow!</sidenote>. Some of them can be generated from csv files some
 from inline json, some from both. The aim is for all to be generated
 from both.</p>
 <h3 id="a-venn-diagram">A Venn diagram</h3>
-<p>I’ve used Ben Frederickson’s <a
-href="https://github.com/benfred/venn.js">Venn.js</a> package for laying
-out proportional Venn diagrams. It searches for the best possible
-representation and does a great job when there’s three sets and quite
-often when there’s four.<sidenote>A description of the algorithm he uses
-can be found on his <a
-href="http://www.benfrederickson.com/venn-diagrams-with-d3.js/">blog</a></sidenote></p>
 <p>You’ll just need to put the json describing your sets between
-<code>&lt;venn&gt;</code> tags as in this example. The result can be
-seen in the margin.<sidenote>An example of a proportional Venn diagram.
-<vennchart> [ {sets: [‘Badgers’], size: 300}, {sets: [‘Peanuts’], size:
-42}, {sets: [‘Mushrooms’], size: 130}, {sets: [‘Badgers’,‘Mushrooms’],
-size: 67}, {sets: [‘Peanuts’,‘Mushrooms’], size: 2}, {sets:
-[‘Peanuts’,‘Badgers’], size: 0}] </vennchart> </sidenote></p>
-<pre><code>
-&lt;vennchart&gt;
+<code>&lt;venn&gt;</code> tags as in this example.</p>
+<pre><code>&lt;vennchart&gt;
 [ 
   {sets: [&#39;Badgers&#39;], size: 300},
   {sets: [&#39;Peanuts&#39;], size: 42},
@@ -208,6 +195,10 @@ size: 67}, {sets: [‘Peanuts’,‘Mushrooms’], size: 2}, {sets:
   {sets: [&#39;Peanuts&#39;,&#39;Badgers&#39;], size: 0}
 ]
 &lt;/vennchart&gt;</code></pre>
+<p><vennchart> [ {sets: [‘Badgers’], size: 300}, {sets: [‘Peanuts’],
+size: 42}, {sets: [‘Mushrooms’], size: 130}, {sets:
+[‘Badgers’,‘Mushrooms’], size: 67}, {sets: [‘Peanuts’,‘Mushrooms’],
+size: 2}, {sets: [‘Peanuts’,‘Badgers’], size: 0}] </vennchart></p>
 <h3 id="a-tree-layout">A tree layout</h3>
 <p>This ia a fairly standard layout for a hierarchy, adapated from Mike
 Bostocks <a href="http://bl.ocks.org/mbostock/4063570">original
@@ -480,3 +471,10 @@ yScore: 95 }] </scatterplot></p>
     { xScore: 10, yScore: 95 }
 ]
 &lt;/scatterplot&gt;</code></pre>
+<h3 id="a-boxplot">A boxplot</h3>
+<p>Below is an axample of how to do tags for boxplot and the output
+chart</p>
+<p><boxplot> [5, 7, 8, 9, 10, 11, 13, 14, 15, 18, 20] </boxplot></p>
+<pre><code>&lt;boxplot&gt;
+    [5, 7, 8, 9, 10, 11, 13, 14, 15, 18, 20]
+&lt;/boxplot&gt;</code></pre>

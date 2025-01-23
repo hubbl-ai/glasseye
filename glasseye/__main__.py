@@ -100,7 +100,7 @@ def main():
 
     #Standard charts
 
-    standard_charts = ["skey","barchart","piechart","donut","linechart", "tree", "vennchart", "gantt", "treemap", "heatmap", "dotplot", "simplot", "scatterplot"]
+    standard_charts = ["skey","barchart","piechart","donut","linechart", "tree", "vennchart", "gantt", "treemap", "heatmap", "dotplot", "simplot", "scatterplot", "boxplot"]
 
     for s in standard_charts:
         code_string = add_chart(s, code_string)
