@@ -78,13 +78,10 @@ particular part in the main text. You’ll see to the right an example of
 a margin note containing a d3 donut chart.</p>
 <p><p><span class="marginnote"> An example of margin note containing a donut plot.
 Because a tooltip is available we can create a less cluttered chart with
-labels for the smaller segments demoted to the
-tooltip.<code>&lt;donut&gt;"data/share.csv"&lt;/donut&gt;</code>Including
-d3 charts in a glasseye document is very easy. You just need to surround
+labels for the smaller segments demoted to the tooltip.Including d3
+charts in a glasseye document is very easy. You just need to surround
 the name of the file containing the data with tags specfying the type of
-chart. For example this chart was generated using
-<code>&lt;donut&gt;"data/share.csv"&lt;/donut&gt;</code>
-</span></p></p>
+chart. For example this chart was generated using </span></p></p>
 <h3 id="latex">Latex</h3>
 <p>I’m using pandoc to convert the markdown to html which means we can
 take advantage of its ability to transform latex into mathjax. For
@@ -114,10 +111,8 @@ main body of the text or into the margin.</p>
 For example to generate a line plot just surround a string containing
 the path and filname of a csv file with a <code>&lt;linechart&gt;</code>
 tag. You can optionally supply axis labels.<sup>8</sup><span class="marginnote">8.  An example of a
-line plot. Note the tooltip means we don’t need y axis tick labels.
-<code>&lt;linechart&gt;"data/lineplotExample.csv"&lt;/linechart&gt;</code>
-This plot was created by inserting the following line into the markdown.
-<code>&lt;linechart&gt;"data/lineplotExample.csv", ["Size", "Number of explosions"]&lt;/linechart&gt;</code></span></p>
+line plot. Note the tooltip means we don’t need y axis tick labels. This
+plot was created by inserting the following line into the markdown.</span></p>
 <p>Alternatively you can write the data in json into the markdown. For
 example we can create an interactive treemap<sup>9</sup><span class="marginnote">9. An example of an
 intreactive treemap. Click on the rectangles to zoom in <span id="treemap_0"></span><br/> </span> by inserting
@@ -154,7 +149,6 @@ full json</span></p>
 useful. I created a chart type <code>&lt;sim_plot&gt;</code> for a
 project using agent based simulation. It animates a time line which
 helps bring home the fact that the data is computer generated</p>
-<p><span id="simplot_0"></span><br/></p>
 <h2 id="how-it-works">How it works</h2>
 <p>Glasseye is built using pandoc and the python beautifulsoup library.
 Pandoc is used to generate the html from the markdown and beautifulsoup
@@ -364,7 +358,7 @@ is an example.</p>
 &lt;/linechart&gt;</code></pre>
 <p><span id="linechart_0"></span><br/></p>
 <h3 id="a-simplot">A simplot</h3>
-<p>Using sample data from line chart above <span id="simplot_1"></span><br/></p>
+<p>Using sample data from line chart above <span id="simplot_0"></span><br/></p>
 <h3 id="a-tree-map">A tree map</h3>
 <p><span id="treemap_1"></span><br/></p>
 <p>At present the treemap can only be generated from inline json. Here’s
@@ -443,6 +437,8 @@ chart</p>
 <pre><code>&lt;boxplot&gt;
     [5, 7, 8, 9, 10, 11, 13, 14, 15, 18, 20]
 &lt;/boxplot&gt;</code></pre>
+<h3 id="simplot-csv">Simplot CSV</h3>
+<p><span id="simplot_1"></span><br/></p>
     </div>
 
 <script>skey( { nodes: [ { name: "Product 1" }, { name: "Product 2" }, {
@@ -503,10 +499,10 @@ x: 3, y: 1, value: 30 }, { x: 1, y: 2, value: 40 }, { x: 2, y: 2, value:
 50 }, { x: 3, y: 2, value: 60 }, { x: 1, y: 3, value: 70 }, { x: 2, y:
 3, value: 80 }, { x: 3, y: 3, value: 90 }, ] , '#heatmap_0', 'full_page'); 
 dotplot( [85, 87, 87, 90, 90, 90, 92, 95] , '#dotplot_0', 'full_page'); 
-simplot("data/activeDecidedSim.csv", '#simplot_0', 'full_page'); 
 simplot( [ { x: 1, y: 10 },
 { x: 2, y: 20 }, { x: 3, y: 15 }, { x: 4, y: 25 }, { x: 5, y: 30 }, { x:
-6, y: 35 } ] , '#simplot_1', 'full_page'); 
+6, y: 35 } ] , '#simplot_0', 'full_page'); 
+simplot("data/xy.csv", '#simplot_1', 'full_page'); 
 scatterplot( [ { xScore: 1, yScore: 50 }, { xScore: 2, yScore: 55 },
 { xScore: 3, yScore: 65 }, { xScore: 4, yScore: 70 }, { xScore: 5,
 yScore: 72 }, { xScore: 6, yScore: 78 }, { xScore: 7, yScore: 80 }, {

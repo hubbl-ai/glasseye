@@ -10,7 +10,6 @@ SOURCE_FILES = \
 	GlasseyeChart.js \
 	GlobalFunctionsAndVariable.js \
 	GridChart.js \
-	NonStandard.js \
 	Tree.js \
 	Treemap.js \
 	Venn.js \
@@ -29,14 +28,6 @@ SOURCE_FILES = \
 	Dotplot.js \
 	Boxplot.js \
 	ScatterPlot.js \
-
-# Parsers.js \
-# AnimatedBarChart.js \
-# AnimatedDonut.js \
-# AnimatedVenn.js \
-# DrillableVenn.js \
-# TimeSeries.js \
-# Thermometers.js \
 
 all: $(GENERATED_FILES) copydemo
 

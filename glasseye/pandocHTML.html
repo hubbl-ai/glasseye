@@ -61,13 +61,10 @@ particular part in the main text. You’ll see to the right an example of
 a margin note containing a d3 donut chart.</p>
 <p><marginnote> An example of margin note containing a donut plot.
 Because a tooltip is available we can create a less cluttered chart with
-labels for the smaller segments demoted to the
-tooltip.<code>&lt;donut&gt;"data/share.csv"&lt;/donut&gt;</code>Including
-d3 charts in a glasseye document is very easy. You just need to surround
+labels for the smaller segments demoted to the tooltip.Including d3
+charts in a glasseye document is very easy. You just need to surround
 the name of the file containing the data with tags specfying the type of
-chart. For example this chart was generated using
-<code>&lt;donut&gt;"data/share.csv"&lt;/donut&gt;</code>
-</marginnote></p>
+chart. For example this chart was generated using </marginnote></p>
 <h3 id="latex">Latex</h3>
 <p>I’m using pandoc to convert the markdown to html which means we can
 take advantage of its ability to transform latex into mathjax. For
@@ -98,10 +95,8 @@ main body of the text or into the margin.</p>
 For example to generate a line plot just surround a string containing
 the path and filname of a csv file with a <code>&lt;linechart&gt;</code>
 tag. You can optionally supply axis labels.<sidenote> An example of a
-line plot. Note the tooltip means we don’t need y axis tick labels.
-<code>&lt;linechart&gt;"data/lineplotExample.csv"&lt;/linechart&gt;</code>
-This plot was created by inserting the following line into the markdown.
-<code>&lt;linechart&gt;"data/lineplotExample.csv", ["Size", "Number of explosions"]&lt;/linechart&gt;</code></p>
+line plot. Note the tooltip means we don’t need y axis tick labels. This
+plot was created by inserting the following line into the markdown.</p>
 <p>Alternatively you can write the data in json into the markdown. For
 example we can create an interactive treemap<sidenote>An example of an
 intreactive treemap. Click on the rectangles to zoom in <treemap>{
@@ -146,7 +141,6 @@ full json</sidenote></p>
 useful. I created a chart type <code>&lt;sim_plot&gt;</code> for a
 project using agent based simulation. It animates a time line which
 helps bring home the fact that the data is computer generated</p>
-<p><simplot>“data/activeDecidedSim.csv”</simplot></p>
 <h2 id="how-it-works">How it works</h2>
 <p>Glasseye is built using pandoc and the python beautifulsoup library.
 Pandoc is used to generate the html from the markdown and beautifulsoup
@@ -478,3 +472,5 @@ chart</p>
 <pre><code>&lt;boxplot&gt;
     [5, 7, 8, 9, 10, 11, 13, 14, 15, 18, 20]
 &lt;/boxplot&gt;</code></pre>
+<h3 id="simplot-csv">Simplot CSV</h3>
+<p><simplot>“data/xy.csv”</simplot></p>

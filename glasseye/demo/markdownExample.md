@@ -31,7 +31,7 @@ You can easily add images to the side notes and margin notes just by including t
 Then there is a `<marginnote>` tag which is the nearly the same as the side note, only there's no number linking it to a particular part in the main text. You'll see to the right an example of a margin note containing a d3 donut chart.
 
 <marginnote>
-An example of margin note containing a donut plot. Because a tooltip is available we can create a less cluttered chart with labels for the smaller segments demoted to the tooltip.`<donut>"data/share.csv"</donut>`Including d3 charts in a glasseye document is very easy. You just need to surround the name of the file containing the data with tags specfying the type of chart. For example this chart was generated using `<donut>"data/share.csv"</donut>`
+An example of margin note containing a donut plot. Because a tooltip is available we can create a less cluttered chart with labels for the smaller segments demoted to the tooltip.Including d3 charts in a glasseye document is very easy. You just need to surround the name of the file containing the data with tags specfying the type of chart. For example this chart was generated using 
 </marginnote>
 
 ### Latex
@@ -52,9 +52,7 @@ I've tried to create charts that are simple and uncluttered with the tooltip tak
 
 Inserting a plot is again just a matter of using some custom tags. For example to generate a line plot just surround a string containing the path and filname of a csv file with a `<linechart>` tag. You can optionally supply axis labels.<sidenote>
 An example of a line plot. Note the tooltip means we don't need y axis tick labels.
-`<linechart>"data/lineplotExample.csv"</linechart>`
-This plot was created by inserting the following line into the markdown. `<linechart>"data/lineplotExample.csv", ["Size", "Number of explosions"]</linechart>
-`
+This plot was created by inserting the following line into the markdown. 
 
 Alternatively you can write the data in json into the markdown. For example we can create an interactive treemap<sidenote>An example of an intreactive treemap. Click on the rectangles to zoom in <treemap>{ "name": "All", "children": [{ "name": "Bakery", "size": 34 }, { "name": "Tinned Goods", "children": [{ "name": "Beans", "size": 34 }, { "name": "Soups", "size": 56 }, { "name": "Puddings", "children": [{ "name": "Fruit", "children": [{ "name": "Tangerines", "size": 15 }, { "name": "Pears", "size": 17 }]}, { "name": "Apricots", "size": 89 } ] }] }, { "name": "Meat and Fish", "children": [{ "name": "Meat", "children": [{ "name": "Poultry", "size": 15 }, { "name": "Beef", "size": 17 }]}, { "name": "Fish", "size": 89 } ] }] }</treemap>
 </sidenote>
@@ -92,7 +90,6 @@ by inserting the following into the markdown<sidenote>See the section below for 
 
 Javascript charts also allow us to animate content which can be useful. I created a chart type `<sim_plot>` for a project using agent based simulation. It animates a time line which helps bring home the fact that the data is computer generated
 
-<simplot>"data/activeDecidedSim.csv"</simplot>
 
 ## How it works
 
@@ -597,3 +594,8 @@ Below is an axample of how to do tags for boxplot and the output chart
     [5, 7, 8, 9, 10, 11, 13, 14, 15, 18, 20]
 </boxplot>
 ```
+
+
+### Simplot CSV
+
+<simplot>"data/xy.csv"</simplot>
