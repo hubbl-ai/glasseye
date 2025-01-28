@@ -1,197 +1,225 @@
+:root {
+  --font: "Raleway" sans-serif;
+  --font-size: 10px;
+  --white: #ffffff;
+  --black: #000000;
+  --blue: steelblue;
+  --red: red;
+  --grey: lightgrey;
+  --light-green: #1abc9c;
+}
+
 /* General chart formatting */
+body,
+html {
+  font-family: var(--font);
+  margin: 0;
+}
 
 svg {
-    clear: both;
-    margin-top: 20px;
-    margin-bottom: 20px;
+  clear: both;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 text {
-    stroke: none;
-    font-family: 'Raleway';
-    font-size: 10px;
+  stroke: none;
+  font-family: var(--font);
+  font-size: var(--font-size);
 }
 
 .line {
-    fill: none;
-    stroke: steelblue;
-    stroke-width: 1.5px;
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 1.5px;
 }
 
 .chart_grid .tick {
-    stroke: lightgrey;
-    opacity: 0.7;
+  stroke: var(--grey);
+  opacity: 0.7;
 }
 
 .chart_grid path {
-    stroke-width: 0;
-    shape-rendering: crispEdges;
+  stroke-width: 0;
+  shape-rendering: crispEdges;
 }
 
 .chart_grid .temp_y_label text {
-    font-size: 10px;
-    fill: grey;
-    shape-rendering: crispEdges;
+  font-size: var(--font-size);
+  fill: var(--grey);
+  shape-rendering: crispEdges;
 }
 
 .legend_item text {
-    font-size: 10px;
-    fill: grey;
-    shape-rendering: crispEdges;
+  font-size: var(--font-size);
+  fill: var(--grey);
+  shape-rendering: crispEdges;
 }
 
 .axis_label text {
-    font-size: 8px;
-    fill: grey;
-    shape-rendering: crispEdges;
-    text-transform: uppercase;
-    stroke: none;
+  font-size: var(--font-size);
+  fill: var(--grey);
+  shape-rendering: crispEdges;
+  text-transform: uppercase;
+  stroke: none;
 }
 
 /*line plot*/
 
 .line_points {
-    opacity: 0;
+  opacity: 0;
 }
 
 /*timeseries*/
 
 .timeseries_line {
-    stroke-width: 3px;
-    fill: transparent;
+  stroke-width: 3px;
+  fill: transparent;
 }
 
 /*bar chart*/
 
 .bar {
-    fill: steelblue;
-    stroke: none;
+  fill: var(--blue);
+  stroke: none;
 }
 
 /*thermometers*/
 
 .glass {
-    stroke: none;
-    fill: grey;
+  stroke: none;
+  fill: var(--grey);
 }
 
 .glass-gap {
-    stroke: none;
-    fill: white;
+  stroke: none;
+  fill: var(--white);
 }
 
 .mercury {
-    stroke: none;
-    fill: red;
+  stroke: none;
+  fill: var(--red);
 }
 
 /*tree*/
 
 .treenode circle {
-    fill: #fff;
-    stroke: steelblue;
-    stroke-width: 1.5px;
+  fill: var(--white);
+  stroke: var(--blue);
+  stroke-width: 1.5px;
 }
 
 .treenode {
-    font: 10px sans-serif;
-    fill: grey;
+  font-size: var(--font-size);
+  font-family: var(--font);
+  fill: var(--grey);
 }
 
 .treelink {
-    fill: none;
-    stroke: #ccc;
-    stroke-width: 1.5px;
+  fill: none;
+  stroke: var(--grey);
+  stroke-width: 1.5px;
 }
 
 /*AnimatedDensity*/
 
 .block {
-
-    fill: #1abc9c;
+  fill: var(--light-green);
 }
 
 /*force*/
 
 .forcenode {
-    stroke: #fff;
-    stroke-width: 1.5px;
-    fill: steelblue;
+  stroke: var(--white);
+  stroke-width: 1.5px;
+  fill: var(--blue);
 }
 
 .forcelink {
-    stroke: #999;
-    stroke-opacity: .6;
+  stroke: var(--grey);
+  stroke-opacity: 0.6;
 }
 
 /* Tip formatting */
 
 .d3-tip {
-    line-height: 1;
-    font-weight: bold;
-    padding: 8px;
-    background: rgba(128, 128, 128, 0.9);
-    color: #fff;
-    border-radius: 2px;
+  line-height: 1;
+  font-weight: bold;
+  padding: 8px;
+  background: var(--grey);
+  color: var(--white);
+  border-radius: 2px;
 }
 
 /* Creates a small triangle extender for the tooltip */
 .d3-tip:after {
-    box-sizing: border-box;
-    display: inline;
-    font-size: 10px;
-    width: 100%;
-    line-height: 1;
-    color: rgba(128, 128, 128, 0.9);
-    content: "\25BC";
-    position: absolute;
-    text-align: center;
+  box-sizing: border-box;
+  display: inline;
+  font-size: var(--font-size);
+  width: 100%;
+  line-height: 1;
+  color: var(--grey);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
 }
 
 /* Style northward tooltips differently */
 .d3-tip.n:after {
-    margin: -1px 0 0 0;
-    top: 100%;
-    left: 0;
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
 }
 
 /*Gantt elements */
 
 .task {
-    fill: steelblue;
-    stroke: none;
+  fill: var(--blue);
+  stroke: none;
 }
-
 
 .venn-circle path {
-    stroke: #000;
-    stroke-width: 2px;
+  stroke: var(--black);
+  stroke-width: 2px;
 }
 
 .dot {
-    fill: steelblue;
+  fill: var(--blue);
 }
 .axis-label {
-    font-size: 12px;
+  font-size: var(--font-size);
 }
 .grid line {
-    stroke: #e0e0e0;
+  stroke: var(--grey);
 }
 
 .dot {
-    fill: steelblue;
-    stroke: black;
-    stroke-width: 1px;
+  fill: var(--blue);
+  stroke: var(--black);
+  stroke-width: 1px;
 }
 .axis-label {
-    font-size: 14px;
-    font-weight: bold;
+  font-size: var(--font-size);
+  font-weight: bold;
 }
 .grid line {
-    stroke: #e0e0e0;
+  stroke: var(--grey);
 }
 
-.box { fill: lightblue; stroke: black; stroke-width: 2; }
-.whisker { stroke: black; stroke-width: 2; }
-.median { stroke: red; stroke-width: 2; }
-.outlier { fill: red; stroke: black; }
+.box {
+  fill: var(--blue);
+  stroke: var(--black);
+  stroke-width: 2;
+}
+.whisker {
+  stroke: var(--black);
+  stroke-width: 2;
+}
+.median {
+  stroke: var(--red);
+  stroke-width: 2;
+}
+.outlier {
+  fill: var(--red);
+  stroke: var(--black);
+}

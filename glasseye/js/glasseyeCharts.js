@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Fri Jan 24 15:36:23 CAT 2025
+// Generated Tue Jan 28 18:52:25 CAT 2025
 
 
 /// GlasseyeChart.js
@@ -156,94 +156,79 @@ GlasseyeChart.prototype.set_tooltip_text = function (
 //Global formatting functions
 
 //Add span around text for highlighting
-function highlight(d){
-  return   "<span class = 'highlighted'>" + d + "</span>";
-};
+function highlight(d) {
+  return "<span class = 'highlighted'>" + d + "</span>";
+}
 
 //Get max string length in an array of strings
 
-function max_string_length(strings){
-
-  var lengths = strings.map(function(d){return d.length})
+function max_string_length(strings) {
+  var lengths = strings.map(function (d) {
+    return d.length;
+  });
 
   return Math.max.apply(null, lengths);
-
 }
 
-
-var uni_format = function(d){
+var uni_format = function (d) {
   var return_val;
 
   if (d > 999) {
     return_val = d3.format(".3s")(d);
-  }
-  else if (d > 100) {
+  } else if (d > 100) {
     return_val = d3.format(".3r")(d);
-  }
-  else if (d >= 10) {
+  } else if (d >= 10) {
     if (Math.round(d) === d) {
       return_val = d3.format(".0f")(d);
-    }
-    else {
+    } else {
       return_val = d3.format(".1f")(d);
     }
-  }
-  else if (d > 1) {
+  } else if (d > 1) {
     return_val = d3.format(".1f")(d);
-  }
-  else
-  {
+  } else {
     return_val = d3.format(".1f")(d);
   }
   return return_val;
-
 };
 
-
-var uni_format_range = function(d){
-
-  var min = d[0], max = d[1];
+var uni_format_range = function (d) {
+  var min = d[0],
+    max = d[1];
   console.log(min);
   console.log(max);
 
-  if (min > - 1000 & max < 1000) {return d3.format(",.0f");}
-  else {return d3.format(",.0f");}
+  if ((min > -1000) & (max < 1000)) {
+    return d3.format(",.0f");
+  } else {
+    return d3.format(",.0f");
+  }
+};
 
-}
-
-
-var uni_format_axis = function(d){
+var uni_format_axis = function (d) {
   var return_val;
   if (d >= 1) {
     return_val = d3.format("s")(d);
-  }
-  else
-  {
+  } else {
     return_val = d3.format("")(d);
   }
   return return_val;
-
 };
 
-var format_millions = function(d) {
+var format_millions = function (d) {
   return Math.round(d / 1000) + "m";
 };
 
-var format_millions_2d = function(d) {
+var format_millions_2d = function (d) {
   return d3.format(".3r")(d / 1000) + "m";
 };
 
-
-var quarter_year = function(d) {
-
+var quarter_year = function (d) {
   var month = d3.time.format("%m")(d);
   var year = d3.time.format("%Y")(d);
   var quarter = parseInt(month) / 3;
 
   return "Q" + quarter + " " + year;
-
 };
-
 
 //Commentary function to be used in tool tips and on side bars
 
@@ -259,25 +244,20 @@ function unchanged(string) {
   return string;
 }
 
-function create_commentary(commentary_strings, embedded_vars, formats){
-
-
+function create_commentary(commentary_strings, embedded_vars, formats) {
   var string_parts = commentary_strings.split("$");
 
   var text = "";
 
-  embedded_vars.forEach(function(d, i){
-    var formatter = (formats===undefined)? uni_format:formats[i];
+  embedded_vars.forEach(function (d, i) {
+    var formatter = formats === undefined ? uni_format : formats[i];
     text = text + string_parts[i] + formatter(d);
   });
 
   return text;
-
 }
 
-
 function create_scale(data, d3_scale, padding) {
-
   var min = d3.min(data),
     max = d3.max(data);
   var range = max - min;
@@ -289,9 +269,7 @@ function create_scale(data, d3_scale, padding) {
     scale.domain(data);
     var scale_type = "ordinal";
   } else {
-
     if (typeof data[0] === "number") {
-
       if (range_max_ratio < 0.25 || min < 0) {
         scale.domain([min - 0.1 * range, max + 0.1 * range]).nice;
       } else {
@@ -299,9 +277,7 @@ function create_scale(data, d3_scale, padding) {
       }
 
       var scale_type = "linear";
-
     } else {
-
       scale.domain([min, max]).nice;
 
       if (data[0].constructor.name === "Date") {
@@ -310,155 +286,130 @@ function create_scale(data, d3_scale, padding) {
         var scale_type = "nonlinear";
       }
     }
-
   }
-
-
 
   return {
     scale_func: scale,
-    scale_type: scale_type
+    scale_type: scale_type,
   };
-
 }
 
 //Data processing function
 
 function build_chart(data, div, size, labels, csv_parser, inline_parser, draw) {
-
-
-  if (typeof data === "object")
-
-  {
-
+  if (typeof data === "object") {
     var processed_data = inline_parser(data);
 
     draw(processed_data, div, size, labels);
-
-  } else
-
-  {
-
-
-    // d3.csv(data, function(error, data) {
-
-    //   var processed_data = csv_parser(data);
-    //   draw(processed_data, div, size, labels);
-
-    // });
-
-  //   d3.csv(data).then(function(d) {
-  //     var processed_data = d;
-  //     draw(processed_data, div, size, labels);
-
-  // }).catch(function(error) {
-  //     console.error("Error loading the CSV file:", error);
-  // });
-
-  fetch(data)
-    .then(response => response.text())
-    .then(text => {
+  } else {
+    fetch(data)
+      .then((response) => response.text())
+      .then((text) => {
         var processed_data = d3.csvParse(text);
         draw(processed_data, div, size, labels);
-    })
-    .catch(error => console.error("Error loading CSV:", error));
-
+      })
+      .catch((error) => console.error("Error loading CSV:", error));
   }
-
 }
 
-
 function add_legend(svg, x, y, legend_data) {
-
-  var legend_groups = svg.selectAll('.legend_item')
+  var legend_groups = svg
+    .selectAll(".legend_item")
     .data(legend_data)
     .enter()
-    .append('g')
-    .attr('class', 'legend_item')
+    .append("g")
+    .attr("class", "legend_item")
     .attr("transform", "translate(" + x + "," + y + ")");
 
-
-  legend_groups.append("rect")
+  legend_groups
+    .append("rect")
     .attr("width", 10)
     .attr("height", 10)
-    .attr('class', function(d) {
-      return ('legend_block ' + d.class);
+    .attr("class", function (d) {
+      return "legend_block " + d.class;
     })
     .attr("x", 10)
-    .attr("y", function(d, i) {
+    .attr("y", function (d, i) {
       return i * 20;
     })
-    .attr("fill", function(d, i) {
+    .attr("fill", function (d, i) {
       return d.colour;
     });
 
-  legend_groups.append("text")
+  legend_groups
+    .append("text")
     .attr("x", 27)
-    .attr("y", function(d, i) {
+    .attr("y", function (d, i) {
       return 8 + i * 20;
     })
-    .text(function(d) {
+    .text(function (d) {
       return d.label;
     });
-
 }
 
-
 function wrap(text, width) {
-  text.each(function() {
+  text.each(function () {
     var text = d3.select(this),
-        words = text.text().split(/\s+/).reverse(),
-        word,
-        line = [],
-        lineNumber = 0,
-        lineHeight = 1.1, // ems
-        y = text.attr("y"),
-        dy = parseFloat(text.attr("dy")),
-        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
-    while (word = words.pop()) {
+      words = text.text().split(/\s+/).reverse(),
+      word,
+      line = [],
+      lineNumber = 0,
+      lineHeight = 1.1, // ems
+      y = text.attr("y"),
+      dy = parseFloat(text.attr("dy")),
+      tspan = text
+        .text(null)
+        .append("tspan")
+        .attr("x", 0)
+        .attr("y", y)
+        .attr("dy", dy + "em");
+    while ((word = words.pop())) {
       line.push(word);
       tspan.text(line.join(" "));
       if (tspan.node().getComputedTextLength() > width) {
         line.pop();
         tspan.text(line.join(" "));
         line = [word];
-        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+        tspan = text
+          .append("tspan")
+          .attr("x", 0)
+          .attr("y", y)
+          .attr("dy", ++lineNumber * lineHeight + dy + "em")
+          .text(word);
       }
     }
   });
 }
 
-
 function abbrev(text, max) {
-
   if (text.length > max) {
     text = text.substring(0, max - 3) + "...";
   }
 
   return text;
-
 }
 
 function minmax_across_groups(processed_data, variable) {
-
-  y_values = processed_data.map(function(d) {
-    return (d.values.map(function(e) {
+  y_values = processed_data.map(function (d) {
+    return d.values.map(function (e) {
       if (e.variable === variable) {
         return e.value;
       }
-    }));
+    });
   });
   y_values = [].concat.apply([], y_values);
 
-  return ([d3.min(y_values), d3.max(y_values)]);
-
+  return [d3.min(y_values), d3.max(y_values)];
 }
 
-function create_class_label(prefix, x){
-
-  return prefix + "_" + x.replace(/[.,\/#!$%\^&\*;:{}=+\-_`~()]/g,"").replace(" ","");
-
+function create_class_label(prefix, x) {
+  return (
+    prefix +
+    "_" +
+    x.replace(/[.,\/#!$%\^&\*;:{}=+\-_`~()]/g, "").replace(" ", "")
+  );
 }
+
 /// GridChart.js
 
 var GridChart = function (div, size, labels, scales, margin, height) {
@@ -2290,79 +2241,89 @@ var Boxplot = function (processed_data, div, size) {
   this.processed_data = processed_data;
     // Sort the data
     this.processed_data.sort(d3.ascending);
+    this.plotWidth = this.width - this.margin.left - this.margin.right,
+    this.plotHeight = this.height - this.margin.top - this.margin.bottom;
 
-    // Compute summary statistics
-    this.q1 = d3.quantile(this.processed_data, 0.25);
-    this.median = d3.median(this.processed_data);
-    this.q3 = d3.quantile(this.processed_data, 0.75);
-    this.iqr = this.q3 - this.q1;  // Interquartile range
-    this.min = Math.max(this.q1 - 1.5 * this.iqr, d3.min(this.processed_data)); // Lower bound
-    this.max = Math.min(this.q3 + 1.5 * this.iqr, d3.max(this.processed_data)); // Upper bound
-    this.outliers = this.processed_data.filter(d => d < this.min || d > this.max);
-    
+    this.categories = this.processed_data.map(d => d.category);
 
-    // Create scale for positioning
-    this.xScale = d3.scaleLinear()
-        .domain([d3.min(this.processed_data) - 1, d3.max(this.processed_data) + 1])
-        .range([this.margin.left, this.width - this.margin.right]);
+    this.xScale = d3.scaleBand()
+      .domain(this.categories)
+      .range([0, this.plotWidth])
+      .padding(0.5);
+
+      this.allValues = this.processed_data.flatMap(d => d.values);
+      this.yScale = d3.scaleLinear()
+      .domain([0, d3.max(this.allValues)])
+      .range([this.plotHeight, 0]);
 };
 
 Boxplot.prototype = Object.create(GlasseyeChart.prototype);
 
 Boxplot.prototype.add_boxplot = function () {
-  // Box (interquartile range)
-  this.chart_area.append("rect")
-  .attr("class", "box")
-  .attr("x", this.xScale(this.q1))
-  .attr("y", this.height / 2 - 50)
-  .attr("width", this.xScale(this.q3) - this.xScale(this.q1))
-  .attr("height", 100);
+  this.chart_area.append("g")
+      .attr("transform", `translate(0, ${this.plotHeight})`)
+      .call(d3.axisBottom(this.xScale));
 
-// Median line
-this.chart_area.append("line")
-  .attr("class", "median")
-  .attr("x1", this.xScale(this.median))
-  .attr("x2", this.xScale(this.median))
-  .attr("y1", this.height / 2 - 50)
-  .attr("y2", this.height / 2 + 50);
+    this.chart_area.append("g")
+      .call(d3.axisLeft(this.yScale));
 
-// Whiskers
-this.chart_area.append("line")
-  .attr("class", "whisker")
-  .attr("x1", this.xScale(this.min))
-  .attr("x2", this.xScale(this.q1))
-  .attr("y1", this.height / 2)
-  .attr("y2", this.height / 2);
+    this.processed_data.forEach((d, i) => {
+      var sortedValues = d.values.sort(d3.ascending);
+      var q1 = d3.quantile(sortedValues, 0.25);
+      var median = d3.quantile(sortedValues, 0.5);
+      var q3 = d3.quantile(sortedValues, 0.75);
+      var min = d3.min(sortedValues);
+      var max = d3.max(sortedValues);
 
-this.chart_area.append("line")
-  .attr("class", "whisker")
-  .attr("x1", this.xScale(this.q3))
-  .attr("x2", this.xScale(this.max))
-  .attr("y1", this.height / 2)
-  .attr("y2", this.height / 2);
+      var centerX = this.xScale(d.category) + this.xScale.bandwidth() / 2;
 
-// Outliers
-this.chart_area.selectAll(".outlier")
-  .data(this.outliers)
-  .enter()
-  .append("circle")
-  .attr("class", "outlier")
-  .attr("cx", d => this.xScale(d))
-  .attr("cy", this.height / 2)
-  .attr("r", 5);
+      // Draw box
+      this.chart_area.append("rect")
+        .attr("x", centerX - 20)
+        .attr("y", this.yScale(q3))
+        .attr("width", 40)
+        .attr("height", this.yScale(q1) - this.yScale(q3))
+        .attr("stroke", "black")
+        .attr("fill", "lightblue");
 
-// Axis
-this.chart_area.append("g")
-  .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
-  .call(d3.axisBottom(this.xScale));
+      // Draw median line
+      this.chart_area.append("line")
+        .attr("x1", centerX - 20)
+        .attr("x2", centerX + 20)
+        .attr("y1", this.yScale(median))
+        .attr("y2", this.yScale(median))
+        .attr("stroke", "black");
 
-// Labels
-this.chart_area.append("text")
-  .attr("x", this.width / 2)
-  .attr("y", this.margin.top / 2)
-  .attr("text-anchor", "middle")
-  .attr("font-size", "18px")
-  .text("Box-and-Whisker Plot");
+      // Draw min and max lines
+      this.chart_area.append("line")
+        .attr("x1", centerX)
+        .attr("x2", centerX)
+        .attr("y1", this.yScale(min))
+        .attr("y2", this.yScale(q1))
+        .attr("stroke", "black");
+
+      this.chart_area.append("line")
+        .attr("x1", centerX)
+        .attr("x2", centerX)
+        .attr("y1", this.yScale(q3))
+        .attr("y2", this.yScale(max))
+        .attr("stroke", "black");
+
+      // Draw whiskers
+      this.chart_area.append("line")
+        .attr("x1", centerX - 10)
+        .attr("x2", centerX + 10)
+        .attr("y1", this.yScale(min))
+        .attr("y2", this.yScale(min))
+        .attr("stroke", "black");
+
+      this.chart_area.append("line")
+        .attr("x1", centerX - 10)
+        .attr("x2", centerX + 10)
+        .attr("y1", this.yScale(max))
+        .attr("y2", this.yScale(max))
+        .attr("stroke", "black");
+    });
   
 };
 

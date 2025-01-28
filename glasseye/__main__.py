@@ -99,7 +99,6 @@ def main():
     code_string = ""
 
     #Standard charts
-
     standard_charts = ["skey","barchart","piechart","donut","linechart", "tree", "vennchart", "gantt", "treemap", "heatmap", "dotplot", "simplot", "scatterplot", "boxplot"]
 
     for s in standard_charts:
@@ -126,7 +125,6 @@ def main():
 
 
     soup_string = str(soup)
-    # code_string = code_string.replace('“','"').replace('”','"').replace("’","'").replace("‘","'")
     code_string = re.sub('[“”]', '"', code_string)
     code_string = re.sub("[“’‘”]", "'", code_string)
 

@@ -435,7 +435,11 @@ chart</p>
 chart</p>
 <p><span id="boxplot_0"></span><br/></p>
 <pre><code>&lt;boxplot&gt;
-    [5, 7, 8, 9, 10, 11, 13, 14, 15, 18, 20]
+    [
+      { category: "A", values: [10, 15, 20, 25, 30, 35] },
+      { category: "B", values: [5, 10, 15, 20, 25, 30] },
+      { category: "C", values: [20, 25, 30, 35, 40, 45] }
+    ]
 &lt;/boxplot&gt;</code></pre>
 <h3 id="simplot-csv">Simplot CSV</h3>
 <p><span id="simplot_1"></span><br/></p>
@@ -508,7 +512,9 @@ scatterplot( [ { xScore: 1, yScore: 50 }, { xScore: 2, yScore: 55 },
 yScore: 72 }, { xScore: 6, yScore: 78 }, { xScore: 7, yScore: 80 }, {
 xScore: 8, yScore: 85 }, { xScore: 9, yScore: 88 }, { xScore: 10,
 yScore: 95 }] , '#scatterplot_0', 'full_page'); 
-boxplot( [5, 7, 8, 9, 10, 11, 13, 14, 15, 18, 20] , '#boxplot_0', 'full_page'); 
+boxplot( [ { category: "A", values: [10, 15, 20, 25, 30, 35] }, {
+category: "B", values: [5, 10, 15, 20, 25, 30] }, { category: "C",
+values: [20, 25, 30, 35, 40, 45] } ] , '#boxplot_0', 'full_page'); 
 </script><script type="text/javascript">
 (function () {
   var script = document.createElement("script");

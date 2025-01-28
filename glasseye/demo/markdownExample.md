@@ -586,12 +586,20 @@ Below is an axample of how to do tags for Scatterplot and the output chart
 Below is an axample of how to do tags for boxplot and the output chart
 
 <boxplot>
-    [5, 7, 8, 9, 10, 11, 13, 14, 15, 18, 20]
+    [
+      { category: "A", values: [10, 15, 20, 25, 30, 35] },
+      { category: "B", values: [5, 10, 15, 20, 25, 30] },
+      { category: "C", values: [20, 25, 30, 35, 40, 45] }
+    ]
 </boxplot>
 
 ```
 <boxplot>
-    [5, 7, 8, 9, 10, 11, 13, 14, 15, 18, 20]
+    [
+      { category: "A", values: [10, 15, 20, 25, 30, 35] },
+      { category: "B", values: [5, 10, 15, 20, 25, 30] },
+      { category: "C", values: [20, 25, 30, 35, 40, 45] }
+    ]
 </boxplot>
 ```
 

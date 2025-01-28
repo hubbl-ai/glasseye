@@ -468,9 +468,15 @@ yScore: 95 }] </scatterplot></p>
 <h3 id="a-boxplot">A boxplot</h3>
 <p>Below is an axample of how to do tags for boxplot and the output
 chart</p>
-<p><boxplot> [5, 7, 8, 9, 10, 11, 13, 14, 15, 18, 20] </boxplot></p>
+<p><boxplot> [ { category: “A”, values: [10, 15, 20, 25, 30, 35] }, {
+category: “B”, values: [5, 10, 15, 20, 25, 30] }, { category: “C”,
+values: [20, 25, 30, 35, 40, 45] } ] </boxplot></p>
 <pre><code>&lt;boxplot&gt;
-    [5, 7, 8, 9, 10, 11, 13, 14, 15, 18, 20]
+    [
+      { category: &quot;A&quot;, values: [10, 15, 20, 25, 30, 35] },
+      { category: &quot;B&quot;, values: [5, 10, 15, 20, 25, 30] },
+      { category: &quot;C&quot;, values: [20, 25, 30, 35, 40, 45] }
+    ]
 &lt;/boxplot&gt;</code></pre>
 <h3 id="simplot-csv">Simplot CSV</h3>
 <p><simplot>“data/xy.csv”</simplot></p>
