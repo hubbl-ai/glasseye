@@ -20,11 +20,17 @@
   <script src="js/bundle.js"></script>
 </head>
 <body>
-    <div id = "tufte_container">
+<div id = "tufte_container"><h2 id="a-linechart-typescript-demo">A Linechart Typescript Demo</h2>
+<h3 id="a-line-chart">A line chart</h3>
+<p>Similarly the line chart can be either created from a csv file (as
+long as it has columns with heading x and y) or from in line json. Here
+is an example.</p>
+<p><span id="linechart_0"></span><br/></p>
     </div>
 
-<!--glasseye-->
-<script type="text/javascript">
+<script>ChartModule.linechart( [ { x: 1, y: 10 }, { x: 2, y: 20 }, { x: 3, y: 15 }, { x:
+4, y: 25 }, { x: 5, y: 30 }, { x: 6, y: 35 } ] , '#linechart_0',{"width": 300, "height": 300}); 
+</script><script type="text/javascript">
 (function () {
   var script = document.createElement("script");
   script.type = "text/javascript";

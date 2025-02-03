@@ -1,7 +1,12 @@
 import sys, os, re, pypandoc as py, shutil as sh
+import json
 from bs4 import BeautifulSoup
 
 def main():
+    margin_size = {'width':300,'height':300}
+    full_page_size = {'width':300,'height':300}
+    module_name = 'ChartModule'
+
     #Function to wrap with tags
     def wrap(to_wrap, wrap_in):
         contents = to_wrap.replace_with(wrap_in)
@@ -10,11 +15,11 @@ def main():
     #Function to add charts
     def add_chart(chart_id, code_string):
         for d in enumerate(soup.findAll(chart_id)):
-            code_string += chart_id + "(" + str(d[1].contents[0]) + ", '#" + chart_id + "_" + str(d[0])
+            code_string += module_name + "." + chart_id + "(" + str(d[1].contents[0]) + ", '#" + chart_id + "_" + str(d[0])
             if d[1].parent.name == "span":
-                code_string += "', 'margin'); \n"
+                code_string += "'," + json.dumps(full_page_size) +"); \n"
             else:
-                code_string += "', 'full_page'); \n"
+                code_string += "'," + json.dumps(margin_size) +"); \n"
             d[1].name = "span"
             d[1].contents = ""
             d[1]['id'] = chart_id + "_" + str(d[0])
@@ -99,29 +104,10 @@ def main():
     code_string = ""
 
     #Standard charts
-    standard_charts = ["skey","barchart","piechart","donut","linechart", "tree", "vennchart", "gantt", "treemap", "heatmap", "dotplot", "simplot", "scatterplot", "boxplot"]
+    standard_charts = ["skey","barchart","piechart","donut","linechart", "tree", "vennchart", "gantt", "treemap", "heatmap", "dotplot",  "scatterplot", "boxplot"]
 
     for s in standard_charts:
         code_string = add_chart(s, code_string)
-
-    #Charts with extra features (will modify the standard charts asap)
-
-    for d in enumerate(soup.findAll('lineplot')):
-        if d[1].parent.name == "span":
-            size = "margin"
-        else:
-            size = "full_page"
-        arguments = str(d[1].contents[0])
-        if "," in arguments and ".csv" in arguments:
-            arguments = arguments.split(",", 1)
-            code_string += "lineplot(" + arguments[0] + ", " + "'#lineplot_" + str(d[0]) + "','" + size + "'," + arguments[1].replace("\n"," ") + "); \n"
-        else:
-            code_string += "lineplot(" + str(d[1].contents[0]).replace("\n"," ") + ", " + "'#lineplot_" + str(d[0]) + "','" + size + "'); \n"
-        d[1].name = "span"
-        d[1].contents = ""
-        d[1]['id'] = "lineplot_" + str(d[0])
-        tag = soup.new_tag("br")
-        d[1].insert_after(tag)
 
 
     soup_string = str(soup)
