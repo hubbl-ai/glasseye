@@ -1,4 +1,164 @@
-// import './charts.ts';
-// import './GlasseyeChart.ts';
-// import './linechart.js';
-// console.log('###Entry in index.ts')
+import * as d3 from "d3";
+
+interface Margin {
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
+  }
+  
+const defaultMargin:Margin = { top: 20, bottom: 20, left: 20, right: 20 }
+
+interface DataPoint {
+  x: number;
+  y: number;
+}
+
+export function linechart(
+  processed_data: DataPoint[], 
+  div: string, 
+  size: { width: number; height: number }
+) {
+  const { width, height } = size;
+  const margin = { top: 20, right: 30, bottom: 30, left: 40 };
+
+  // Select the container div and clear any existing SVG
+  const container = d3.select(div);
+  container.selectAll("*").remove();
+
+  const svg = container
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  // Define X and Y scales
+  const xScale = d3
+    .scaleLinear()
+    .domain([
+      d3.min(processed_data, (d: DataPoint) => d.x) ?? 0,
+      d3.max(processed_data, (d: DataPoint) => d.x) ?? 0,
+    ])
+    .range([margin.left, width - margin.right]);
+
+  const yScale = d3
+    .scaleLinear()
+    .domain([
+      0,
+      d3.max(processed_data, (d: DataPoint) => d.y) ?? 0,
+    ])
+    .range([height - margin.bottom, margin.top]);
+
+  // Create the line generator
+  const line = d3
+    .line<DataPoint>()
+    .x((d) => xScale(d.x))
+    .y((d) => yScale(d.y))
+    .curve(d3.curveMonotoneX);
+
+  // Append the line path
+  svg
+    .append("path")
+    .datum(processed_data)
+    .attr("fill", "none")
+    .attr("stroke", "steelblue")
+    .attr("stroke-width", 2)
+    .attr("d", line);
+
+  // Append X axis
+  svg
+    .append("g")
+    .attr("transform", `translate(0,${height - margin.bottom})`)
+    .call(d3.axisBottom(xScale).ticks(6));
+
+  // Append Y axis
+  svg
+    .append("g")
+    .attr("transform", `translate(${margin.left},0)`)
+    .call(d3.axisLeft(yScale));
+}
+
+
+export function piechart(data: { label: string; value: number }[], div: string, size: { width: number; height: number }) {
+  const width = size.width;
+  const height = size.height;
+  const radius = Math.min(width, height) / 2;
+
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+  const color = d3.scaleOrdinal<string>().domain(data.map(d => d.label)).range(d3.schemeTableau10);
+
+  const pie = d3.pie<{ label: string; value: number }>().value(d => d.value);
+
+  const arc:any = d3.arc<d3.PieArcDatum<{ label: string; value: number }>>()
+    .innerRadius(0)
+    .outerRadius(radius);
+
+  const arcs = svg.selectAll("arc")
+    .data(pie(data))
+    .enter()
+    .append("g")
+    .attr("class", "arc");
+
+  arcs.append("path")
+    .attr("d", arc)
+    .attr("fill", (d:any) => color(d.data.label));
+
+  arcs.append("text")
+    .attr("transform", d => `translate(${arc.centroid(d)})`)
+    .attr("text-anchor", "middle")
+    .text((d:any) => d.data.label);
+}
+
+
+export function barchart(data: { label: string; value: number }[], div: string, size: { width: number; height: number }) {
+  const width = size.width;
+  const height = size.height;
+  const margin = { top: 20, right: 30, bottom: 40, left: 50 };
+
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+  const chartWidth = width - margin.left - margin.right;
+  const chartHeight = height - margin.top - margin.bottom;
+
+  const x = d3.scaleBand()
+    .domain(data.map(d => d.label))
+    .range([0, chartWidth])
+    .padding(0.2);
+
+  const y = d3.scaleLinear()
+    .domain([0, d3.max(data, (d:any) => d.value)!])
+    .range([chartHeight, 0]);
+
+  // Draw X axis
+  svg.append("g")
+    .attr("transform", `translate(0, ${chartHeight})`)
+    .call(d3.axisBottom(x));
+
+  // Draw Y axis
+  svg.append("g")
+    .call(d3.axisLeft(y));
+
+  // Draw bars
+  svg.selectAll(".bar")
+    .data(data)
+    .enter()
+    .append("rect")
+    .attr("class", "bar")
+    .attr("x", (d:any) => x(d.label)!)
+    .attr("y", (d:any) => y(d.value))
+    .attr("width", x.bandwidth())
+    .attr("height", (d:any) => chartHeight - y(d.value))
+    .attr("fill", "steelblue");
+}
