@@ -65,3 +65,5 @@ glasseye/data
 .idea/
 glasseye/.idea/
 *workspace.xml
+
+node_modules
