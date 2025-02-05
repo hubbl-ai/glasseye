@@ -4563,10 +4563,11 @@ var ChartModule = (function (exports) {
 
   Transform.prototype;
 
-  function linechart(processed_data, div, size) {
+  var defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
+  function linechart(processed_data, div, size, margin) {
       var _a, _b, _c;
+      if (margin === undefined) { margin = defaultMargin; }
       var width = size.width, height = size.height;
-      var margin = { top: 20, right: 30, bottom: 30, left: 40 };
       // Select the container div and clear any existing SVG
       var container = select(div);
       container.selectAll("*").remove();
@@ -4582,10 +4583,7 @@ var ChartModule = (function (exports) {
       ])
           .range([margin.left, width - margin.right]);
       var yScale = linear()
-          .domain([
-          0,
-          (_c = max$1(processed_data, function (d) { return d.y; })) !== null && _c !== undefined ? _c : 0,
-      ])
+          .domain([0, (_c = max$1(processed_data, function (d) { return d.y; })) !== null && _c !== undefined ? _c : 0])
           .range([height - margin.bottom, margin.top]);
       // Create the line generator
       var line$1 = line()
@@ -4611,9 +4609,8 @@ var ChartModule = (function (exports) {
           .attr("transform", "translate(".concat(margin.left, ",0)"))
           .call(axisLeft(yScale));
   }
-  function piechart(data, div, size) {
-      var width = size.width;
-      var height = size.height;
+  function piechart(data, div, size, margin) {
+      var width = size.width, height = size.height;
       var radius = Math.min(width, height) / 2;
       var svg = select(div)
           .append("svg")
@@ -4621,28 +4618,32 @@ var ChartModule = (function (exports) {
           .attr("height", height)
           .append("g")
           .attr("transform", "translate(".concat(width / 2, ", ").concat(height / 2, ")"));
-      var color = ordinal().domain(data.map(function (d) { return d.label; })).range(Tableau10);
+      var color = ordinal()
+          .domain(data.map(function (d) { return d.label; }))
+          .range(Tableau10);
       var pie$1 = pie().value(function (d) { return d.value; });
       var arc$1 = arc()
           .innerRadius(0)
           .outerRadius(radius);
-      var arcs = svg.selectAll("arc")
+      var arcs = svg
+          .selectAll("arc")
           .data(pie$1(data))
           .enter()
           .append("g")
           .attr("class", "arc");
-      arcs.append("path")
+      arcs
+          .append("path")
           .attr("d", arc$1)
           .attr("fill", function (d) { return color(d.data.label); });
-      arcs.append("text")
+      arcs
+          .append("text")
           .attr("transform", function (d) { return "translate(".concat(arc$1.centroid(d), ")"); })
           .attr("text-anchor", "middle")
           .text(function (d) { return d.data.label; });
   }
-  function barchart(data, div, size) {
-      var width = size.width;
-      var height = size.height;
-      var margin = { top: 20, right: 30, bottom: 40, left: 50 };
+  function barchart(data, div, size, margin) {
+      if (margin === undefined) { margin = defaultMargin; }
+      var width = size.width, height = size.height;
       var svg = select(div)
           .append("svg")
           .attr("width", width)
@@ -4659,14 +4660,15 @@ var ChartModule = (function (exports) {
           .domain([0, max$1(data, function (d) { return d.value; })])
           .range([chartHeight, 0]);
       // Draw X axis
-      svg.append("g")
+      svg
+          .append("g")
           .attr("transform", "translate(0, ".concat(chartHeight, ")"))
           .call(axisBottom(x));
       // Draw Y axis
-      svg.append("g")
-          .call(axisLeft(y));
+      svg.append("g").call(axisLeft(y));
       // Draw bars
-      svg.selectAll(".bar")
+      svg
+          .selectAll(".bar")
           .data(data)
           .enter()
           .append("rect")

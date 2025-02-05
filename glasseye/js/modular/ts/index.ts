@@ -1,26 +1,36 @@
 import * as d3 from "d3";
 
 interface Margin {
-    top: number;
-    bottom: number;
-    left: number;
-    right: number;
-  }
-  
-const defaultMargin:Margin = { top: 20, bottom: 20, left: 20, right: 20 }
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+}
+
+const defaultMargin: Margin = { top: 20, bottom: 20, left: 20, right: 20 };
 
 interface DataPoint {
   x: number;
   y: number;
 }
 
+interface DataLabeled {
+  label: string;
+  value: number;
+}
+
+interface Size {
+  width: number;
+  height: number;
+}
+
 export function linechart(
-  processed_data: DataPoint[], 
-  div: string, 
-  size: { width: number; height: number }
+  processed_data: DataPoint[],
+  div: string,
+  size: Size,
+  margin: Margin = defaultMargin
 ) {
   const { width, height } = size;
-  const margin = { top: 20, right: 30, bottom: 30, left: 40 };
 
   // Select the container div and clear any existing SVG
   const container = d3.select(div);
@@ -42,10 +52,7 @@ export function linechart(
 
   const yScale = d3
     .scaleLinear()
-    .domain([
-      0,
-      d3.max(processed_data, (d: DataPoint) => d.y) ?? 0,
-    ])
+    .domain([0, d3.max(processed_data, (d: DataPoint) => d.y) ?? 0])
     .range([height - margin.bottom, margin.top]);
 
   // Create the line generator
@@ -77,10 +84,13 @@ export function linechart(
     .call(d3.axisLeft(yScale));
 }
 
-
-export function piechart(data: { label: string; value: number }[], div: string, size: { width: number; height: number }) {
-  const width = size.width;
-  const height = size.height;
+export function piechart(
+  data: DataLabeled[],
+  div: string,
+  size: Size,
+  margin: Margin = defaultMargin
+) {
+  const { width, height } = size;
   const radius = Math.min(width, height) / 2;
 
   const svg = d3
@@ -91,35 +101,44 @@ export function piechart(data: { label: string; value: number }[], div: string, 
     .append("g")
     .attr("transform", `translate(${width / 2}, ${height / 2})`);
 
-  const color = d3.scaleOrdinal<string>().domain(data.map(d => d.label)).range(d3.schemeTableau10);
+  const color = d3
+    .scaleOrdinal<string>()
+    .domain(data.map((d) => d.label))
+    .range(d3.schemeTableau10);
 
-  const pie = d3.pie<{ label: string; value: number }>().value(d => d.value);
+  const pie = d3.pie<DataLabeled>().value((d) => d.value);
 
-  const arc:any = d3.arc<d3.PieArcDatum<{ label: string; value: number }>>()
+  const arc: any = d3
+    .arc<d3.PieArcDatum<DataLabeled>>()
     .innerRadius(0)
     .outerRadius(radius);
 
-  const arcs = svg.selectAll("arc")
+  const arcs = svg
+    .selectAll("arc")
     .data(pie(data))
     .enter()
     .append("g")
     .attr("class", "arc");
 
-  arcs.append("path")
+  arcs
+    .append("path")
     .attr("d", arc)
-    .attr("fill", (d:any) => color(d.data.label));
+    .attr("fill", (d: any) => color(d.data.label));
 
-  arcs.append("text")
-    .attr("transform", d => `translate(${arc.centroid(d)})`)
+  arcs
+    .append("text")
+    .attr("transform", (d) => `translate(${arc.centroid(d)})`)
     .attr("text-anchor", "middle")
-    .text((d:any) => d.data.label);
+    .text((d: any) => d.data.label);
 }
 
-
-export function barchart(data: { label: string; value: number }[], div: string, size: { width: number; height: number }) {
-  const width = size.width;
-  const height = size.height;
-  const margin = { top: 20, right: 30, bottom: 40, left: 50 };
+export function barchart(
+  data: DataLabeled[],
+  div: string,
+  size: Size,
+  margin: Margin = defaultMargin
+) {
+  const { width, height } = size;
 
   const svg = d3
     .select(div)
@@ -132,33 +151,36 @@ export function barchart(data: { label: string; value: number }[], div: string, 
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
-  const x = d3.scaleBand()
-    .domain(data.map(d => d.label))
+  const x = d3
+    .scaleBand()
+    .domain(data.map((d) => d.label))
     .range([0, chartWidth])
     .padding(0.2);
 
-  const y = d3.scaleLinear()
-    .domain([0, d3.max(data, (d:any) => d.value)!])
+  const y = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, (d: any) => d.value)!])
     .range([chartHeight, 0]);
 
   // Draw X axis
-  svg.append("g")
+  svg
+    .append("g")
     .attr("transform", `translate(0, ${chartHeight})`)
     .call(d3.axisBottom(x));
 
   // Draw Y axis
-  svg.append("g")
-    .call(d3.axisLeft(y));
+  svg.append("g").call(d3.axisLeft(y));
 
   // Draw bars
-  svg.selectAll(".bar")
+  svg
+    .selectAll(".bar")
     .data(data)
     .enter()
     .append("rect")
     .attr("class", "bar")
-    .attr("x", (d:any) => x(d.label)!)
-    .attr("y", (d:any) => y(d.value))
+    .attr("x", (d: any) => x(d.label)!)
+    .attr("y", (d: any) => y(d.value))
     .attr("width", x.bandwidth())
-    .attr("height", (d:any) => chartHeight - y(d.value))
+    .attr("height", (d: any) => chartHeight - y(d.value))
     .attr("fill", "steelblue");
 }
