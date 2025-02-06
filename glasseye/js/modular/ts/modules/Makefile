@@ -25,7 +25,27 @@ copydemo:
 
 	@if [ -f $@ ]; then mv $@ $@~;  fi;
 	@echo "// Warning! THIS FILE WAS GENERATED! DO NOT EDIT!\n// Generated `date`\n" > $@
+
 	@for f in $^; do \
 	    echo "\n/// $$f\n"; \
-	    cat $$f; \
+	    cat $$f \
+	done >> $@
+
+../index-try.ts: $(SOURCE_FILES)
+	@ echo Building bundle
+
+	@if [ -f $@ ]; then mv $@ $@~;  fi;
+	@echo "// Warning! THIS FILE WAS GENERATED! DO NOT EDIT!\n// Generated `date`\n" > $@
+
+	# Make a list of the unique imports in all files
+
+	@for f in $^; do \
+		grep '^import' $$f \
+	done | sort | uniq >>  $@
+
+	# Now concatenate everything but the imports
+
+	@for f in $^; do \
+	    echo "\n/// $$f\n"; \
+	    grep -v '^import' $$f \
 	done >> $@
