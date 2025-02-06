@@ -9,13 +9,16 @@ SOURCE_FILES = \
 	barchart.ts \
 	piechart.ts \
 
-all: $(GENERATED_FILES) rollup
+all: $(GENERATED_FILES) rollup copydemo
 
 clean:
 	rm -f $(GENERATED_FILES)
 
 rollup:
 	cd .. && npx rollup -c
+
+copydemo:
+	cd .. && cp ./dist/glasseyechart.js ../../../demo/js/glasseyechart.js
 
 ../index.ts: $(SOURCE_FILES)
 	@ echo Building bundle

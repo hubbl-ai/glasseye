@@ -7,8 +7,6 @@ interface Margin {
   right: number;
 }
 
-const defaultMargin: Margin = { top: 20, bottom: 20, left: 20, right: 20 };
-
 interface DataPoint {
   x: number;
   y: number;
@@ -23,3 +21,5 @@ interface Size {
   width: number;
   height: number;
 }
+
+const defaultMargin: Margin = { top: 20, bottom: 20, left: 20, right: 20 };
