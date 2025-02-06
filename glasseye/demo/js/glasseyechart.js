@@ -4563,7 +4563,11 @@ var ChartModule = (function (exports) {
 
   Transform.prototype;
 
+  // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
+  // Generated Thu Feb  6 15:37:13 CAT 2025
+  /// base.ts
   var defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
+  /// linechart.ts
   function linechart(processed_data, div, size, margin) {
       var _a, _b, _c;
       if (margin === undefined) { margin = defaultMargin; }
@@ -4609,38 +4613,7 @@ var ChartModule = (function (exports) {
           .attr("transform", "translate(".concat(margin.left, ",0)"))
           .call(axisLeft(yScale));
   }
-  function piechart(data, div, size, margin) {
-      var width = size.width, height = size.height;
-      var radius = Math.min(width, height) / 2;
-      var svg = select(div)
-          .append("svg")
-          .attr("width", width)
-          .attr("height", height)
-          .append("g")
-          .attr("transform", "translate(".concat(width / 2, ", ").concat(height / 2, ")"));
-      var color = ordinal()
-          .domain(data.map(function (d) { return d.label; }))
-          .range(Tableau10);
-      var pie$1 = pie().value(function (d) { return d.value; });
-      var arc$1 = arc()
-          .innerRadius(0)
-          .outerRadius(radius);
-      var arcs = svg
-          .selectAll("arc")
-          .data(pie$1(data))
-          .enter()
-          .append("g")
-          .attr("class", "arc");
-      arcs
-          .append("path")
-          .attr("d", arc$1)
-          .attr("fill", function (d) { return color(d.data.label); });
-      arcs
-          .append("text")
-          .attr("transform", function (d) { return "translate(".concat(arc$1.centroid(d), ")"); })
-          .attr("text-anchor", "middle")
-          .text(function (d) { return d.data.label; });
-  }
+  /// barchart.ts
   function barchart(data, div, size, margin) {
       if (margin === undefined) { margin = defaultMargin; }
       var width = size.width, height = size.height;
@@ -4678,6 +4651,39 @@ var ChartModule = (function (exports) {
           .attr("width", x.bandwidth())
           .attr("height", function (d) { return chartHeight - y(d.value); })
           .attr("fill", "steelblue");
+  }
+  /// piechart.ts
+  function piechart(data, div, size, margin) {
+      var width = size.width, height = size.height;
+      var radius = Math.min(width, height) / 2;
+      var svg = select(div)
+          .append("svg")
+          .attr("width", width)
+          .attr("height", height)
+          .append("g")
+          .attr("transform", "translate(".concat(width / 2, ", ").concat(height / 2, ")"));
+      var color = ordinal()
+          .domain(data.map(function (d) { return d.label; }))
+          .range(Tableau10);
+      var pie$1 = pie().value(function (d) { return d.value; });
+      var arc$1 = arc()
+          .innerRadius(0)
+          .outerRadius(radius);
+      var arcs = svg
+          .selectAll("arc")
+          .data(pie$1(data))
+          .enter()
+          .append("g")
+          .attr("class", "arc");
+      arcs
+          .append("path")
+          .attr("d", arc$1)
+          .attr("fill", function (d) { return color(d.data.label); });
+      arcs
+          .append("text")
+          .attr("transform", function (d) { return "translate(".concat(arc$1.centroid(d), ")"); })
+          .attr("text-anchor", "middle")
+          .text(function (d) { return d.data.label; });
   }
 
   exports.barchart = barchart;
