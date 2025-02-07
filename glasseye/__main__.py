@@ -3,8 +3,6 @@ import json
 from bs4 import BeautifulSoup
 
 def main():
-    margin_size = {'width':300,'height':300}
-    full_page_size = {'width':300,'height':300}
     module_name = 'ChartModule'
 
     #Function to wrap with tags
@@ -14,13 +12,18 @@ def main():
 
     #Function to add charts
     def add_chart(chart_id, code_string):
-        for d in enumerate(soup.findAll(chart_id)):
-            code_string += module_name + "." + chart_id + "(" + str(d[1].contents[0]) + ", '#" + chart_id + "_" + str(d[0])
-            breakpoint()
-            if d[1].parent.name == "span":
-                code_string += "'," + json.dumps(full_page_size) +"); \n"
-            else:
-                code_string += "'," + json.dumps(margin_size) +"); \n"
+        for d in enumerate(soup.find_all(chart_id)):
+            attrs = d[1].attrs
+            args =  {
+                        'data': attrs.get('data',{}),
+                        'div': f"#{chart_id}_{str(d[0])}",
+                        'size': attrs.get('size',{}),
+                        'margin': attrs.get('margin',{}),
+                        'colors':attrs.get('colors',[]),
+                        'options': attrs.get('options',{})
+                    }
+            code_string += f"{module_name}.{chart_id}({str(args)})"
+            # breakpoint()
             d[1].name = "span"
             d[1].contents = ""
             d[1]['id'] = chart_id + "_" + str(d[0])

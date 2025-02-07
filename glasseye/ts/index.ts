@@ -28,19 +28,33 @@ interface Size {
   height: number;
 }
 
+interface ArgumentObject {
+  data: DataPoint[];
+  div: string;
+  size: Size;
+  margin: Margin;
+  colors: string[];
+  options?: any
+}
+
 const defaultMargin: Margin = { top: 20, bottom: 20, left: 20, right: 20 };
+
+const defaultArgumentObject: ArgumentObject = {
+  data: [],
+  div: 'chart_',
+  size: {width:300, height: 300},
+  margin: defaultMargin,
+  colors: ['#081F36','#004E98','#1D5E9F','#C0C0C0','#EBEBEB','#FF6700']
+}
 /// linechart.ts
 
 export function linechart(
-  processed_data: DataPoint[],
-  div: string,
-  size: Size,
-  margin: Margin = defaultMargin
+  args:ArgumentObject = defaultArgumentObject
 ) {
-  const { width, height } = size;
+  const { width, height } = args.size;
 
   // Select the container div and clear any existing SVG
-  const container = d3.select(div);
+  const container = d3.select(args.div);
   container.selectAll("*").remove();
 
   const svg = container
@@ -52,15 +66,15 @@ export function linechart(
   const xScale = d3
     .scaleLinear()
     .domain([
-      d3.min(processed_data, (d: DataPoint) => d.x) ?? 0,
-      d3.max(processed_data, (d: DataPoint) => d.x) ?? 0,
+      d3.min(args.data, (d: DataPoint) => d.x) ?? 0,
+      d3.max(args.data, (d: DataPoint) => d.x) ?? 0,
     ])
-    .range([margin.left, width - margin.right]);
+    .range([args.margin.left, width - args.margin.right]);
 
   const yScale = d3
     .scaleLinear()
-    .domain([0, d3.max(processed_data, (d: DataPoint) => d.y) ?? 0])
-    .range([height - margin.bottom, margin.top]);
+    .domain([0, d3.max(args.data, (d: DataPoint) => d.y) ?? 0])
+    .range([height - args.margin.bottom, args.margin.top]);
 
   // Create the line generator
   const line = d3
@@ -72,7 +86,7 @@ export function linechart(
   // Append the line path
   svg
     .append("path")
-    .datum(processed_data)
+    .datum(args.data)
     .attr("fill", "none")
     .attr("stroke", "steelblue")
     .attr("stroke-width", 2)
@@ -81,13 +95,13 @@ export function linechart(
   // Append X axis
   svg
     .append("g")
-    .attr("transform", `translate(0,${height - margin.bottom})`)
+    .attr("transform", `translate(0,${height - args.margin.bottom})`)
     .call(d3.axisBottom(xScale).ticks(6));
 
   // Append Y axis
   svg
     .append("g")
-    .attr("transform", `translate(${margin.left},0)`)
+    .attr("transform", `translate(${args.margin.left},0)`)
     .call(d3.axisLeft(yScale));
 }
 /// barchart.ts

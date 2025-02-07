@@ -4567,13 +4567,20 @@ var ChartModule = (function (exports) {
   // Generated Fri Feb  7 15:25:30 CAT 2025
   /// base.ts
   var defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
+  var defaultArgumentObject = {
+      data: [],
+      div: 'chart_',
+      size: { width: 300, height: 300 },
+      margin: defaultMargin,
+      colors: ['#081F36', '#004E98', '#1D5E9F', '#C0C0C0', '#EBEBEB', '#FF6700']
+  };
   /// linechart.ts
-  function linechart(processed_data, div, size, margin) {
+  function linechart(args) {
       var _a, _b, _c;
-      if (margin === undefined) { margin = defaultMargin; }
-      var width = size.width, height = size.height;
+      if (args === undefined) { args = defaultArgumentObject; }
+      var _d = args.size, width = _d.width, height = _d.height;
       // Select the container div and clear any existing SVG
-      var container = select(div);
+      var container = select(args.div);
       container.selectAll("*").remove();
       var svg = container
           .append("svg")
@@ -4582,13 +4589,13 @@ var ChartModule = (function (exports) {
       // Define X and Y scales
       var xScale = linear()
           .domain([
-          (_a = min$1(processed_data, function (d) { return d.x; })) !== null && _a !== undefined ? _a : 0,
-          (_b = max$1(processed_data, function (d) { return d.x; })) !== null && _b !== undefined ? _b : 0,
+          (_a = min$1(args.data, function (d) { return d.x; })) !== null && _a !== undefined ? _a : 0,
+          (_b = max$1(args.data, function (d) { return d.x; })) !== null && _b !== undefined ? _b : 0,
       ])
-          .range([margin.left, width - margin.right]);
+          .range([args.margin.left, width - args.margin.right]);
       var yScale = linear()
-          .domain([0, (_c = max$1(processed_data, function (d) { return d.y; })) !== null && _c !== undefined ? _c : 0])
-          .range([height - margin.bottom, margin.top]);
+          .domain([0, (_c = max$1(args.data, function (d) { return d.y; })) !== null && _c !== undefined ? _c : 0])
+          .range([height - args.margin.bottom, args.margin.top]);
       // Create the line generator
       var line$1 = line()
           .x(function (d) { return xScale(d.x); })
@@ -4597,7 +4604,7 @@ var ChartModule = (function (exports) {
       // Append the line path
       svg
           .append("path")
-          .datum(processed_data)
+          .datum(args.data)
           .attr("fill", "none")
           .attr("stroke", "steelblue")
           .attr("stroke-width", 2)
@@ -4605,12 +4612,12 @@ var ChartModule = (function (exports) {
       // Append X axis
       svg
           .append("g")
-          .attr("transform", "translate(0,".concat(height - margin.bottom, ")"))
+          .attr("transform", "translate(0,".concat(height - args.margin.bottom, ")"))
           .call(axisBottom(xScale).ticks(6));
       // Append Y axis
       svg
           .append("g")
-          .attr("transform", "translate(".concat(margin.left, ",0)"))
+          .attr("transform", "translate(".concat(args.margin.left, ",0)"))
           .call(axisLeft(yScale));
   }
   /// barchart.ts
