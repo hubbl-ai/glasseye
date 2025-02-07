@@ -18,7 +18,7 @@ rollup:
 	cd .. && npx rollup -c
 
 copydemo:
-	cd .. && cp ./dist/glasseyechart.js ../../../demo/js/glasseyechart.js
+	cd .. && cp ./dist/glasseyechart.js ../demo/js/glasseyechart.js
 
 ../index.ts: $(SOURCE_FILES)
 	@ echo Building bundle
@@ -28,7 +28,7 @@ copydemo:
 
 	@for f in $^; do \
 	    echo "\n/// $$f\n"; \
-	    cat $$f \
+	    cat $$f; \
 	done >> $@
 
 ../index-try.ts: $(SOURCE_FILES)

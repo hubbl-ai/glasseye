@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Thu Feb  6 16:07:18 CAT 2025
+// Generated Fri Feb  7 15:25:30 CAT 2025
 
 
 /// base.ts
@@ -12,8 +12,6 @@ interface Margin {
   left: number;
   right: number;
 }
-
-const defaultMargin: Margin = { top: 20, bottom: 20, left: 20, right: 20 };
 
 interface DataPoint {
   x: number;
@@ -30,6 +28,7 @@ interface Size {
   height: number;
 }
 
+const defaultMargin: Margin = { top: 20, bottom: 20, left: 20, right: 20 };
 /// linechart.ts
 
 export function linechart(

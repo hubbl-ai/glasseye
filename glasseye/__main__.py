@@ -16,6 +16,7 @@ def main():
     def add_chart(chart_id, code_string):
         for d in enumerate(soup.findAll(chart_id)):
             code_string += module_name + "." + chart_id + "(" + str(d[1].contents[0]) + ", '#" + chart_id + "_" + str(d[0])
+            breakpoint()
             if d[1].parent.name == "span":
                 code_string += "'," + json.dumps(full_page_size) +"); \n"
             else:
