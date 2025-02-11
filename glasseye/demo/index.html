@@ -25,17 +25,10 @@
 <p>Similarly the line chart can be either created from a csv file (as
 long as it has columns with heading x and y) or from in line json. Here
 is an example.</p>
-<p><span colors="['red','green']" data=" [
-            { x: 1, y: 10 },
-            { x: 2, y: 20 },
-            { x: 3, y: 15 },
-            { x: 4, y: 25 },
-            { x: 5, y: 30 },
-            { x: 6, y: 35 }
-  ]" id="linechart_0" options="{curved:true}" size="{width:600,height:600}"></span><br/></p>
+<p><span colors='["red","green"]' data='[{ "x": 1, "y": 10 }, { "x": 2, "y": 20 },{ "x": 3, "y": 15 },{ "x": 4, "y": 25 },{ "x": 5, "y": 30 },{ "x": 6, "y": 35 }]' id="linechart_0" options='{"curved":1}' size='{"width":600,"height":600}'></span><br/></p>
     </div>
 
-<script>ChartModule.linechart({'data': ' [\n            { x: 1, y: 10 },\n            { x: 2, y: 20 },\n            { x: 3, y: 15 },\n            { x: 4, y: 25 },\n            { x: 5, y: 30 },\n            { x: 6, y: 35 }\n  ]', 'div': '#linechart_0', 'size': '{width:600,height:600}', 'margin': {}, 'colors': "['red','green']", 'options': '{curved:true}'})</script><script type="text/javascript">
+<script>ChartModule.linechart({'data': [{'x': 1, 'y': 10}, {'x': 2, 'y': 20}, {'x': 3, 'y': 15}, {'x': 4, 'y': 25}, {'x': 5, 'y': 30}, {'x': 6, 'y': 35}], 'div': '#linechart_0', 'size': {'width': 600, 'height': 600}, 'colors': ['red', 'green'], 'options': {'curved': 1}})</script><script type="text/javascript">
 (function () {
   var script = document.createElement("script");
   script.type = "text/javascript";

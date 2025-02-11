@@ -27,7 +27,6 @@ interface ArgumentObject {
   data: DataPoint[];
   div: string;
   size: Size;
-  margin: Margin;
   colors: string[];
   options?: any
 }
@@ -38,6 +37,5 @@ const defaultArgumentObject: ArgumentObject = {
   data: [],
   div: 'chart_',
   size: {width:300, height: 300},
-  margin: defaultMargin,
   colors: ['#081F36','#004E98','#1D5E9F','#C0C0C0','#EBEBEB','#FF6700']
 }

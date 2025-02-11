@@ -4571,7 +4571,6 @@ var ChartModule = (function (exports) {
       data: [],
       div: 'chart_',
       size: { width: 300, height: 300 },
-      margin: defaultMargin,
       colors: ['#081F36', '#004E98', '#1D5E9F', '#C0C0C0', '#EBEBEB', '#FF6700']
   };
   /// linechart.ts
@@ -4579,6 +4578,7 @@ var ChartModule = (function (exports) {
       var _a, _b, _c;
       if (args === undefined) { args = defaultArgumentObject; }
       var _d = args.size, width = _d.width, height = _d.height;
+      var margin = defaultMargin;
       // Select the container div and clear any existing SVG
       var container = select(args.div);
       container.selectAll("*").remove();
@@ -4592,10 +4592,10 @@ var ChartModule = (function (exports) {
           (_a = min$1(args.data, function (d) { return d.x; })) !== null && _a !== undefined ? _a : 0,
           (_b = max$1(args.data, function (d) { return d.x; })) !== null && _b !== undefined ? _b : 0,
       ])
-          .range([args.margin.left, width - args.margin.right]);
+          .range([margin.left, width - margin.right]);
       var yScale = linear()
           .domain([0, (_c = max$1(args.data, function (d) { return d.y; })) !== null && _c !== undefined ? _c : 0])
-          .range([height - args.margin.bottom, args.margin.top]);
+          .range([height - margin.bottom, margin.top]);
       // Create the line generator
       var line$1 = line()
           .x(function (d) { return xScale(d.x); })
@@ -4612,12 +4612,12 @@ var ChartModule = (function (exports) {
       // Append X axis
       svg
           .append("g")
-          .attr("transform", "translate(0,".concat(height - args.margin.bottom, ")"))
+          .attr("transform", "translate(0,".concat(height - margin.bottom, ")"))
           .call(axisBottom(xScale).ticks(6));
       // Append Y axis
       svg
           .append("g")
-          .attr("transform", "translate(".concat(args.margin.left, ",0)"))
+          .attr("transform", "translate(".concat(margin.left, ",0)"))
           .call(axisLeft(yScale));
   }
   /// barchart.ts

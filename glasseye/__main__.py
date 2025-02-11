@@ -14,16 +14,15 @@ def main():
     def add_chart(chart_id, code_string):
         for d in enumerate(soup.find_all(chart_id)):
             attrs = d[1].attrs
+            # breakpoint()
             args =  {
-                        'data': attrs.get('data',{}),
+                        'data': json.loads(attrs.get('data',"")),
                         'div': f"#{chart_id}_{str(d[0])}",
-                        'size': attrs.get('size',{}),
-                        'margin': attrs.get('margin',{}),
-                        'colors':attrs.get('colors',[]),
-                        'options': attrs.get('options',{})
+                        'size': json.loads(attrs.get('size',"")),
+                        'colors':json.loads(attrs.get('colors',[])),
+                        'options': json.loads(attrs.get('options',""))
                     }
             code_string += f"{module_name}.{chart_id}({str(args)})"
-            # breakpoint()
             d[1].name = "span"
             d[1].contents = ""
             d[1]['id'] = chart_id + "_" + str(d[0])
