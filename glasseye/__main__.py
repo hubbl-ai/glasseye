@@ -22,7 +22,7 @@ def main():
                         'colors':json.loads(attrs.get('colors',[])),
                         'options': json.loads(attrs.get('options',""))
                     }
-            code_string += f"{module_name}.{chart_id}({str(args)})"
+            code_string += f"{module_name}.{chart_id}({str(args)});"
             d[1].name = "span"
             d[1].contents = ""
             d[1]['id'] = chart_id + "_" + str(d[0])

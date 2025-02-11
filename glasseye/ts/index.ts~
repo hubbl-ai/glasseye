@@ -1,9 +1,8 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Tue Feb 11 18:11:09 CAT 2025
+// Generated Fri Feb  7 15:25:30 CAT 2025
 
 
 /// base.ts
-
 
 import * as d3 from "d3";
 
@@ -46,7 +45,6 @@ const defaultArgumentObject: ArgumentObject = {
   colors: ['#081F36','#004E98','#1D5E9F','#C0C0C0','#EBEBEB','#FF6700']
 }
 /// linechart.ts
-
 
 export function linechart(
   args:ArgumentObject = defaultArgumentObject

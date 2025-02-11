@@ -33,7 +33,7 @@ export function linechart(
     .line<DataPoint>()
     .x((d) => xScale(d.x))
     .y((d) => yScale(d.y))
-    .curve(d3.curveMonotoneX);
+    .curve(args.options && args.options.curved ? d3.curveMonotoneX : d3.curveLinear);
 
   // Append the line path
   svg

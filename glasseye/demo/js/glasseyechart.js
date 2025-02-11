@@ -4564,7 +4564,7 @@ var ChartModule = (function (exports) {
   Transform.prototype;
 
   // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-  // Generated Fri Feb  7 15:25:30 CAT 2025
+  // Generated Tue Feb 11 18:11:09 CAT 2025
   /// base.ts
   var defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
   var defaultArgumentObject = {
@@ -4600,7 +4600,7 @@ var ChartModule = (function (exports) {
       var line$1 = line()
           .x(function (d) { return xScale(d.x); })
           .y(function (d) { return yScale(d.y); })
-          .curve(monotoneX);
+          .curve(args.options && args.options.curved ? monotoneX : curveLinear);
       // Append the line path
       svg
           .append("path")
