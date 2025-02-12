@@ -1,8 +1,9 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Wed Feb 12 15:27:15 CAT 2025
+// Generated Wed Feb 12 15:45:11 CAT 2025
 
 
 /// base.ts
+
 
 
 
@@ -36,7 +37,7 @@ interface DataFile {
 }
 
 interface ArgumentObject {
-  data: DataPoint[];
+  data: any;
   div: string;
   size: Size;
   colors: string[];
@@ -78,6 +79,7 @@ export async function linechart(
   {
     args.data = await loadData(args.file?.path, args.file?.format);
   }
+  const processed_data:DataPoint[] = args.data as DataPoint[];
 
   // Select the container div and clear any existing SVG
   const container = d3.select(args.div);
@@ -92,14 +94,14 @@ export async function linechart(
   const xScale = d3
     .scaleLinear()
     .domain([
-      d3.min(args.data, (d: DataPoint) => d.x) ?? 0,
-      d3.max(args.data, (d: DataPoint) => d.x) ?? 0,
+      d3.min(processed_data, (d: DataPoint) => d.x) ?? 0,
+      d3.max(processed_data, (d: DataPoint) => d.x) ?? 0,
     ])
     .range([margin.left, width - margin.right]);
 
   const yScale = d3
     .scaleLinear()
-    .domain([0, d3.max(args.data, (d: DataPoint) => d.y) ?? 0])
+    .domain([0, d3.max(processed_data, (d: DataPoint) => d.y) ?? 0])
     .range([height - margin.bottom, margin.top]);
 
   // Create the line generator
@@ -112,7 +114,7 @@ export async function linechart(
   // Append the line path
   svg
     .append("path")
-    .datum(args.data)
+    .datum(processed_data)
     .attr("fill", "none")
     .attr("stroke", args.colors[0])
     .attr("stroke-width", 2)

@@ -1,5 +1,6 @@
 
 
+
 import * as d3 from "d3";
 
 interface Margin {
@@ -30,7 +31,7 @@ interface DataFile {
 }
 
 interface ArgumentObject {
-  data: DataPoint[];
+  data: any;
   div: string;
   size: Size;
   colors: string[];

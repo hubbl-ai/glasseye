@@ -4777,7 +4777,7 @@ var ChartModule = (function (exports) {
     Transform.prototype;
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Wed Feb 12 15:27:15 CAT 2025
+    // Generated Wed Feb 12 15:45:11 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -4806,6 +4806,7 @@ var ChartModule = (function (exports) {
             if ((_a = args.file) === null || _a === undefined ? undefined : _a.path) {
                 args.data = yield loadData((_b = args.file) === null || _b === undefined ? undefined : _b.path, (_c = args.file) === null || _c === undefined ? undefined : _c.format);
             }
+            const processed_data = args.data;
             // Select the container div and clear any existing SVG
             const container = select(args.div);
             container.selectAll("*").remove();
@@ -4816,12 +4817,12 @@ var ChartModule = (function (exports) {
             // Define X and Y scales
             const xScale = linear()
                 .domain([
-                (_d = min$1(args.data, (d) => d.x)) !== null && _d !== undefined ? _d : 0,
-                (_e = max$1(args.data, (d) => d.x)) !== null && _e !== undefined ? _e : 0,
+                (_d = min$1(processed_data, (d) => d.x)) !== null && _d !== undefined ? _d : 0,
+                (_e = max$1(processed_data, (d) => d.x)) !== null && _e !== undefined ? _e : 0,
             ])
                 .range([margin.left, width - margin.right]);
             const yScale = linear()
-                .domain([0, (_f = max$1(args.data, (d) => d.y)) !== null && _f !== undefined ? _f : 0])
+                .domain([0, (_f = max$1(processed_data, (d) => d.y)) !== null && _f !== undefined ? _f : 0])
                 .range([height - margin.bottom, margin.top]);
             // Create the line generator
             const line$1 = line()
@@ -4831,7 +4832,7 @@ var ChartModule = (function (exports) {
             // Append the line path
             svg
                 .append("path")
-                .datum(args.data)
+                .datum(processed_data)
                 .attr("fill", "none")
                 .attr("stroke", args.colors[0])
                 .attr("stroke-width", 2)
