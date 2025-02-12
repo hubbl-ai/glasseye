@@ -1,6 +1,3 @@
-
-
-
 import * as d3 from "d3";
 
 interface Margin {
@@ -27,7 +24,7 @@ interface Size {
 
 interface DataFile {
   path: string;
-  format:string;
+  format: string;
 }
 
 interface ArgumentObject {
@@ -36,26 +33,36 @@ interface ArgumentObject {
   size: Size;
   colors: string[];
   options?: any;
-  file?: DataFile
+  file?: DataFile;
 }
 
 const defaultMargin: Margin = { top: 20, bottom: 20, left: 20, right: 20 };
-const defaultSize: Size = {width:300, height: 300};
+const defaultSize: Size = { width: 300, height: 300 };
 
 const defaultArgumentObject: ArgumentObject = {
   data: [],
-  div: 'chart_',
+  div: "chart_",
   size: defaultSize,
-  colors: ['#081F36','#004E98','#1D5E9F','#C0C0C0','#EBEBEB','#FF6700']
-}
-
-const fileFormats: { [key: string]: string } = {
-  csv: ",",
-  tsv: " ",
-  hsv: "#"
+  colors: ["#081F36", "#004E98", "#1D5E9F", "#C0C0C0", "#EBEBEB", "#FF6700"],
 };
 
-async function loadData(path:string, format:string="csv"): Promise<any> {
-  const data = await d3.dsv(fileFormats[format], path);
+const formatters: { [key: string]: Function } = {
+  csv: d3.csv,
+  tsv: d3.tsv,
+  json: d3.json,
+  txt: d3.text,
+  hsv: (path: string) => d3.dsv('#',path)
+};
+
+async function loadData(path: string, format: string = ""): Promise<any> {
+  if (format == "") {
+    format = path.split(".").slice(-1)[0];
+  }
+  if (!(format in formatters)) {
+    console.log(`Invalid file format ${format}`);
+    return [];
+  }
+
+  const data = await formatters[format](path);
   return data;
 }

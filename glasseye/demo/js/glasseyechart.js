@@ -3445,6 +3445,14 @@ var ChartModule = (function (exports) {
       };
     }
 
+    var csv$1 = dsvFormat(",");
+
+    var csvParse = csv$1.parse;
+
+    var tsv$1 = dsvFormat("\t");
+
+    var tsvParse = tsv$1.parse;
+
     function responseText(response) {
       if (!response.ok) throw new Error(response.status + " " + response.statusText);
       return response.text();
@@ -3454,11 +3462,33 @@ var ChartModule = (function (exports) {
       return fetch(input, init).then(responseText);
     }
 
+    function dsvParse(parse) {
+      return function(input, init, row) {
+        if (arguments.length === 2 && typeof init === "function") row = init, init = undefined;
+        return text(input, init).then(function(response) {
+          return parse(response, row);
+        });
+      };
+    }
+
     function dsv(delimiter, input, init, row) {
       var format = dsvFormat(delimiter);
       return text(input, init).then(function(response) {
         return format.parse(response, row);
       });
+    }
+
+    var csv = dsvParse(csvParse);
+    var tsv = dsvParse(tsvParse);
+
+    function responseJson(response) {
+      if (!response.ok) throw new Error(response.status + " " + response.statusText);
+      if (response.status === 204 || response.status === 205) return;
+      return response.json();
+    }
+
+    function json(input, init) {
+      return fetch(input, init).then(responseJson);
     }
 
     function formatDecimal(x) {
@@ -4777,23 +4807,32 @@ var ChartModule = (function (exports) {
     Transform.prototype;
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Wed Feb 12 15:45:11 CAT 2025
+    // Generated Wed Feb 12 16:58:12 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
         data: [],
-        div: 'chart_',
+        div: "chart_",
         size: defaultSize,
-        colors: ['#081F36', '#004E98', '#1D5E9F', '#C0C0C0', '#EBEBEB', '#FF6700']
+        colors: ["#081F36", "#004E98", "#1D5E9F", "#C0C0C0", "#EBEBEB", "#FF6700"],
     };
     const fileFormats = {
-        csv: ",",
-        tsv: " ",
-        hsv: "#"
+        csv: csv,
+        tsv: tsv,
+        json: json,
+        txt: text,
+        hsv: (path) => dsv('#', path)
     };
     function loadData(path_1) {
-        return __awaiter(this, arguments, undefined, function* (path, format = "csv") {
-            const data = yield dsv(fileFormats[format], path);
+        return __awaiter(this, arguments, undefined, function* (path, format = "") {
+            if (format == "") {
+                format = path.split(".").slice(-1)[0];
+            }
+            if (!(format in fileFormats)) {
+                console.log("Invalid format");
+                return [];
+            }
+            const data = yield fileFormats[format](path);
             return data;
         });
     }

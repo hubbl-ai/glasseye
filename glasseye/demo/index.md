@@ -63,7 +63,35 @@ data='[
 <linechart
  file='{"path":"data/xy.tsv","format":"tsv"}'
   size='{"width":400,"height":400}'
-  colors='["#6F17E2","green"]'
+  colors='["yellow","green"]'
+  options='{"curved":1}'
+>
+</linechart>
+
+
+
+
+
+### A line chart FROM .json
+
+
+<linechart
+ file='{"path":"data/xy.json"}'
+  size='{"width":400,"height":400}'
+  colors='["blue","green"]'
+  options='{"curved":1}'
+>
+</linechart>
+
+
+
+### A line chart FROM .hsv
+
+
+<linechart
+ file='{"path":"data/xy.hsv"}'
+  size='{"width":400,"height":400}'
+  colors='["red","green"]'
   options='{"curved":1}'
 >
 </linechart>
