@@ -1,8 +1,9 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Tue Feb 11 18:11:09 CAT 2025
+// Generated Wed Feb 12 15:27:15 CAT 2025
 
 
 /// base.ts
+
 
 
 import * as d3 from "d3";
@@ -29,30 +30,54 @@ interface Size {
   height: number;
 }
 
+interface DataFile {
+  path: string;
+  format:string;
+}
+
 interface ArgumentObject {
   data: DataPoint[];
   div: string;
   size: Size;
   colors: string[];
-  options?: any
+  options?: any;
+  file?: DataFile
 }
 
 const defaultMargin: Margin = { top: 20, bottom: 20, left: 20, right: 20 };
+const defaultSize: Size = {width:300, height: 300};
 
 const defaultArgumentObject: ArgumentObject = {
   data: [],
   div: 'chart_',
-  size: {width:300, height: 300},
+  size: defaultSize,
   colors: ['#081F36','#004E98','#1D5E9F','#C0C0C0','#EBEBEB','#FF6700']
+}
+
+const fileFormats: { [key: string]: string } = {
+  csv: ",",
+  tsv: " ",
+  hsv: "#"
+};
+
+async function loadData(path:string, format:string="csv"): Promise<any> {
+  const data = await d3.dsv(fileFormats[format], path);
+  return data;
 }
 /// linechart.ts
 
 
-export function linechart(
+
+export async function linechart(
   args:ArgumentObject = defaultArgumentObject
 ) {
   const { width, height } = args.size;
   const margin:Margin = defaultMargin;
+
+  if(args.file?.path)
+  {
+    args.data = await loadData(args.file?.path, args.file?.format);
+  }
 
   // Select the container div and clear any existing SVG
   const container = d3.select(args.div);
@@ -89,7 +114,7 @@ export function linechart(
     .append("path")
     .datum(args.data)
     .attr("fill", "none")
-    .attr("stroke", "steelblue")
+    .attr("stroke", args.colors[0])
     .attr("stroke-width", 2)
     .attr("d", line);
 

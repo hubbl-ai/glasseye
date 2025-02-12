@@ -15,7 +15,7 @@ data='[
   { "x": 6, "y": 35 }
   ]'
   size='{"width":600,"height":600}'
-  colors='["red","green"]'
+  colors='["#FF6700","green"]'
   options='{"curved":0}'
 >
 </linechart>
@@ -37,7 +37,33 @@ data='[
   { "x": 6, "y": 35 }
   ]'
   size='{"width":600,"height":600}'
+  colors='["#004E98","green"]'
+  options='{"curved":1}'
+>
+</linechart>
+
+
+### A line chart FROM .CSV
+
+
+<linechart
+ file='{"path":"data/xy.csv","format":"csv"}'
+  size='{"width":800,"height":800}'
   colors='["red","green"]'
+  options='{"curved":0}'
+>
+</linechart>
+
+
+
+
+### A line chart FROM .TSV
+
+
+<linechart
+ file='{"path":"data/xy.tsv","format":"tsv"}'
+  size='{"width":400,"height":400}'
+  colors='["#6F17E2","green"]'
   options='{"curved":1}'
 >
 </linechart>

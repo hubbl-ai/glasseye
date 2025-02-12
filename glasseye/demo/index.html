@@ -25,7 +25,7 @@
 <p>Similarly the line chart can be either created from a csv file (as
 long as it has columns with heading x and y) or from in line json. Here
 is an example.</p>
-<p><span colors='["red","green"]' data='[
+<p><span colors='["#FF6700","green"]' data='[
   { "x": 1, "y": 10 }, 
   { "x": 2, "y": 20 },
   { "x": 3, "y": 15 },
@@ -37,7 +37,7 @@ is an example.</p>
 <p>Similarly the line chart can be either created from a csv file (as
 long as it has columns with heading x and y) or from in line json. Here
 is an example.</p>
-<p><span colors='["red","green"]' data='[
+<p><span colors='["#004E98","green"]' data='[
   { "x": 1, "y": 10 }, 
   { "x": 2, "y": 20 },
   { "x": 3, "y": 15 },
@@ -45,9 +45,13 @@ is an example.</p>
   { "x": 5, "y": 30 },
   { "x": 6, "y": 35 }
   ]' id="linechart_1" options='{"curved":1}' size='{"width":600,"height":600}'></span><br/></p>
+<h3 id="a-line-chart-from-.csv">A line chart FROM .CSV</h3>
+<p><span colors='["red","green"]' file='{"path":"data/xy.csv","format":"csv"}' id="linechart_2" options='{"curved":0}' size='{"width":800,"height":800}'></span><br/></p>
+<h3 id="a-line-chart-from-.tsv">A line chart FROM .TSV</h3>
+<p><span colors='["#6F17E2","green"]' file='{"path":"data/xy.tsv","format":"tsv"}' id="linechart_3" options='{"curved":0}' size='{"width":400,"height":400}'></span><br/></p>
     </div>
 
-<script>ChartModule.linechart({'data': [{'x': 1, 'y': 10}, {'x': 2, 'y': 20}, {'x': 3, 'y': 15}, {'x': 4, 'y': 25}, {'x': 5, 'y': 30}, {'x': 6, 'y': 35}], 'div': '#linechart_0', 'size': {'width': 600, 'height': 600}, 'colors': ['red', 'green'], 'options': {'curved': 0}});ChartModule.linechart({'data': [{'x': 1, 'y': 10}, {'x': 2, 'y': 20}, {'x': 3, 'y': 15}, {'x': 4, 'y': 25}, {'x': 5, 'y': 30}, {'x': 6, 'y': 35}], 'div': '#linechart_1', 'size': {'width': 600, 'height': 600}, 'colors': ['red', 'green'], 'options': {'curved': 1}});</script><script type="text/javascript">
+<script>ChartModule.linechart({'data': [{'x': 1, 'y': 10}, {'x': 2, 'y': 20}, {'x': 3, 'y': 15}, {'x': 4, 'y': 25}, {'x': 5, 'y': 30}, {'x': 6, 'y': 35}], 'file': {}, 'div': '#linechart_0', 'size': {'width': 600, 'height': 600}, 'colors': ['#FF6700', 'green'], 'options': {'curved': 0}});ChartModule.linechart({'data': [{'x': 1, 'y': 10}, {'x': 2, 'y': 20}, {'x': 3, 'y': 15}, {'x': 4, 'y': 25}, {'x': 5, 'y': 30}, {'x': 6, 'y': 35}], 'file': {}, 'div': '#linechart_1', 'size': {'width': 600, 'height': 600}, 'colors': ['#004E98', 'green'], 'options': {'curved': 1}});ChartModule.linechart({'data': {}, 'file': {'path': 'data/xy.csv', 'format': 'csv'}, 'div': '#linechart_2', 'size': {'width': 800, 'height': 800}, 'colors': ['red', 'green'], 'options': {'curved': 0}});ChartModule.linechart({'data': {}, 'file': {'path': 'data/xy.tsv', 'format': 'tsv'}, 'div': '#linechart_3', 'size': {'width': 400, 'height': 400}, 'colors': ['#6F17E2', 'green'], 'options': {'curved': 0}});</script><script type="text/javascript">
 (function () {
   var script = document.createElement("script");
   script.type = "text/javascript";

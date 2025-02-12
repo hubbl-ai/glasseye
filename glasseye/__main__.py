@@ -16,11 +16,12 @@ def main():
             attrs = d[1].attrs
             # breakpoint()
             args =  {
-                        'data': json.loads(attrs.get('data',"")),
+                        'data': json.loads(attrs.get('data',"{}")),
+                        'file': json.loads(attrs.get('file',"{}")),
                         'div': f"#{chart_id}_{str(d[0])}",
-                        'size': json.loads(attrs.get('size',"")),
+                        'size': json.loads(attrs.get('size',"{}")),
                         'colors':json.loads(attrs.get('colors',[])),
-                        'options': json.loads(attrs.get('options',""))
+                        'options': json.loads(attrs.get('options',"{}"))
                     }
             code_string += f"{module_name}.{chart_id}({str(args)});"
             d[1].name = "span"

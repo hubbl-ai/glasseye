@@ -1,9 +1,15 @@
 
-export function linechart(
+
+export async function linechart(
   args:ArgumentObject = defaultArgumentObject
 ) {
   const { width, height } = args.size;
   const margin:Margin = defaultMargin;
+
+  if(args.file?.path)
+  {
+    args.data = await loadData(args.file?.path, args.file?.format);
+  }
 
   // Select the container div and clear any existing SVG
   const container = d3.select(args.div);
@@ -40,7 +46,7 @@ export function linechart(
     .append("path")
     .datum(args.data)
     .attr("fill", "none")
-    .attr("stroke", "steelblue")
+    .attr("stroke", args.colors[0])
     .attr("stroke-width", 2)
     .attr("d", line);
 
