@@ -4807,7 +4807,7 @@ var ChartModule = (function (exports) {
     Transform.prototype;
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Wed Feb 12 16:58:12 CAT 2025
+    // Generated Thu Feb 13 15:31:54 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -4816,7 +4816,7 @@ var ChartModule = (function (exports) {
         size: defaultSize,
         colors: ["#081F36", "#004E98", "#1D5E9F", "#C0C0C0", "#EBEBEB", "#FF6700"],
     };
-    const fileFormats = {
+    const formatters = {
         csv: csv,
         tsv: tsv,
         json: json,
@@ -4828,11 +4828,11 @@ var ChartModule = (function (exports) {
             if (format == "") {
                 format = path.split(".").slice(-1)[0];
             }
-            if (!(format in fileFormats)) {
-                console.log("Invalid format");
+            if (!(format in formatters)) {
+                console.log(`Invalid file format ${format}`);
                 return [];
             }
-            const data = yield fileFormats[format](path);
+            const data = yield formatters[format](path);
             return data;
         });
     }

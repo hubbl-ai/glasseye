@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Wed Feb 12 16:58:12 CAT 2025
+// Generated Thu Feb 13 15:31:54 CAT 2025
 
 
 /// base.ts
@@ -52,7 +52,7 @@ const defaultArgumentObject: ArgumentObject = {
   colors: ["#081F36", "#004E98", "#1D5E9F", "#C0C0C0", "#EBEBEB", "#FF6700"],
 };
 
-const fileFormats: { [key: string]: Function } = {
+const formatters: { [key: string]: Function } = {
   csv: d3.csv,
   tsv: d3.tsv,
   json: d3.json,
@@ -64,12 +64,12 @@ async function loadData(path: string, format: string = ""): Promise<any> {
   if (format == "") {
     format = path.split(".").slice(-1)[0];
   }
-  if (!(format in fileFormats)) {
-    console.log("Invalid format");
+  if (!(format in formatters)) {
+    console.log(`Invalid file format ${format}`);
     return [];
   }
 
-  const data = await fileFormats[format](path);
+  const data = await formatters[format](path);
   return data;
 }
 
