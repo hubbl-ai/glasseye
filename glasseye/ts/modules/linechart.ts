@@ -1,19 +1,24 @@
 
 
 export async function linechart(
-  args:ArgumentObject = defaultArgumentObject
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  colors: string[] = defaultArgumentObject.colors,
+  file?: DataFile,
+  curved = 0
 ) {
-  const { width, height } = args.size;
+  const { width, height } = size;
   const margin:Margin = defaultMargin;
 
-  if(args.file?.path)
+  if(file?.path)
   {
-    args.data = await loadData(args.file?.path, args.file?.format);
+    data = await loadData(file?.path, file?.format);
   }
-  const processed_data:DataPoint[] = args.data as DataPoint[];
+  const processed_data:DataPoint[] = data as DataPoint[];
 
   // Select the container div and clear any existing SVG
-  const container = d3.select(args.div);
+  const container = d3.select(div);
   container.selectAll("*").remove();
 
   const svg = container
@@ -40,14 +45,14 @@ export async function linechart(
     .line<DataPoint>()
     .x((d) => xScale(d.x))
     .y((d) => yScale(d.y))
-    .curve(args.options && args.options.curved ? d3.curveMonotoneX : d3.curveLinear);
+    .curve(curved ? d3.curveMonotoneX : d3.curveLinear);
 
   // Append the line path
   svg
     .append("path")
     .datum(processed_data)
     .attr("fill", "none")
-    .attr("stroke", args.colors[0])
+    .attr("stroke", colors[0])
     .attr("stroke-width", 2)
     .attr("d", line);
 

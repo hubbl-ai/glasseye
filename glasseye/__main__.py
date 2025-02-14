@@ -11,19 +11,17 @@ def main():
         wrap_in.append(contents)
 
     #Function to add charts
-    def add_chart(chart_id, code_string):
+    def add_chart(chart_id, list_of_fields, code_string):
         for d in enumerate(soup.find_all(chart_id)):
             attrs = d[1].attrs
-            # breakpoint()
-            args =  {
-                        'data': json.loads(attrs.get('data',"{}")),
-                        'file': json.loads(attrs.get('file',"{}")),
-                        'div': f"#{chart_id}_{str(d[0])}",
-                        'size': json.loads(attrs.get('size',"{}")),
-                        'colors':json.loads(attrs.get('colors',[])),
-                        'options': json.loads(attrs.get('options',"{}"))
-                    }
-            code_string += f"{module_name}.{chart_id}({str(args)});"
+            args = [f"'#{chart_id}_{str(d[0])}'"]
+            for field,dv in list_of_fields.items():
+                # breakpoint()
+                if field in attrs:
+                    args.append(str(json.loads(attrs[field])))
+                else:
+                    args.append(str(dv))
+            code_string += f"{module_name}.{chart_id}({','.join(args)});"
             d[1].name = "span"
             d[1].contents = ""
             d[1]['id'] = chart_id + "_" + str(d[0])
@@ -108,10 +106,13 @@ def main():
     code_string = ""
 
     #Standard charts
-    standard_charts = ["skey","barchart","piechart","donut","linechart", "tree", "vennchart", "gantt", "treemap", "heatmap", "dotplot",  "scatterplot", "boxplot"]
+    # standard_charts = ["skey","barchart","piechart","donut","linechart", "tree", "vennchart", "gantt", "treemap", "heatmap", "dotplot",  "scatterplot", "boxplot"]
+    standard_charts = {
+        'linechart':{'data':[], 'size':{},'colors':{},'file':{},'curved':1}
+        }
 
-    for s in standard_charts:
-        code_string = add_chart(s, code_string)
+    for s, args in standard_charts.items():
+        code_string = add_chart(s, args, code_string)
 
 
     soup_string = str(soup)

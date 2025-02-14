@@ -32,7 +32,6 @@ interface ArgumentObject {
   div: string;
   size: Size;
   colors: string[];
-  options?: any;
   file?: DataFile;
 }
 

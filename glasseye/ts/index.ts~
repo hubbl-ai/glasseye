@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Thu Feb 13 17:01:12 CAT 2025
+// Generated Thu Feb 13 16:39:24 CAT 2025
 
 
 /// base.ts
@@ -77,8 +77,8 @@ async function loadData(path: string, format: string = ""): Promise<any> {
 
 
 export async function linechart(
-  div: string = defaultArgumentObject.div,
   data: any = defaultArgumentObject.data,
+  div: string = defaultArgumentObject.div,
   size: Size = defaultArgumentObject.size,
   colors: string[] = defaultArgumentObject.colors,
   file?: DataFile,

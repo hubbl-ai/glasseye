@@ -16,7 +16,7 @@ data='[
   ]'
   size='{"width":600,"height":600}'
   colors='["#FF6700","green"]'
-  options='{"curved":0}'
+  curved='1'
 >
 </linechart>
 
@@ -38,7 +38,7 @@ data='[
   ]'
   size='{"width":600,"height":600}'
   colors='["#004E98","green"]'
-  options='{"curved":1}'
+  curved='1'
 >
 </linechart>
 
@@ -50,10 +50,9 @@ data='[
  file='{"path":"data/xy.csv","format":"csv"}'
   size='{"width":800,"height":800}'
   colors='["red","green"]'
-  options='{"curved":0}'
+  curved='1'
 >
 </linechart>
-
 
 
 
@@ -64,7 +63,7 @@ data='[
  file='{"path":"data/xy.tsv","format":"tsv"}'
   size='{"width":400,"height":400}'
   colors='["yellow","green"]'
-  options='{"curved":1}'
+  curved='1'
 >
 </linechart>
 
@@ -79,7 +78,7 @@ data='[
  file='{"path":"data/xy.json"}'
   size='{"width":400,"height":400}'
   colors='["blue","green"]'
-  options='{"curved":1}'
+  curved='1'
 >
 </linechart>
 
@@ -92,6 +91,6 @@ data='[
  file='{"path":"data/xy.hsv"}'
   size='{"width":400,"height":400}'
   colors='["red","green"]'
-  options='{"curved":1}'
+  curved='1'
 >
 </linechart>

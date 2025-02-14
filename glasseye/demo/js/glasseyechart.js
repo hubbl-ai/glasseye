@@ -4807,7 +4807,7 @@ var ChartModule = (function (exports) {
     Transform.prototype;
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Thu Feb 13 15:31:54 CAT 2025
+    // Generated Thu Feb 13 17:01:12 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -4838,16 +4838,16 @@ var ChartModule = (function (exports) {
     }
     /// linechart.ts
     function linechart() {
-        return __awaiter(this, arguments, undefined, function* (args = defaultArgumentObject) {
-            var _a, _b, _c, _d, _e, _f;
-            const { width, height } = args.size;
+        return __awaiter(this, arguments, undefined, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, colors = defaultArgumentObject.colors, file, curved = 0) {
+            var _a, _b, _c;
+            const { width, height } = size;
             const margin = defaultMargin;
-            if ((_a = args.file) === null || _a === undefined ? undefined : _a.path) {
-                args.data = yield loadData((_b = args.file) === null || _b === undefined ? undefined : _b.path, (_c = args.file) === null || _c === undefined ? undefined : _c.format);
+            if (file === null || file === undefined ? undefined : file.path) {
+                data = yield loadData(file === null || file === undefined ? undefined : file.path, file === null || file === undefined ? undefined : file.format);
             }
-            const processed_data = args.data;
+            const processed_data = data;
             // Select the container div and clear any existing SVG
-            const container = select(args.div);
+            const container = select(div);
             container.selectAll("*").remove();
             const svg = container
                 .append("svg")
@@ -4856,24 +4856,24 @@ var ChartModule = (function (exports) {
             // Define X and Y scales
             const xScale = linear()
                 .domain([
-                (_d = min$1(processed_data, (d) => d.x)) !== null && _d !== undefined ? _d : 0,
-                (_e = max$1(processed_data, (d) => d.x)) !== null && _e !== undefined ? _e : 0,
+                (_a = min$1(processed_data, (d) => d.x)) !== null && _a !== undefined ? _a : 0,
+                (_b = max$1(processed_data, (d) => d.x)) !== null && _b !== undefined ? _b : 0,
             ])
                 .range([margin.left, width - margin.right]);
             const yScale = linear()
-                .domain([0, (_f = max$1(processed_data, (d) => d.y)) !== null && _f !== undefined ? _f : 0])
+                .domain([0, (_c = max$1(processed_data, (d) => d.y)) !== null && _c !== undefined ? _c : 0])
                 .range([height - margin.bottom, margin.top]);
             // Create the line generator
             const line$1 = line()
                 .x((d) => xScale(d.x))
                 .y((d) => yScale(d.y))
-                .curve(args.options && args.options.curved ? monotoneX : curveLinear);
+                .curve(curved ? monotoneX : curveLinear);
             // Append the line path
             svg
                 .append("path")
                 .datum(processed_data)
                 .attr("fill", "none")
-                .attr("stroke", args.colors[0])
+                .attr("stroke", colors[0])
                 .attr("stroke-width", 2)
                 .attr("d", line$1);
             // Append X axis
