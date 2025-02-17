@@ -16,7 +16,7 @@ data='[
   ]'
   size='{"width":600,"height":600}'
   colors='["#FF6700","green"]'
-  curved='1'
+  curved='0'
 >
 </linechart>
 
@@ -50,13 +50,13 @@ data='[
  file='{"path":"data/xy.csv","format":"csv"}'
   size='{"width":800,"height":800}'
   colors='["red","green"]'
-  curved='1'
+  curved='0'
 >
 </linechart>
 
 
 
-### A line chart FROM .TSV
+### A simplot chart FROM .TSV
 
 
 <linechart
@@ -78,7 +78,7 @@ data='[
  file='{"path":"data/xy.json"}'
   size='{"width":400,"height":400}'
   colors='["blue","green"]'
-  curved='1'
+  curved='0'
 >
 </linechart>
 
@@ -94,3 +94,63 @@ data='[
   curved='1'
 >
 </linechart>
+
+
+### A Bar chart
+
+Similarly the Bar chart can be either created from a csv file (as long as it has columns with heading x and y) or from in line json. Here is an example.
+
+
+<barchart
+data='[
+  { label: "Apples", value: 10 },
+  { label: "Bananas", value: 20 },
+  { label: "Cherries", value: 15 },
+  { label: "Grapes", value: 25 }
+]'
+  size='{"width":500,"height":500}'
+  colors='["#FF6700","green"]'
+>
+</barchart>
+
+
+
+
+### A Pie chart
+
+Similarly the Pie chart can be either created from a csv file (as long as it has columns with heading x and y) or from in line json. Here is an example.
+
+
+<piechart
+data='[
+  { label: "Apples", value: 10 },
+  { label: "Bananas", value: 20 },
+  { label: "Cherries", value: 15 },
+  { label: "Grapes", value: 25 }
+]'
+  size='{"width":500,"height":500}'
+  colors='["#FF6700","green"]'
+>
+</piechart>
+
+
+
+
+
+### A Donut chart
+
+Similarly the Donut chart can be either created from a csv file (as long as it has columns with heading x and y) or from in line json. Here is an example.
+
+
+<piechart
+data='[
+  { label: "Apples", value: 10 },
+  { label: "Bananas", value: 20 },
+  { label: "Cherries", value: 15 },
+  { label: "Grapes", value: 25 }
+]'
+  size='{"width":500,"height":500}'
+  colors='["#FF6700","green"]'
+  donut = '1'
+>
+</piechart>

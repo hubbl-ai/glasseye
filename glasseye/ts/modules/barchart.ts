@@ -1,10 +1,20 @@
-export function barchart(
-  data: DataLabeled[],
-  div: string,
-  size: Size,
-  margin: Margin = defaultMargin
+
+export async function barchart(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  colors: string[] = defaultArgumentObject.colors,
+  file?: DataFile
 ) {
   const { width, height } = size;
+  const margin:Margin = defaultMargin;
+
+
+  if(file?.path)
+    {
+      data = await loadData(file?.path, file?.format);
+    }
+    const processed_data:DataLabeled[] = data as DataLabeled[];
 
   const svg = d3
     .select(div)
@@ -19,13 +29,13 @@ export function barchart(
 
   const x = d3
     .scaleBand()
-    .domain(data.map((d) => d.label))
+    .domain(processed_data.map((d: any) => d.label))
     .range([0, chartWidth])
     .padding(0.2);
 
   const y = d3
     .scaleLinear()
-    .domain([0, d3.max(data, (d: any) => d.value)!])
+    .domain([0, d3.max(processed_data, (d: any) => d.value as number)!])
     .range([chartHeight, 0]);
 
   // Draw X axis
@@ -40,7 +50,7 @@ export function barchart(
   // Draw bars
   svg
     .selectAll(".bar")
-    .data(data)
+    .data(processed_data)
     .enter()
     .append("rect")
     .attr("class", "bar")
@@ -48,5 +58,5 @@ export function barchart(
     .attr("y", (d: any) => y(d.value))
     .attr("width", x.bandwidth())
     .attr("height", (d: any) => chartHeight - y(d.value))
-    .attr("fill", "steelblue");
+    .attr("fill", colors[0]);
 }

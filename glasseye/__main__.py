@@ -106,13 +106,25 @@ def main():
     code_string = ""
 
     #Standard charts
-    # standard_charts = ["skey","barchart","piechart","donut","linechart", "tree", "vennchart", "gantt", "treemap", "heatmap", "dotplot",  "scatterplot", "boxplot"]
     standard_charts = {
-        'linechart':{'data':[], 'size':{},'colors':{},'file':{},'curved':1}
+        'linechart':{'curved':1},
+        'piechart':{'donut':0},
+        'skey':{},
+        'barchart':{},
+        'tree':{},
+        'vennchart':{},
+        'gantt':{},
+        'treemap':{},
+        'heatmap':{},
+        'dotplot':{},
+        'scatterplot':{},
+        'boxplot':{},
         }
-
+    standard_args = {'data':[], 'size':{},'colors':{},'file':{}}
+    
     for s, args in standard_charts.items():
-        code_string = add_chart(s, args, code_string)
+        merged_dict = standard_args | args
+        code_string = add_chart(s, merged_dict, code_string)
 
 
     soup_string = str(soup)

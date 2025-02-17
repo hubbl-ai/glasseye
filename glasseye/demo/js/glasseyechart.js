@@ -4807,7 +4807,7 @@ var ChartModule = (function (exports) {
     Transform.prototype;
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Thu Feb 13 17:01:12 CAT 2025
+    // Generated Tue Feb 18 01:16:34 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {

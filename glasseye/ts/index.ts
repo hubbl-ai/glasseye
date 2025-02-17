@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Thu Feb 13 17:01:12 CAT 2025
+// Generated Tue Feb 18 01:16:34 CAT 2025
 
 
 /// base.ts
@@ -146,13 +146,22 @@ export async function linechart(
 }
 /// barchart.ts
 
-export function barchart(
-  data: DataLabeled[],
-  div: string,
-  size: Size,
-  margin: Margin = defaultMargin
+export async function barchart(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  colors: string[] = defaultArgumentObject.colors,
+  file?: DataFile
 ) {
   const { width, height } = size;
+  const margin:Margin = defaultMargin;
+
+
+  if(file?.path)
+    {
+      data = await loadData(file?.path, file?.format);
+    }
+    const processed_data:DataLabeled[] = data as DataLabeled[];
 
   const svg = d3
     .select(div)
@@ -167,13 +176,13 @@ export function barchart(
 
   const x = d3
     .scaleBand()
-    .domain(data.map((d) => d.label))
+    .domain(processed_data.map((d: any) => d.label))
     .range([0, chartWidth])
     .padding(0.2);
 
   const y = d3
     .scaleLinear()
-    .domain([0, d3.max(data, (d: any) => d.value)!])
+    .domain([0, d3.max(processed_data, (d: any) => d.value as number)!])
     .range([chartHeight, 0]);
 
   // Draw X axis
@@ -188,7 +197,7 @@ export function barchart(
   // Draw bars
   svg
     .selectAll(".bar")
-    .data(data)
+    .data(processed_data)
     .enter()
     .append("rect")
     .attr("class", "bar")
@@ -196,19 +205,26 @@ export function barchart(
     .attr("y", (d: any) => y(d.value))
     .attr("width", x.bandwidth())
     .attr("height", (d: any) => chartHeight - y(d.value))
-    .attr("fill", "steelblue");
+    .attr("fill", colors[0]);
 }
 
 /// piechart.ts
 
-export function piechart(
-  data: DataLabeled[],
-  div: string,
-  size: Size,
-  margin: Margin = defaultMargin
+export async function piechart(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  colors: string[] = defaultArgumentObject.colors,
+  file?: DataFile,
 ) {
   const { width, height } = size;
   const radius = Math.min(width, height) / 2;
+
+  if(file?.path)
+    {
+      data = await loadData(file?.path, file?.format);
+    }
+    const processed_data:DataLabeled[] = data as DataLabeled[];
 
   const svg = d3
     .select(div)
@@ -220,7 +236,7 @@ export function piechart(
 
   const color = d3
     .scaleOrdinal<string>()
-    .domain(data.map((d) => d.label))
+    .domain(processed_data.map((d:any) => d.label))
     .range(d3.schemeTableau10);
 
   const pie = d3.pie<DataLabeled>().value((d) => d.value);
@@ -232,7 +248,7 @@ export function piechart(
 
   const arcs = svg
     .selectAll("arc")
-    .data(pie(data))
+    .data(pie(processed_data))
     .enter()
     .append("g")
     .attr("class", "arc");
@@ -240,11 +256,11 @@ export function piechart(
   arcs
     .append("path")
     .attr("d", arc)
-    .attr("fill", (d: any) => color(d.data.label));
+    .attr("fill", (d: any) => color(d.processed_data.label));
 
   arcs
     .append("text")
     .attr("transform", (d) => `translate(${arc.centroid(d)})`)
     .attr("text-anchor", "middle")
-    .text((d: any) => d.data.label);
+    .text((d: any) => d.processed_data.label);
 }

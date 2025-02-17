@@ -14,7 +14,7 @@ data='[
   ]'
   size='{"width":600,"height":600}'
   colors='["#FF6700","green"]'
-  curved='1'
+  curved='0'
 > </linechart></p>
 <h3 id="a-simplot-chart">A simplot chart</h3>
 <p>Similarly the line chart can be either created from a csv file (as
@@ -38,9 +38,9 @@ data='[
  file='{"path":"data/xy.csv","format":"csv"}'
   size='{"width":800,"height":800}'
   colors='["red","green"]'
-  curved='1'
+  curved='0'
 > </linechart></p>
-<h3 id="a-line-chart-from-.tsv">A line chart FROM .TSV</h3>
+<h3 id="a-simplot-chart-from-.tsv">A simplot chart FROM .TSV</h3>
 <p><linechart
  file='{"path":"data/xy.tsv","format":"tsv"}'
   size='{"width":400,"height":400}'
@@ -52,7 +52,7 @@ data='[
  file='{"path":"data/xy.json"}'
   size='{"width":400,"height":400}'
   colors='["blue","green"]'
-  curved='1'
+  curved='0'
 > </linechart></p>
 <h3 id="a-line-chart-from-.hsv">A line chart FROM .hsv</h3>
 <p><linechart
@@ -61,3 +61,46 @@ data='[
   colors='["red","green"]'
   curved='1'
 > </linechart></p>
+<h3 id="a-bar-chart">A Bar chart</h3>
+<p>Similarly the Bar chart can be either created from a csv file (as
+long as it has columns with heading x and y) or from in line json. Here
+is an example.</p>
+<p><barchart
+data='[
+  { label: "Apples", value: 10 },
+  { label: "Bananas", value: 20 },
+  { label: "Cherries", value: 15 },
+  { label: "Grapes", value: 25 }
+]'
+  size='{"width":500,"height":500}'
+  colors='["#FF6700","green"]'
+> </barchart></p>
+<h3 id="a-pie-chart">A Pie chart</h3>
+<p>Similarly the Pie chart can be either created from a csv file (as
+long as it has columns with heading x and y) or from in line json. Here
+is an example.</p>
+<p><piechart
+data='[
+  { label: "Apples", value: 10 },
+  { label: "Bananas", value: 20 },
+  { label: "Cherries", value: 15 },
+  { label: "Grapes", value: 25 }
+]'
+  size='{"width":500,"height":500}'
+  colors='["#FF6700","green"]'
+> </piechart></p>
+<h3 id="a-donut-chart">A Donut chart</h3>
+<p>Similarly the Donut chart can be either created from a csv file (as
+long as it has columns with heading x and y) or from in line json. Here
+is an example.</p>
+<p><piechart
+data='[
+  { label: "Apples", value: 10 },
+  { label: "Bananas", value: 20 },
+  { label: "Cherries", value: 15 },
+  { label: "Grapes", value: 25 }
+]'
+  size='{"width":500,"height":500}'
+  colors='["#FF6700","green"]'
+  donut = '1'
+> </piechart></p>
