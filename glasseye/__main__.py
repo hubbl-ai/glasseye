@@ -16,15 +16,14 @@ def main():
     # Function to add charts
     # Todo: Verify that OrderedDict respects the order of the args
     def add_chart(chart_id, fields, code_string):
-        all_fields = OrderedDict({'data':[], 'size':{},'colors':{},'file':{}})
-    
+        all_fields = {'data':[], 'size':{},'colors':{},'file':{}}
         if fields:
-            all_fields += fields
+            all_fields |= fields
 
         for d in enumerate(soup.find_all(chart_id)):
             attrs = d[1].attrs
             args = [f"'#{chart_id}_{str(d[0])}'"]
-            for field,dv in fields.items():
+            for field,dv in all_fields.items():
                 # breakpoint()
                 # if DEBUG:
                 #     import pdb; pdb.set_trace()
@@ -120,7 +119,7 @@ def main():
     standard_charts = {
         'linechart':{'curved':1},
         'piechart':{'donut':0},
-        'skey':{},
+        'skey':None,
         'barchart':{},
         'tree':{},
         'vennchart':{},

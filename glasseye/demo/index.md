@@ -98,15 +98,14 @@ data='[
 
 ### A Bar chart
 
-Similarly the Bar chart can be either created from a csv file (as long as it has columns with heading x and y) or from in line json. Here is an example.
 
 
 <barchart
 data='[
-  { label: "Apples", value: 10 },
-  { label: "Bananas", value: 20 },
-  { label: "Cherries", value: 15 },
-  { label: "Grapes", value: 25 }
+  { "label": "Apples", "value": 10 },
+  { "label": "Bananas", "value": 20 },
+  { "label": "Cherries", "value": 15 },
+  { "label": "Grapes", "value": 25 }
 ]'
   size='{"width":500,"height":500}'
   colors='["#FF6700","green"]'
@@ -118,15 +117,13 @@ data='[
 
 ### A Pie chart
 
-Similarly the Pie chart can be either created from a csv file (as long as it has columns with heading x and y) or from in line json. Here is an example.
-
 
 <piechart
 data='[
-  { label: "Apples", value: 10 },
-  { label: "Bananas", value: 20 },
-  { label: "Cherries", value: 15 },
-  { label: "Grapes", value: 25 }
+  { "label": "Apples", "value": 10 },
+  { "label": "Bananas", "value": 20 },
+  { "label": "Cherries", "value": 15 },
+  { "label": "Grapes", "value": 25 }
 ]'
   size='{"width":500,"height":500}'
   colors='["#FF6700","green"]'
@@ -139,15 +136,13 @@ data='[
 
 ### A Donut chart
 
-Similarly the Donut chart can be either created from a csv file (as long as it has columns with heading x and y) or from in line json. Here is an example.
-
 
 <piechart
 data='[
-  { label: "Apples", value: 10 },
-  { label: "Bananas", value: 20 },
-  { label: "Cherries", value: 15 },
-  { label: "Grapes", value: 25 }
+  { "label": "Apples", "value": 10 },
+  { "label": "Bananas", "value": 20 },
+  { "label": "Cherries", "value": 15 },
+  { "label": "Grapes", "value": 25 }
 ]'
   size='{"width":500,"height":500}'
   colors='["#FF6700","green"]'

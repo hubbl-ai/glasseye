@@ -4175,14 +4175,6 @@ var ChartModule = (function (exports) {
       return linearish(scale);
     }
 
-    function colors(specifier) {
-      var n = specifier.length / 6 | 0, colors = new Array(n), i = 0;
-      while (i < n) colors[i] = "#" + specifier.slice(i * 6, ++i * 6);
-      return colors;
-    }
-
-    var Tableau10 = colors("4e79a7f28e2ce1575976b7b259a14fedc949af7aa1ff9da79c755fbab0ab");
-
     function constant(x) {
       return function constant() {
         return x;
@@ -4807,7 +4799,7 @@ var ChartModule = (function (exports) {
     Transform.prototype;
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Tue Feb 18 01:16:34 CAT 2025
+    // Generated Tue Feb 18 18:33:04 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -4889,75 +4881,94 @@ var ChartModule = (function (exports) {
         });
     }
     /// barchart.ts
-    function barchart(data, div, size, margin = defaultMargin) {
-        const { width, height } = size;
-        const svg = select(div)
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .append("g")
-            .attr("transform", `translate(${margin.left}, ${margin.top})`);
-        const chartWidth = width - margin.left - margin.right;
-        const chartHeight = height - margin.top - margin.bottom;
-        const x = band()
-            .domain(data.map((d) => d.label))
-            .range([0, chartWidth])
-            .padding(0.2);
-        const y = linear()
-            .domain([0, max$1(data, (d) => d.value)])
-            .range([chartHeight, 0]);
-        // Draw X axis
-        svg
-            .append("g")
-            .attr("transform", `translate(0, ${chartHeight})`)
-            .call(axisBottom(x));
-        // Draw Y axis
-        svg.append("g").call(axisLeft(y));
-        // Draw bars
-        svg
-            .selectAll(".bar")
-            .data(data)
-            .enter()
-            .append("rect")
-            .attr("class", "bar")
-            .attr("x", (d) => x(d.label))
-            .attr("y", (d) => y(d.value))
-            .attr("width", x.bandwidth())
-            .attr("height", (d) => chartHeight - y(d.value))
-            .attr("fill", "steelblue");
+    function barchart() {
+        return __awaiter(this, arguments, undefined, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, colors = defaultArgumentObject.colors, file) {
+            const { width, height } = size;
+            const margin = defaultMargin;
+            if (file === null || file === undefined ? undefined : file.path) {
+                data = yield loadData(file === null || file === undefined ? undefined : file.path, file === null || file === undefined ? undefined : file.format);
+            }
+            const processed_data = data;
+            const svg = select(div)
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", `translate(${margin.left}, ${margin.top})`);
+            const chartWidth = width - margin.left - margin.right;
+            const chartHeight = height - margin.top - margin.bottom;
+            const x = band()
+                .domain(processed_data.map((d) => d.label))
+                .range([0, chartWidth])
+                .padding(0.2);
+            const y = linear()
+                .domain([0, max$1(processed_data, (d) => d.value)])
+                .range([chartHeight, 0]);
+            // Draw X axis
+            svg
+                .append("g")
+                .attr("transform", `translate(0, ${chartHeight})`)
+                .call(axisBottom(x));
+            // Draw Y axis
+            svg.append("g").call(axisLeft(y));
+            // Draw bars
+            svg
+                .selectAll(".bar")
+                .data(processed_data)
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
+                .attr("x", (d) => x(d.label))
+                .attr("y", (d) => y(d.value))
+                .attr("width", x.bandwidth())
+                .attr("height", (d) => chartHeight - y(d.value))
+                .attr("fill", colors[0]);
+        });
     }
     /// piechart.ts
-    function piechart(data, div, size, margin = defaultMargin) {
-        const { width, height } = size;
-        const radius = Math.min(width, height) / 2;
-        const svg = select(div)
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .append("g")
-            .attr("transform", `translate(${width / 2}, ${height / 2})`);
-        const color = ordinal()
-            .domain(data.map((d) => d.label))
-            .range(Tableau10);
-        const pie$1 = pie().value((d) => d.value);
-        const arc$1 = arc()
-            .innerRadius(0)
-            .outerRadius(radius);
-        const arcs = svg
-            .selectAll("arc")
-            .data(pie$1(data))
-            .enter()
-            .append("g")
-            .attr("class", "arc");
-        arcs
-            .append("path")
-            .attr("d", arc$1)
-            .attr("fill", (d) => color(d.data.label));
-        arcs
-            .append("text")
-            .attr("transform", (d) => `translate(${arc$1.centroid(d)})`)
-            .attr("text-anchor", "middle")
-            .text((d) => d.data.label);
+    function piechart() {
+        return __awaiter(this, arguments, undefined, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, colors = [], file, donut) {
+            const { width, height } = size;
+            const radius = Math.min(width, height) / 2;
+            if (file === null || file === undefined ? undefined : file.path) {
+                data = yield loadData(file === null || file === undefined ? undefined : file.path, file === null || file === undefined ? undefined : file.format);
+            }
+            const processed_data = data;
+            if (colors.length < 10) {
+                colors.push(...defaultArgumentObject.colors);
+            }
+            const svg = select(div)
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", `translate(${width / 2}, ${height / 2})`);
+            const color = ordinal()
+                .domain(processed_data.map((d) => d.label))
+                .range(colors);
+            // .range(d3.schemeTableau10);
+            const pie$1 = pie().value((d) => d.value);
+            const arc$1 = arc()
+                .innerRadius(donut ? radius * 0.5 : 0)
+                .outerRadius(radius);
+            const arcs = svg
+                .selectAll("arc")
+                .data(pie$1(processed_data))
+                .enter()
+                .append("g")
+                .attr("class", "arc");
+            arcs
+                .append("path")
+                .attr("d", arc$1)
+                .attr("fill", (d) => color(d.data.label));
+            arcs
+                .append("text")
+                .attr("transform", (d) => `translate(${arc$1.centroid(d)})`)
+                .attr("text-anchor", "middle")
+                .style("font-size", "16px")
+                .style("fill", "#FFFFFF")
+                .text((d) => d.data.label);
+        });
     }
 
     exports.barchart = barchart;

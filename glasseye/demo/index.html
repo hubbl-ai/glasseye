@@ -53,9 +53,30 @@ is an example.</p>
 <p><span colors='["blue","green"]' curved="0" file='{"path":"data/xy.json"}' id="linechart_4" size='{"width":400,"height":400}'></span><br/></p>
 <h3 id="a-line-chart-from-.hsv">A line chart FROM .hsv</h3>
 <p><span colors='["red","green"]' curved="1" file='{"path":"data/xy.hsv"}' id="linechart_5" size='{"width":400,"height":400}'></span><br/></p>
+<h3 id="a-bar-chart">A Bar chart</h3>
+<p><span colors='["#FF6700","green"]' data='[
+  { "label": "Apples", "value": 10 },
+  { "label": "Bananas", "value": 20 },
+  { "label": "Cherries", "value": 15 },
+  { "label": "Grapes", "value": 25 }
+]' id="barchart_0" size='{"width":500,"height":500}'></span><br/></p>
+<h3 id="a-pie-chart">A Pie chart</h3>
+<p><span colors='["#FF6700","green"]' data='[
+  { "label": "Apples", "value": 10 },
+  { "label": "Bananas", "value": 20 },
+  { "label": "Cherries", "value": 15 },
+  { "label": "Grapes", "value": 25 }
+]' id="piechart_0" size='{"width":500,"height":500}'></span><br/></p>
+<h3 id="a-donut-chart">A Donut chart</h3>
+<p><span colors='["#FF6700","green"]' data='[
+  { "label": "Apples", "value": 10 },
+  { "label": "Bananas", "value": 20 },
+  { "label": "Cherries", "value": 15 },
+  { "label": "Grapes", "value": 25 }
+]' donut="1" id="piechart_1" size='{"width":500,"height":500}'></span><br/></p>
     </div>
 
-<script>ChartModule.linechart('#linechart_0',[{'x': 1, 'y': 10}, {'x': 2, 'y': 20}, {'x': 3, 'y': 15}, {'x': 4, 'y': 25}, {'x': 5, 'y': 30}, {'x': 6, 'y': 35}],{'width': 600, 'height': 600},['#FF6700', 'green'],{},0);ChartModule.linechart('#linechart_1',[{'x': 1, 'y': 10}, {'x': 2, 'y': 20}, {'x': 3, 'y': 15}, {'x': 4, 'y': 25}, {'x': 5, 'y': 30}, {'x': 6, 'y': 35}],{'width': 600, 'height': 600},['#004E98', 'green'],{},1);ChartModule.linechart('#linechart_2',[],{'width': 800, 'height': 800},['red', 'green'],{'path': 'data/xy.csv', 'format': 'csv'},0);ChartModule.linechart('#linechart_3',[],{'width': 400, 'height': 400},['yellow', 'green'],{'path': 'data/xy.tsv', 'format': 'tsv'},1);ChartModule.linechart('#linechart_4',[],{'width': 400, 'height': 400},['blue', 'green'],{'path': 'data/xy.json'},0);ChartModule.linechart('#linechart_5',[],{'width': 400, 'height': 400},['red', 'green'],{'path': 'data/xy.hsv'},1);</script><script type="text/javascript">
+<script>ChartModule.linechart('#linechart_0',[{'x': 1, 'y': 10}, {'x': 2, 'y': 20}, {'x': 3, 'y': 15}, {'x': 4, 'y': 25}, {'x': 5, 'y': 30}, {'x': 6, 'y': 35}],{'width': 600, 'height': 600},['#FF6700', 'green'],{},0);ChartModule.linechart('#linechart_1',[{'x': 1, 'y': 10}, {'x': 2, 'y': 20}, {'x': 3, 'y': 15}, {'x': 4, 'y': 25}, {'x': 5, 'y': 30}, {'x': 6, 'y': 35}],{'width': 600, 'height': 600},['#004E98', 'green'],{},1);ChartModule.linechart('#linechart_2',[],{'width': 800, 'height': 800},['red', 'green'],{'path': 'data/xy.csv', 'format': 'csv'},0);ChartModule.linechart('#linechart_3',[],{'width': 400, 'height': 400},['yellow', 'green'],{'path': 'data/xy.tsv', 'format': 'tsv'},1);ChartModule.linechart('#linechart_4',[],{'width': 400, 'height': 400},['blue', 'green'],{'path': 'data/xy.json'},0);ChartModule.linechart('#linechart_5',[],{'width': 400, 'height': 400},['red', 'green'],{'path': 'data/xy.hsv'},1);ChartModule.piechart('#piechart_0',[{'label': 'Apples', 'value': 10}, {'label': 'Bananas', 'value': 20}, {'label': 'Cherries', 'value': 15}, {'label': 'Grapes', 'value': 25}],{'width': 500, 'height': 500},['#FF6700', 'green'],{},0);ChartModule.piechart('#piechart_1',[{'label': 'Apples', 'value': 10}, {'label': 'Bananas', 'value': 20}, {'label': 'Cherries', 'value': 15}, {'label': 'Grapes', 'value': 25}],{'width': 500, 'height': 500},['#FF6700', 'green'],{},1);ChartModule.barchart('#barchart_0',[{'label': 'Apples', 'value': 10}, {'label': 'Bananas', 'value': 20}, {'label': 'Cherries', 'value': 15}, {'label': 'Grapes', 'value': 25}],{'width': 500, 'height': 500},['#FF6700', 'green'],{});</script><script type="text/javascript">
 (function () {
   var script = document.createElement("script");
   script.type = "text/javascript";

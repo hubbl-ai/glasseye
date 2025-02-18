@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Tue Feb 18 01:16:34 CAT 2025
+// Generated Tue Feb 18 18:33:04 CAT 2025
 
 
 /// base.ts
@@ -146,6 +146,7 @@ export async function linechart(
 }
 /// barchart.ts
 
+
 export async function barchart(
   div: string = defaultArgumentObject.div,
   data: any = defaultArgumentObject.data,
@@ -207,15 +208,16 @@ export async function barchart(
     .attr("height", (d: any) => chartHeight - y(d.value))
     .attr("fill", colors[0]);
 }
-
 /// piechart.ts
+
 
 export async function piechart(
   div: string = defaultArgumentObject.div,
   data: any = defaultArgumentObject.data,
   size: Size = defaultArgumentObject.size,
-  colors: string[] = defaultArgumentObject.colors,
+  colors: string[] = [],
   file?: DataFile,
+  donut?: 0
 ) {
   const { width, height } = size;
   const radius = Math.min(width, height) / 2;
@@ -225,6 +227,11 @@ export async function piechart(
       data = await loadData(file?.path, file?.format);
     }
     const processed_data:DataLabeled[] = data as DataLabeled[];
+
+    if (colors.length < 10)
+    {
+      colors.push(...defaultArgumentObject.colors);
+    }
 
   const svg = d3
     .select(div)
@@ -237,13 +244,14 @@ export async function piechart(
   const color = d3
     .scaleOrdinal<string>()
     .domain(processed_data.map((d:any) => d.label))
-    .range(d3.schemeTableau10);
+    .range(colors);
+    // .range(d3.schemeTableau10);
 
   const pie = d3.pie<DataLabeled>().value((d) => d.value);
 
   const arc: any = d3
     .arc<d3.PieArcDatum<DataLabeled>>()
-    .innerRadius(0)
+    .innerRadius(donut ? radius * 0.5 :0)
     .outerRadius(radius);
 
   const arcs = svg
@@ -256,11 +264,13 @@ export async function piechart(
   arcs
     .append("path")
     .attr("d", arc)
-    .attr("fill", (d: any) => color(d.processed_data.label));
+    .attr("fill", (d: any) => color(d.data.label));
 
   arcs
     .append("text")
     .attr("transform", (d) => `translate(${arc.centroid(d)})`)
     .attr("text-anchor", "middle")
-    .text((d: any) => d.processed_data.label);
+    .style("font-size", "16px")
+    .style("fill", "#FFFFFF")
+    .text((d: any) => d.data.label);
 }
