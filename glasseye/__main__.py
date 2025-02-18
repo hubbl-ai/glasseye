@@ -1,6 +1,9 @@
 import sys, os, re, pypandoc as py, shutil as sh
+from collections import OrderedDict
 import json
 from bs4 import BeautifulSoup
+
+DEBUG = False
 
 def main():
     module_name = 'ChartModule'
@@ -10,13 +13,21 @@ def main():
         contents = to_wrap.replace_with(wrap_in)
         wrap_in.append(contents)
 
-    #Function to add charts
-    def add_chart(chart_id, list_of_fields, code_string):
+    # Function to add charts
+    # Todo: Verify that OrderedDict respects the order of the args
+    def add_chart(chart_id, fields, code_string):
+        all_fields = OrderedDict({'data':[], 'size':{},'colors':{},'file':{}})
+    
+        if fields:
+            all_fields += fields
+
         for d in enumerate(soup.find_all(chart_id)):
             attrs = d[1].attrs
             args = [f"'#{chart_id}_{str(d[0])}'"]
-            for field,dv in list_of_fields.items():
+            for field,dv in fields.items():
                 # breakpoint()
+                # if DEBUG:
+                #     import pdb; pdb.set_trace()
                 if field in attrs:
                     args.append(str(json.loads(attrs[field])))
                 else:
@@ -120,12 +131,9 @@ def main():
         'scatterplot':{},
         'boxplot':{},
         }
-    standard_args = {'data':[], 'size':{},'colors':{},'file':{}}
-    
-    for s, args in standard_charts.items():
-        merged_dict = standard_args | args
-        code_string = add_chart(s, merged_dict, code_string)
 
+    for s, args in standard_charts.items():
+        code_string = add_chart(s, args, code_string)
 
     soup_string = str(soup)
     code_string = re.sub('[“”]', '"', code_string)
