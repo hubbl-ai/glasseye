@@ -149,3 +149,29 @@ data='[
   donut = '1'
 >
 </piechart>
+
+
+
+
+
+### A Sankey
+
+
+<skey
+data='{
+  nodes: [
+    { name: "Source A" },
+    { name: "Source B" },
+    { name: "Destination X" },
+    { name: "Destination Y" }
+  ],
+  links: [
+    { source: 0, target: 2, value: 10 },
+    { source: 1, target: 2, value: 5 },
+    { source: 1, target: 3, value: 15 }
+  ]
+}'
+  size='{"width":500,"height":500}'
+  colors='["#FF6700","green"]'
+>
+</skey>

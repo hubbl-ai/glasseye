@@ -119,7 +119,7 @@ def main():
     standard_charts = {
         'linechart':{'curved':1},
         'piechart':{'donut':0},
-        'skey':None,
+        'skey':{},
         'barchart':{},
         'tree':{},
         'vennchart':{},

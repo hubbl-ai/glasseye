@@ -8,6 +8,7 @@ SOURCE_FILES = \
 	linechart.ts \
 	barchart.ts \
 	piechart.ts \
+	skey.ts \
 
 all: $(GENERATED_FILES) rollup copydemo
 
