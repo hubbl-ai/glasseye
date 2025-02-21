@@ -14,5 +14,5 @@ setup(name='glasseye',
       },
       include_package_data=True,
       install_requires=[
-          'pypandoc', 'beautifulsoup4'
+          'pypandoc', 'beautifulsoup4', 'seaborn'
       ])
