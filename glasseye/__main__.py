@@ -6,6 +6,12 @@ import seaborn
 
 DEBUG = False
 
+fonts = [
+    'http://fonts.googleapis.com/css?family=Raleway',
+    'http://fonts.googleapis.com/css?family=Droid%20Sans',
+    'http://fonts.googleapis.com/css?family=Lato',
+]
+
 def main():
     module_name = 'ChartModule'
 
@@ -161,6 +167,16 @@ def main():
     soup_string = str(soup)
     code_string = re.sub('[“”]', '"', code_string)
     code_string = re.sub("[“’‘”]", "'", code_string)
+
+    tpl_parts = [
+        '''<!DOCTYPE html>
+<head>
+  <meta charset="utf-8"/>
+  <title>$title</title>'''
+    ]
+
+    for font in fonts:
+        tpl_parts.append(f"<link href='$font' rel='stylesheet' type='text/css'>")
 
     #Write to file with header and footer from template
     with open(tufte_template, "r") as template:

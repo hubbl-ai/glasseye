@@ -24,13 +24,15 @@ copydemo:
 ../index.ts: $(SOURCE_FILES)
 	@ echo Building bundle
 
-	@if [ -f $@ ]; then mv $@ $@~;  fi;
-	@echo "// Warning! THIS FILE WAS GENERATED! DO NOT EDIT!\n// Generated `date`\n" > $@
+	nx build
 
-	@for f in $^; do \
-	    echo "\n/// $$f\n"; \
-	    cat $$f; \
-	done >> $@
+	# @if [ -f $@ ]; then mv $@ $@~;  fi;
+	# @echo "// Warning! THIS FILE WAS GENERATED! DO NOT EDIT!\n// Generated `date`\n" > $@
+
+	# @for f in $^; do \
+	#     echo "\n/// $$f\n"; \
+	#     cat $$f; \
+	# done >> $@
 
 ../index-try.ts: $(SOURCE_FILES)
 	@ echo Building bundle
