@@ -13,7 +13,7 @@ data='[
   { "x": 6, "y": 35 }
   ]'
   size='{"width":600,"height":600}'
-  colors='["#FF6700","green"]'
+  colors='["#FF6700","#008000"]'
   curved='0'
 > </linechart></p>
 <h3 id="a-simplot-chart">A simplot chart</h3>
@@ -30,35 +30,35 @@ data='[
   { "x": 6, "y": 35 }
   ]'
   size='{"width":600,"height":600}'
-  colors='["#004E98","green"]'
+  colors='["#004E98","#008000"]'
   curved='1'
 > </linechart></p>
 <h3 id="a-line-chart-from-.csv">A line chart FROM .CSV</h3>
 <p><linechart
  file='{"path":"data/xy.csv","format":"csv"}'
   size='{"width":800,"height":800}'
-  colors='["red","green"]'
+  colors='["#FF0000","#008000"]'
   curved='0'
 > </linechart></p>
 <h3 id="a-simplot-chart-from-.tsv">A simplot chart FROM .TSV</h3>
 <p><linechart
  file='{"path":"data/xy.tsv","format":"tsv"}'
   size='{"width":400,"height":400}'
-  colors='["yellow","green"]'
+  colors='["#FFFF00","#008000"]'
   curved='1'
 > </linechart></p>
 <h3 id="a-line-chart-from-.json">A line chart FROM .json</h3>
 <p><linechart
  file='{"path":"data/xy.json"}'
   size='{"width":400,"height":400}'
-  colors='["blue","green"]'
+  colors='["#FFFF00","#008000"]'
   curved='0'
 > </linechart></p>
 <h3 id="a-line-chart-from-.hsv">A line chart FROM .hsv</h3>
 <p><linechart
  file='{"path":"data/xy.hsv"}'
   size='{"width":400,"height":400}'
-  colors='["red","green"]'
+  colors='["#FF0000","#008000"]'
   curved='1'
 > </linechart></p>
 <h3 id="a-bar-chart">A Bar chart</h3>
@@ -70,7 +70,7 @@ data='[
   { "label": "Grapes", "value": 25 }
 ]'
   size='{"width":500,"height":500}'
-  colors='["#FF6700","green"]'
+  colors='["#FF6700","#008000"]'
 > </barchart></p>
 <h3 id="a-pie-chart">A Pie chart</h3>
 <p><piechart
@@ -81,7 +81,7 @@ data='[
   { "label": "Grapes", "value": 25 }
 ]'
   size='{"width":500,"height":500}'
-  colors='["#FF6700","green"]'
+  colors='["#FF6700","#008000"]'
 > </piechart></p>
 <h3 id="a-donut-chart">A Donut chart</h3>
 <p><piechart
@@ -92,6 +92,42 @@ data='[
   { "label": "Grapes", "value": 25 }
 ]'
   size='{"width":500,"height":500}'
-  colors='["#FF6700","green"]'
+  colors='["#FF6700","#008000"]'
+  donut = '1'
+> </piechart></p>
+<h3 id="a-sankey">A Sankey</h3>
+<p><skey
+data='{
+  "nodes": [
+    { "name": "Source A" },
+    { "name": "Source B" },
+    { "name": "Destination X" },
+    { "name": "Destination Y" }
+  ],
+  "links": [
+    { "source": 0, "target": 2, "value": 10 },
+    { "source": 1, "target": 2, "value": 5 },
+    { "source": 1, "target": 3, "value": 15 }
+  ]
+}'
+  size='{"width":500,"height":500}'
+  colors='["#FFFF00","#FF0000"]'
+  n_colors='10'
+  desat='1'
+  
+> </skey></p>
+<h3 id="a-donut-chart-using-seaborn-pallette">A Donut chart using
+Seaborn Pallette</h3>
+<p><piechart
+data='[
+  { "label": "Apples", "value": 10 },
+  { "label": "Bananas", "value": 20 },
+  { "label": "Cherries", "value": 15 },
+  { "label": "Grapes", "value": 25 }
+]'
+  size='{"width":500,"height":500}'
+  colors='deep'
+  n_colors='5'
+  desat='0.9'
   donut = '1'
 > </piechart></p>

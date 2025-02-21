@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Thu Feb 20 16:22:35 CAT 2025
+// Generated Thu Feb 20 16:09:02 CAT 2025
 
 
 /// base.ts
@@ -278,7 +278,7 @@ export async function piechart(
 }
 /// skey.ts
 
-export function skey(
+export function sankeyChart(
   div: string,
   data: any, // Assumed to contain 'nodes' and 'links'
   size: Size,

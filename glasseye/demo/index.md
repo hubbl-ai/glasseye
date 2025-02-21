@@ -15,7 +15,7 @@ data='[
   { "x": 6, "y": 35 }
   ]'
   size='{"width":600,"height":600}'
-  colors='["#FF6700","green"]'
+  colors='["#FF6700","#008000"]'
   curved='0'
 >
 </linechart>
@@ -37,7 +37,7 @@ data='[
   { "x": 6, "y": 35 }
   ]'
   size='{"width":600,"height":600}'
-  colors='["#004E98","green"]'
+  colors='["#004E98","#008000"]'
   curved='1'
 >
 </linechart>
@@ -49,7 +49,7 @@ data='[
 <linechart
  file='{"path":"data/xy.csv","format":"csv"}'
   size='{"width":800,"height":800}'
-  colors='["red","green"]'
+  colors='["#FF0000","#008000"]'
   curved='0'
 >
 </linechart>
@@ -62,7 +62,7 @@ data='[
 <linechart
  file='{"path":"data/xy.tsv","format":"tsv"}'
   size='{"width":400,"height":400}'
-  colors='["yellow","green"]'
+  colors='["#FFFF00","#008000"]'
   curved='1'
 >
 </linechart>
@@ -77,7 +77,7 @@ data='[
 <linechart
  file='{"path":"data/xy.json"}'
   size='{"width":400,"height":400}'
-  colors='["blue","green"]'
+  colors='["#FFFF00","#008000"]'
   curved='0'
 >
 </linechart>
@@ -90,7 +90,7 @@ data='[
 <linechart
  file='{"path":"data/xy.hsv"}'
   size='{"width":400,"height":400}'
-  colors='["red","green"]'
+  colors='["#FF0000","#008000"]'
   curved='1'
 >
 </linechart>
@@ -108,7 +108,7 @@ data='[
   { "label": "Grapes", "value": 25 }
 ]'
   size='{"width":500,"height":500}'
-  colors='["#FF6700","green"]'
+  colors='["#FF6700","#008000"]'
 >
 </barchart>
 
@@ -126,7 +126,7 @@ data='[
   { "label": "Grapes", "value": 25 }
 ]'
   size='{"width":500,"height":500}'
-  colors='["#FF6700","green"]'
+  colors='["#FF6700","#008000"]'
 >
 </piechart>
 
@@ -145,7 +145,7 @@ data='[
   { "label": "Grapes", "value": 25 }
 ]'
   size='{"width":500,"height":500}'
-  colors='["#FF6700","green"]'
+  colors='["#FF6700","#008000"]'
   donut = '1'
 >
 </piechart>
@@ -159,19 +159,44 @@ data='[
 
 <skey
 data='{
-  nodes: [
-    { name: "Source A" },
-    { name: "Source B" },
-    { name: "Destination X" },
-    { name: "Destination Y" }
+  "nodes": [
+    { "name": "Source A" },
+    { "name": "Source B" },
+    { "name": "Destination X" },
+    { "name": "Destination Y" }
   ],
-  links: [
-    { source: 0, target: 2, value: 10 },
-    { source: 1, target: 2, value: 5 },
-    { source: 1, target: 3, value: 15 }
+  "links": [
+    { "source": 0, "target": 2, "value": 10 },
+    { "source": 1, "target": 2, "value": 5 },
+    { "source": 1, "target": 3, "value": 15 }
   ]
 }'
   size='{"width":500,"height":500}'
-  colors='["#FF6700","green"]'
+  colors='["#FFFF00","#FF0000"]'
+  n_colors='10'
+  desat='1'
+  
 >
 </skey>
+
+
+
+
+
+### A Donut chart using Seaborn Pallette
+
+
+<piechart
+data='[
+  { "label": "Apples", "value": 10 },
+  { "label": "Bananas", "value": 20 },
+  { "label": "Cherries", "value": 15 },
+  { "label": "Grapes", "value": 25 }
+]'
+  size='{"width":500,"height":500}'
+  colors='deep'
+  n_colors='5'
+  desat='0.9'
+  donut = '1'
+>
+</piechart>

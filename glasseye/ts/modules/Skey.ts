@@ -1,6 +1,4 @@
-import { sankey, sankeyLinkHorizontal, SankeyGraph } from "d3-sankey";
-
-export function sankeyChart(
+export function skey(
   div: string,
   data: any, // Assumed to contain 'nodes' and 'links'
   size: Size,

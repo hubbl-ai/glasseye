@@ -208,7 +208,7 @@ var ChartModule = (function (exports) {
       return (reverse ? -1 : 1) * (inc < 0 ? 1 / -inc : inc);
     }
 
-    function max$1(values, valueof) {
+    function max$2(values, valueof) {
       let max;
       if (valueof === undefined) {
         for (const value of values) {
@@ -229,7 +229,7 @@ var ChartModule = (function (exports) {
       return max;
     }
 
-    function min$1(values, valueof) {
+    function min$2(values, valueof) {
       let min;
       if (valueof === undefined) {
         for (const value of values) {
@@ -272,7 +272,7 @@ var ChartModule = (function (exports) {
         right = 2,
         bottom = 3,
         left = 4,
-        epsilon$2 = 1e-6;
+        epsilon$3 = 1e-6;
 
     function translateX(x) {
       return "translate(" + x + ",0)";
@@ -346,11 +346,11 @@ var ChartModule = (function (exports) {
           text = text.transition(context);
 
           tickExit = tickExit.transition(context)
-              .attr("opacity", epsilon$2)
+              .attr("opacity", epsilon$3)
               .attr("transform", function(d) { return isFinite(d = position(d)) ? transform(d + offset) : this.getAttribute("transform"); });
 
           tickEnter
-              .attr("opacity", epsilon$2)
+              .attr("opacity", epsilon$3)
               .attr("transform", function(d) { var p = this.parentNode.__axis; return transform((p && isFinite(p = p(d)) ? p : position(d)) + offset); });
         }
 
@@ -632,11 +632,11 @@ var ChartModule = (function (exports) {
       };
     }
 
-    var find = Array.prototype.find;
+    var find$1 = Array.prototype.find;
 
     function childFind(match) {
       return function() {
-        return find.call(this.children, match);
+        return find$1.call(this.children, match);
       };
     }
 
@@ -704,7 +704,7 @@ var ChartModule = (function (exports) {
       querySelectorAll: function(selector) { return this._parent.querySelectorAll(selector); }
     };
 
-    function constant$2(x) {
+    function constant$4(x) {
       return function() {
         return x;
       };
@@ -791,7 +791,7 @@ var ChartModule = (function (exports) {
           parents = this._parents,
           groups = this._groups;
 
-      if (typeof value !== "function") value = constant$2(value);
+      if (typeof value !== "function") value = constant$4(value);
 
       for (var m = groups.length, update = new Array(m), enter = new Array(m), exit = new Array(m), j = 0; j < m; ++j) {
         var parent = parents[j],
@@ -1846,7 +1846,7 @@ var ChartModule = (function (exports) {
           : m1) * 255;
     }
 
-    var constant$1 = x => () => x;
+    var constant$3 = x => () => x;
 
     function linear$1(a, d) {
       return function(t) {
@@ -1862,13 +1862,13 @@ var ChartModule = (function (exports) {
 
     function gamma(y) {
       return (y = +y) === 1 ? nogamma : function(a, b) {
-        return b - a ? exponential(a, b, y) : constant$1(isNaN(a) ? b : a);
+        return b - a ? exponential(a, b, y) : constant$3(isNaN(a) ? b : a);
       };
     }
 
     function nogamma(a, b) {
       var d = b - a;
-      return d ? linear$1(a, d) : constant$1(isNaN(a) ? b : a);
+      return d ? linear$1(a, d) : constant$3(isNaN(a) ? b : a);
     }
 
     var interpolateRgb = (function rgbGamma(y) {
@@ -2024,7 +2024,7 @@ var ChartModule = (function (exports) {
 
     function interpolate$1(a, b) {
       var t = typeof b, c;
-      return b == null || t === "boolean" ? constant$1(b)
+      return b == null || t === "boolean" ? constant$3(b)
           : (t === "number" ? interpolateNumber
           : t === "string" ? ((c = color(b)) ? (b = c, interpolateRgb) : interpolateString)
           : b instanceof color ? interpolateRgb
@@ -3134,10 +3134,10 @@ var ChartModule = (function (exports) {
     selection.prototype.interrupt = selection_interrupt;
     selection.prototype.transition = selection_transition;
 
-    const pi$1 = Math.PI,
-        tau$1 = 2 * pi$1,
-        epsilon$1 = 1e-6,
-        tauEpsilon = tau$1 - epsilon$1;
+    const pi$2 = Math.PI,
+        tau$2 = 2 * pi$2,
+        epsilon$2 = 1e-6,
+        tauEpsilon$1 = tau$2 - epsilon$2;
 
     function append(strings) {
       this._ += strings[0];
@@ -3159,7 +3159,7 @@ var ChartModule = (function (exports) {
       };
     }
 
-    class Path {
+    let Path$1 = class Path {
       constructor(digits) {
         this._x0 = this._y0 = // start of current subpath
         this._x1 = this._y1 = null; // end of current subpath
@@ -3204,12 +3204,12 @@ var ChartModule = (function (exports) {
         }
 
         // Or, is (x1,y1) coincident with (x0,y0)? Do nothing.
-        else if (!(l01_2 > epsilon$1));
+        else if (!(l01_2 > epsilon$2));
 
         // Or, are (x0,y0), (x1,y1) and (x2,y2) collinear?
         // Equivalently, is (x1,y1) coincident with (x2,y2)?
         // Or, is the radius zero? Line to (x1,y1).
-        else if (!(Math.abs(y01 * x21 - y21 * x01) > epsilon$1) || !r) {
+        else if (!(Math.abs(y01 * x21 - y21 * x01) > epsilon$2) || !r) {
           this._append`L${this._x1 = x1},${this._y1 = y1}`;
         }
 
@@ -3221,12 +3221,12 @@ var ChartModule = (function (exports) {
               l20_2 = x20 * x20 + y20 * y20,
               l21 = Math.sqrt(l21_2),
               l01 = Math.sqrt(l01_2),
-              l = r * Math.tan((pi$1 - Math.acos((l21_2 + l01_2 - l20_2) / (2 * l21 * l01))) / 2),
+              l = r * Math.tan((pi$2 - Math.acos((l21_2 + l01_2 - l20_2) / (2 * l21 * l01))) / 2),
               t01 = l / l01,
               t21 = l / l21;
 
           // If the start tangent is not coincident with (x0,y0), line to.
-          if (Math.abs(t01 - 1) > epsilon$1) {
+          if (Math.abs(t01 - 1) > epsilon$2) {
             this._append`L${x1 + t01 * x01},${y1 + t01 * y01}`;
           }
 
@@ -3252,7 +3252,7 @@ var ChartModule = (function (exports) {
         }
 
         // Or, is (x0,y0) not coincident with the previous point? Line to (x0,y0).
-        else if (Math.abs(this._x1 - x0) > epsilon$1 || Math.abs(this._y1 - y0) > epsilon$1) {
+        else if (Math.abs(this._x1 - x0) > epsilon$2 || Math.abs(this._y1 - y0) > epsilon$2) {
           this._append`L${x0},${y0}`;
         }
 
@@ -3260,16 +3260,16 @@ var ChartModule = (function (exports) {
         if (!r) return;
 
         // Does the angle go the wrong way? Flip the direction.
-        if (da < 0) da = da % tau$1 + tau$1;
+        if (da < 0) da = da % tau$2 + tau$2;
 
         // Is this a complete circle? Draw two arcs to complete the circle.
-        if (da > tauEpsilon) {
+        if (da > tauEpsilon$1) {
           this._append`A${r},${r},0,1,${cw},${x - dx},${y - dy}A${r},${r},0,1,${cw},${this._x1 = x0},${this._y1 = y0}`;
         }
 
         // Is this arc non-empty? Draw an arc!
-        else if (da > epsilon$1) {
-          this._append`A${r},${r},0,${+(da >= pi$1)},${cw},${this._x1 = x + r * Math.cos(a1)},${this._y1 = y + r * Math.sin(a1)}`;
+        else if (da > epsilon$2) {
+          this._append`A${r},${r},0,${+(da >= pi$2)},${cw},${this._x1 = x + r * Math.cos(a1)},${this._y1 = y + r * Math.sin(a1)}`;
         }
       }
       rect(x, y, w, h) {
@@ -3278,7 +3278,7 @@ var ChartModule = (function (exports) {
       toString() {
         return this._;
       }
-    }
+    };
 
     var EOL = {},
         EOF = {},
@@ -4175,7 +4175,7 @@ var ChartModule = (function (exports) {
       return linearish(scale);
     }
 
-    function constant(x) {
+    function constant$2(x) {
       return function constant() {
         return x;
       };
@@ -4184,18 +4184,18 @@ var ChartModule = (function (exports) {
     const abs = Math.abs;
     const atan2 = Math.atan2;
     const cos = Math.cos;
-    const max = Math.max;
-    const min = Math.min;
+    const max$1 = Math.max;
+    const min$1 = Math.min;
     const sin = Math.sin;
     const sqrt = Math.sqrt;
 
-    const epsilon = 1e-12;
-    const pi = Math.PI;
-    const halfPi = pi / 2;
-    const tau = 2 * pi;
+    const epsilon$1 = 1e-12;
+    const pi$1 = Math.PI;
+    const halfPi = pi$1 / 2;
+    const tau$1 = 2 * pi$1;
 
     function acos(x) {
-      return x > 1 ? 0 : x < -1 ? pi : Math.acos(x);
+      return x > 1 ? 0 : x < -1 ? pi$1 : Math.acos(x);
     }
 
     function asin(x) {
@@ -4217,7 +4217,7 @@ var ChartModule = (function (exports) {
         return shape;
       };
 
-      return () => new Path(digits);
+      return () => new Path$1(digits);
     }
 
     function arcInnerRadius(d) {
@@ -4244,7 +4244,7 @@ var ChartModule = (function (exports) {
       var x10 = x1 - x0, y10 = y1 - y0,
           x32 = x3 - x2, y32 = y3 - y2,
           t = y32 * x10 - x32 * y10;
-      if (t * t < epsilon) return;
+      if (t * t < epsilon$1) return;
       t = (x32 * (y0 - y2) - y32 * (x0 - x2)) / t;
       return [x0 + t * x10, y0 + t * y10];
     }
@@ -4268,7 +4268,7 @@ var ChartModule = (function (exports) {
           d2 = dx * dx + dy * dy,
           r = r1 - rc,
           D = x11 * y10 - x10 * y11,
-          d = (dy < 0 ? -1 : 1) * sqrt(max(0, r * r * d2 - D * D)),
+          d = (dy < 0 ? -1 : 1) * sqrt(max$1(0, r * r * d2 - D * D)),
           cx0 = (D * dy - dx * d) / d2,
           cy0 = (-D * dx - dy * d) / d2,
           cx1 = (D * dy + dx * d) / d2,
@@ -4295,7 +4295,7 @@ var ChartModule = (function (exports) {
     function arc() {
       var innerRadius = arcInnerRadius,
           outerRadius = arcOuterRadius,
-          cornerRadius = constant(0),
+          cornerRadius = constant$2(0),
           padRadius = null,
           startAngle = arcStartAngle,
           endAngle = arcEndAngle,
@@ -4319,13 +4319,13 @@ var ChartModule = (function (exports) {
         if (r1 < r0) r = r1, r1 = r0, r0 = r;
 
         // Is it a point?
-        if (!(r1 > epsilon)) context.moveTo(0, 0);
+        if (!(r1 > epsilon$1)) context.moveTo(0, 0);
 
         // Or is it a circle or annulus?
-        else if (da > tau - epsilon) {
+        else if (da > tau$1 - epsilon$1) {
           context.moveTo(r1 * cos(a0), r1 * sin(a0));
           context.arc(0, 0, r1, a0, a1, !cw);
-          if (r0 > epsilon) {
+          if (r0 > epsilon$1) {
             context.moveTo(r0 * cos(a1), r0 * sin(a1));
             context.arc(0, 0, r0, a1, a0, cw);
           }
@@ -4340,20 +4340,20 @@ var ChartModule = (function (exports) {
               da0 = da,
               da1 = da,
               ap = padAngle.apply(this, arguments) / 2,
-              rp = (ap > epsilon) && (padRadius ? +padRadius.apply(this, arguments) : sqrt(r0 * r0 + r1 * r1)),
-              rc = min(abs(r1 - r0) / 2, +cornerRadius.apply(this, arguments)),
+              rp = (ap > epsilon$1) && (padRadius ? +padRadius.apply(this, arguments) : sqrt(r0 * r0 + r1 * r1)),
+              rc = min$1(abs(r1 - r0) / 2, +cornerRadius.apply(this, arguments)),
               rc0 = rc,
               rc1 = rc,
               t0,
               t1;
 
           // Apply padding? Note that since r1 ≥ r0, da1 ≥ da0.
-          if (rp > epsilon) {
+          if (rp > epsilon$1) {
             var p0 = asin(rp / r0 * sin(ap)),
                 p1 = asin(rp / r1 * sin(ap));
-            if ((da0 -= p0 * 2) > epsilon) p0 *= (cw ? 1 : -1), a00 += p0, a10 -= p0;
+            if ((da0 -= p0 * 2) > epsilon$1) p0 *= (cw ? 1 : -1), a00 += p0, a10 -= p0;
             else da0 = 0, a00 = a10 = (a0 + a1) / 2;
-            if ((da1 -= p1 * 2) > epsilon) p1 *= (cw ? 1 : -1), a01 += p1, a11 -= p1;
+            if ((da1 -= p1 * 2) > epsilon$1) p1 *= (cw ? 1 : -1), a01 += p1, a11 -= p1;
             else da1 = 0, a01 = a11 = (a0 + a1) / 2;
           }
 
@@ -4363,7 +4363,7 @@ var ChartModule = (function (exports) {
               y10 = r0 * sin(a10);
 
           // Apply rounded corners?
-          if (rc > epsilon) {
+          if (rc > epsilon$1) {
             var x11 = r1 * cos(a11),
                 y11 = r1 * sin(a11),
                 x00 = r0 * cos(a00),
@@ -4373,7 +4373,7 @@ var ChartModule = (function (exports) {
             // Restrict the corner radius according to the sector angle. If this
             // intersection fails, it’s probably because the arc is too small, so
             // disable the corner radius entirely.
-            if (da < pi) {
+            if (da < pi$1) {
               if (oc = intersect(x01, y01, x00, y00, x11, y11, x10, y10)) {
                 var ax = x01 - oc[0],
                     ay = y01 - oc[1],
@@ -4381,8 +4381,8 @@ var ChartModule = (function (exports) {
                     by = y11 - oc[1],
                     kc = 1 / sin(acos((ax * bx + ay * by) / (sqrt(ax * ax + ay * ay) * sqrt(bx * bx + by * by))) / 2),
                     lc = sqrt(oc[0] * oc[0] + oc[1] * oc[1]);
-                rc0 = min(rc, (r0 - lc) / (kc - 1));
-                rc1 = min(rc, (r1 - lc) / (kc + 1));
+                rc0 = min$1(rc, (r0 - lc) / (kc - 1));
+                rc1 = min$1(rc, (r1 - lc) / (kc + 1));
               } else {
                 rc0 = rc1 = 0;
               }
@@ -4390,10 +4390,10 @@ var ChartModule = (function (exports) {
           }
 
           // Is the sector collapsed to a line?
-          if (!(da1 > epsilon)) context.moveTo(x01, y01);
+          if (!(da1 > epsilon$1)) context.moveTo(x01, y01);
 
           // Does the sector’s outer ring have rounded corners?
-          else if (rc1 > epsilon) {
+          else if (rc1 > epsilon$1) {
             t0 = cornerTangents(x00, y00, x01, y01, r1, rc1, cw);
             t1 = cornerTangents(x11, y11, x10, y10, r1, rc1, cw);
 
@@ -4415,10 +4415,10 @@ var ChartModule = (function (exports) {
 
           // Is there no inner ring, and it’s a circular sector?
           // Or perhaps it’s an annular sector collapsed due to padding?
-          if (!(r0 > epsilon) || !(da0 > epsilon)) context.lineTo(x10, y10);
+          if (!(r0 > epsilon$1) || !(da0 > epsilon$1)) context.lineTo(x10, y10);
 
           // Does the sector’s inner ring (or point) have rounded corners?
-          else if (rc0 > epsilon) {
+          else if (rc0 > epsilon$1) {
             t0 = cornerTangents(x10, y10, x11, y11, r0, -rc0, cw);
             t1 = cornerTangents(x01, y01, x00, y00, r0, -rc0, cw);
 
@@ -4446,36 +4446,36 @@ var ChartModule = (function (exports) {
 
       arc.centroid = function() {
         var r = (+innerRadius.apply(this, arguments) + +outerRadius.apply(this, arguments)) / 2,
-            a = (+startAngle.apply(this, arguments) + +endAngle.apply(this, arguments)) / 2 - pi / 2;
+            a = (+startAngle.apply(this, arguments) + +endAngle.apply(this, arguments)) / 2 - pi$1 / 2;
         return [cos(a) * r, sin(a) * r];
       };
 
       arc.innerRadius = function(_) {
-        return arguments.length ? (innerRadius = typeof _ === "function" ? _ : constant(+_), arc) : innerRadius;
+        return arguments.length ? (innerRadius = typeof _ === "function" ? _ : constant$2(+_), arc) : innerRadius;
       };
 
       arc.outerRadius = function(_) {
-        return arguments.length ? (outerRadius = typeof _ === "function" ? _ : constant(+_), arc) : outerRadius;
+        return arguments.length ? (outerRadius = typeof _ === "function" ? _ : constant$2(+_), arc) : outerRadius;
       };
 
       arc.cornerRadius = function(_) {
-        return arguments.length ? (cornerRadius = typeof _ === "function" ? _ : constant(+_), arc) : cornerRadius;
+        return arguments.length ? (cornerRadius = typeof _ === "function" ? _ : constant$2(+_), arc) : cornerRadius;
       };
 
       arc.padRadius = function(_) {
-        return arguments.length ? (padRadius = _ == null ? null : typeof _ === "function" ? _ : constant(+_), arc) : padRadius;
+        return arguments.length ? (padRadius = _ == null ? null : typeof _ === "function" ? _ : constant$2(+_), arc) : padRadius;
       };
 
       arc.startAngle = function(_) {
-        return arguments.length ? (startAngle = typeof _ === "function" ? _ : constant(+_), arc) : startAngle;
+        return arguments.length ? (startAngle = typeof _ === "function" ? _ : constant$2(+_), arc) : startAngle;
       };
 
       arc.endAngle = function(_) {
-        return arguments.length ? (endAngle = typeof _ === "function" ? _ : constant(+_), arc) : endAngle;
+        return arguments.length ? (endAngle = typeof _ === "function" ? _ : constant$2(+_), arc) : endAngle;
       };
 
       arc.padAngle = function(_) {
-        return arguments.length ? (padAngle = typeof _ === "function" ? _ : constant(+_), arc) : padAngle;
+        return arguments.length ? (padAngle = typeof _ === "function" ? _ : constant$2(+_), arc) : padAngle;
       };
 
       arc.context = function(_) {
@@ -4523,23 +4523,23 @@ var ChartModule = (function (exports) {
       return new Linear(context);
     }
 
-    function x(p) {
+    function x$1(p) {
       return p[0];
     }
 
-    function y(p) {
+    function y$1(p) {
       return p[1];
     }
 
-    function line(x$1, y$1) {
-      var defined = constant(true),
+    function line(x, y) {
+      var defined = constant$2(true),
           context = null,
           curve = curveLinear,
           output = null,
           path = withPath(line);
 
-      x$1 = typeof x$1 === "function" ? x$1 : (x$1 === undefined) ? x : constant(x$1);
-      y$1 = typeof y$1 === "function" ? y$1 : (y$1 === undefined) ? y : constant(y$1);
+      x = typeof x === "function" ? x : (x === undefined) ? x$1 : constant$2(x);
+      y = typeof y === "function" ? y : (y === undefined) ? y$1 : constant$2(y);
 
       function line(data) {
         var i,
@@ -4555,22 +4555,22 @@ var ChartModule = (function (exports) {
             if (defined0 = !defined0) output.lineStart();
             else output.lineEnd();
           }
-          if (defined0) output.point(+x$1(d, i, data), +y$1(d, i, data));
+          if (defined0) output.point(+x(d, i, data), +y(d, i, data));
         }
 
         if (buffer) return output = null, buffer + "" || null;
       }
 
       line.x = function(_) {
-        return arguments.length ? (x$1 = typeof _ === "function" ? _ : constant(+_), line) : x$1;
+        return arguments.length ? (x = typeof _ === "function" ? _ : constant$2(+_), line) : x;
       };
 
       line.y = function(_) {
-        return arguments.length ? (y$1 = typeof _ === "function" ? _ : constant(+_), line) : y$1;
+        return arguments.length ? (y = typeof _ === "function" ? _ : constant$2(+_), line) : y;
       };
 
       line.defined = function(_) {
-        return arguments.length ? (defined = typeof _ === "function" ? _ : constant(!!_), line) : defined;
+        return arguments.length ? (defined = typeof _ === "function" ? _ : constant$2(!!_), line) : defined;
       };
 
       line.curve = function(_) {
@@ -4596,9 +4596,9 @@ var ChartModule = (function (exports) {
       var value = identity,
           sortValues = descending,
           sort = null,
-          startAngle = constant(0),
-          endAngle = constant(tau),
-          padAngle = constant(0);
+          startAngle = constant$2(0),
+          endAngle = constant$2(tau$1),
+          padAngle = constant$2(0);
 
       function pie(data) {
         var i,
@@ -4609,7 +4609,7 @@ var ChartModule = (function (exports) {
             index = new Array(n),
             arcs = new Array(n),
             a0 = +startAngle.apply(this, arguments),
-            da = Math.min(tau, Math.max(-tau, endAngle.apply(this, arguments) - a0)),
+            da = Math.min(tau$1, Math.max(-tau$1, endAngle.apply(this, arguments) - a0)),
             a1,
             p = Math.min(Math.abs(da) / n, padAngle.apply(this, arguments)),
             pa = p * (da < 0 ? -1 : 1),
@@ -4641,7 +4641,7 @@ var ChartModule = (function (exports) {
       }
 
       pie.value = function(_) {
-        return arguments.length ? (value = typeof _ === "function" ? _ : constant(+_), pie) : value;
+        return arguments.length ? (value = typeof _ === "function" ? _ : constant$2(+_), pie) : value;
       };
 
       pie.sortValues = function(_) {
@@ -4653,15 +4653,15 @@ var ChartModule = (function (exports) {
       };
 
       pie.startAngle = function(_) {
-        return arguments.length ? (startAngle = typeof _ === "function" ? _ : constant(+_), pie) : startAngle;
+        return arguments.length ? (startAngle = typeof _ === "function" ? _ : constant$2(+_), pie) : startAngle;
       };
 
       pie.endAngle = function(_) {
-        return arguments.length ? (endAngle = typeof _ === "function" ? _ : constant(+_), pie) : endAngle;
+        return arguments.length ? (endAngle = typeof _ === "function" ? _ : constant$2(+_), pie) : endAngle;
       };
 
       pie.padAngle = function(_) {
-        return arguments.length ? (padAngle = typeof _ === "function" ? _ : constant(+_), pie) : padAngle;
+        return arguments.length ? (padAngle = typeof _ === "function" ? _ : constant$2(+_), pie) : padAngle;
       };
 
       return pie;
@@ -4798,8 +4798,658 @@ var ChartModule = (function (exports) {
 
     Transform.prototype;
 
+    function max(values, valueof) {
+      let max;
+      if (valueof === undefined) {
+        for (const value of values) {
+          if (value != null
+              && (max < value || (max === undefined && value >= value))) {
+            max = value;
+          }
+        }
+      } else {
+        let index = -1;
+        for (let value of values) {
+          if ((value = valueof(value, ++index, values)) != null
+              && (max < value || (max === undefined && value >= value))) {
+            max = value;
+          }
+        }
+      }
+      return max;
+    }
+
+    function min(values, valueof) {
+      let min;
+      if (valueof === undefined) {
+        for (const value of values) {
+          if (value != null
+              && (min > value || (min === undefined && value >= value))) {
+            min = value;
+          }
+        }
+      } else {
+        let index = -1;
+        for (let value of values) {
+          if ((value = valueof(value, ++index, values)) != null
+              && (min > value || (min === undefined && value >= value))) {
+            min = value;
+          }
+        }
+      }
+      return min;
+    }
+
+    function sum(values, valueof) {
+      let sum = 0;
+      if (valueof === undefined) {
+        for (let value of values) {
+          if (value = +value) {
+            sum += value;
+          }
+        }
+      } else {
+        let index = -1;
+        for (let value of values) {
+          if (value = +valueof(value, ++index, values)) {
+            sum += value;
+          }
+        }
+      }
+      return sum;
+    }
+
+    function justify(node, n) {
+      return node.sourceLinks.length ? node.depth : n - 1;
+    }
+
+    function constant$1(x) {
+      return function() {
+        return x;
+      };
+    }
+
+    function ascendingSourceBreadth(a, b) {
+      return ascendingBreadth(a.source, b.source) || a.index - b.index;
+    }
+
+    function ascendingTargetBreadth(a, b) {
+      return ascendingBreadth(a.target, b.target) || a.index - b.index;
+    }
+
+    function ascendingBreadth(a, b) {
+      return a.y0 - b.y0;
+    }
+
+    function value(d) {
+      return d.value;
+    }
+
+    function defaultId(d) {
+      return d.index;
+    }
+
+    function defaultNodes(graph) {
+      return graph.nodes;
+    }
+
+    function defaultLinks(graph) {
+      return graph.links;
+    }
+
+    function find(nodeById, id) {
+      const node = nodeById.get(id);
+      if (!node) throw new Error("missing: " + id);
+      return node;
+    }
+
+    function computeLinkBreadths({nodes}) {
+      for (const node of nodes) {
+        let y0 = node.y0;
+        let y1 = y0;
+        for (const link of node.sourceLinks) {
+          link.y0 = y0 + link.width / 2;
+          y0 += link.width;
+        }
+        for (const link of node.targetLinks) {
+          link.y1 = y1 + link.width / 2;
+          y1 += link.width;
+        }
+      }
+    }
+
+    function Sankey() {
+      let x0 = 0, y0 = 0, x1 = 1, y1 = 1; // extent
+      let dx = 24; // nodeWidth
+      let dy = 8, py; // nodePadding
+      let id = defaultId;
+      let align = justify;
+      let sort;
+      let linkSort;
+      let nodes = defaultNodes;
+      let links = defaultLinks;
+      let iterations = 6;
+
+      function sankey() {
+        const graph = {nodes: nodes.apply(null, arguments), links: links.apply(null, arguments)};
+        computeNodeLinks(graph);
+        computeNodeValues(graph);
+        computeNodeDepths(graph);
+        computeNodeHeights(graph);
+        computeNodeBreadths(graph);
+        computeLinkBreadths(graph);
+        return graph;
+      }
+
+      sankey.update = function(graph) {
+        computeLinkBreadths(graph);
+        return graph;
+      };
+
+      sankey.nodeId = function(_) {
+        return arguments.length ? (id = typeof _ === "function" ? _ : constant$1(_), sankey) : id;
+      };
+
+      sankey.nodeAlign = function(_) {
+        return arguments.length ? (align = typeof _ === "function" ? _ : constant$1(_), sankey) : align;
+      };
+
+      sankey.nodeSort = function(_) {
+        return arguments.length ? (sort = _, sankey) : sort;
+      };
+
+      sankey.nodeWidth = function(_) {
+        return arguments.length ? (dx = +_, sankey) : dx;
+      };
+
+      sankey.nodePadding = function(_) {
+        return arguments.length ? (dy = py = +_, sankey) : dy;
+      };
+
+      sankey.nodes = function(_) {
+        return arguments.length ? (nodes = typeof _ === "function" ? _ : constant$1(_), sankey) : nodes;
+      };
+
+      sankey.links = function(_) {
+        return arguments.length ? (links = typeof _ === "function" ? _ : constant$1(_), sankey) : links;
+      };
+
+      sankey.linkSort = function(_) {
+        return arguments.length ? (linkSort = _, sankey) : linkSort;
+      };
+
+      sankey.size = function(_) {
+        return arguments.length ? (x0 = y0 = 0, x1 = +_[0], y1 = +_[1], sankey) : [x1 - x0, y1 - y0];
+      };
+
+      sankey.extent = function(_) {
+        return arguments.length ? (x0 = +_[0][0], x1 = +_[1][0], y0 = +_[0][1], y1 = +_[1][1], sankey) : [[x0, y0], [x1, y1]];
+      };
+
+      sankey.iterations = function(_) {
+        return arguments.length ? (iterations = +_, sankey) : iterations;
+      };
+
+      function computeNodeLinks({nodes, links}) {
+        for (const [i, node] of nodes.entries()) {
+          node.index = i;
+          node.sourceLinks = [];
+          node.targetLinks = [];
+        }
+        const nodeById = new Map(nodes.map((d, i) => [id(d, i, nodes), d]));
+        for (const [i, link] of links.entries()) {
+          link.index = i;
+          let {source, target} = link;
+          if (typeof source !== "object") source = link.source = find(nodeById, source);
+          if (typeof target !== "object") target = link.target = find(nodeById, target);
+          source.sourceLinks.push(link);
+          target.targetLinks.push(link);
+        }
+        if (linkSort != null) {
+          for (const {sourceLinks, targetLinks} of nodes) {
+            sourceLinks.sort(linkSort);
+            targetLinks.sort(linkSort);
+          }
+        }
+      }
+
+      function computeNodeValues({nodes}) {
+        for (const node of nodes) {
+          node.value = node.fixedValue === undefined
+              ? Math.max(sum(node.sourceLinks, value), sum(node.targetLinks, value))
+              : node.fixedValue;
+        }
+      }
+
+      function computeNodeDepths({nodes}) {
+        const n = nodes.length;
+        let current = new Set(nodes);
+        let next = new Set;
+        let x = 0;
+        while (current.size) {
+          for (const node of current) {
+            node.depth = x;
+            for (const {target} of node.sourceLinks) {
+              next.add(target);
+            }
+          }
+          if (++x > n) throw new Error("circular link");
+          current = next;
+          next = new Set;
+        }
+      }
+
+      function computeNodeHeights({nodes}) {
+        const n = nodes.length;
+        let current = new Set(nodes);
+        let next = new Set;
+        let x = 0;
+        while (current.size) {
+          for (const node of current) {
+            node.height = x;
+            for (const {source} of node.targetLinks) {
+              next.add(source);
+            }
+          }
+          if (++x > n) throw new Error("circular link");
+          current = next;
+          next = new Set;
+        }
+      }
+
+      function computeNodeLayers({nodes}) {
+        const x = max(nodes, d => d.depth) + 1;
+        const kx = (x1 - x0 - dx) / (x - 1);
+        const columns = new Array(x);
+        for (const node of nodes) {
+          const i = Math.max(0, Math.min(x - 1, Math.floor(align.call(null, node, x))));
+          node.layer = i;
+          node.x0 = x0 + i * kx;
+          node.x1 = node.x0 + dx;
+          if (columns[i]) columns[i].push(node);
+          else columns[i] = [node];
+        }
+        if (sort) for (const column of columns) {
+          column.sort(sort);
+        }
+        return columns;
+      }
+
+      function initializeNodeBreadths(columns) {
+        const ky = min(columns, c => (y1 - y0 - (c.length - 1) * py) / sum(c, value));
+        for (const nodes of columns) {
+          let y = y0;
+          for (const node of nodes) {
+            node.y0 = y;
+            node.y1 = y + node.value * ky;
+            y = node.y1 + py;
+            for (const link of node.sourceLinks) {
+              link.width = link.value * ky;
+            }
+          }
+          y = (y1 - y + py) / (nodes.length + 1);
+          for (let i = 0; i < nodes.length; ++i) {
+            const node = nodes[i];
+            node.y0 += y * (i + 1);
+            node.y1 += y * (i + 1);
+          }
+          reorderLinks(nodes);
+        }
+      }
+
+      function computeNodeBreadths(graph) {
+        const columns = computeNodeLayers(graph);
+        py = Math.min(dy, (y1 - y0) / (max(columns, c => c.length) - 1));
+        initializeNodeBreadths(columns);
+        for (let i = 0; i < iterations; ++i) {
+          const alpha = Math.pow(0.99, i);
+          const beta = Math.max(1 - alpha, (i + 1) / iterations);
+          relaxRightToLeft(columns, alpha, beta);
+          relaxLeftToRight(columns, alpha, beta);
+        }
+      }
+
+      // Reposition each node based on its incoming (target) links.
+      function relaxLeftToRight(columns, alpha, beta) {
+        for (let i = 1, n = columns.length; i < n; ++i) {
+          const column = columns[i];
+          for (const target of column) {
+            let y = 0;
+            let w = 0;
+            for (const {source, value} of target.targetLinks) {
+              let v = value * (target.layer - source.layer);
+              y += targetTop(source, target) * v;
+              w += v;
+            }
+            if (!(w > 0)) continue;
+            let dy = (y / w - target.y0) * alpha;
+            target.y0 += dy;
+            target.y1 += dy;
+            reorderNodeLinks(target);
+          }
+          if (sort === undefined) column.sort(ascendingBreadth);
+          resolveCollisions(column, beta);
+        }
+      }
+
+      // Reposition each node based on its outgoing (source) links.
+      function relaxRightToLeft(columns, alpha, beta) {
+        for (let n = columns.length, i = n - 2; i >= 0; --i) {
+          const column = columns[i];
+          for (const source of column) {
+            let y = 0;
+            let w = 0;
+            for (const {target, value} of source.sourceLinks) {
+              let v = value * (target.layer - source.layer);
+              y += sourceTop(source, target) * v;
+              w += v;
+            }
+            if (!(w > 0)) continue;
+            let dy = (y / w - source.y0) * alpha;
+            source.y0 += dy;
+            source.y1 += dy;
+            reorderNodeLinks(source);
+          }
+          if (sort === undefined) column.sort(ascendingBreadth);
+          resolveCollisions(column, beta);
+        }
+      }
+
+      function resolveCollisions(nodes, alpha) {
+        const i = nodes.length >> 1;
+        const subject = nodes[i];
+        resolveCollisionsBottomToTop(nodes, subject.y0 - py, i - 1, alpha);
+        resolveCollisionsTopToBottom(nodes, subject.y1 + py, i + 1, alpha);
+        resolveCollisionsBottomToTop(nodes, y1, nodes.length - 1, alpha);
+        resolveCollisionsTopToBottom(nodes, y0, 0, alpha);
+      }
+
+      // Push any overlapping nodes down.
+      function resolveCollisionsTopToBottom(nodes, y, i, alpha) {
+        for (; i < nodes.length; ++i) {
+          const node = nodes[i];
+          const dy = (y - node.y0) * alpha;
+          if (dy > 1e-6) node.y0 += dy, node.y1 += dy;
+          y = node.y1 + py;
+        }
+      }
+
+      // Push any overlapping nodes up.
+      function resolveCollisionsBottomToTop(nodes, y, i, alpha) {
+        for (; i >= 0; --i) {
+          const node = nodes[i];
+          const dy = (node.y1 - y) * alpha;
+          if (dy > 1e-6) node.y0 -= dy, node.y1 -= dy;
+          y = node.y0 - py;
+        }
+      }
+
+      function reorderNodeLinks({sourceLinks, targetLinks}) {
+        if (linkSort === undefined) {
+          for (const {source: {sourceLinks}} of targetLinks) {
+            sourceLinks.sort(ascendingTargetBreadth);
+          }
+          for (const {target: {targetLinks}} of sourceLinks) {
+            targetLinks.sort(ascendingSourceBreadth);
+          }
+        }
+      }
+
+      function reorderLinks(nodes) {
+        if (linkSort === undefined) {
+          for (const {sourceLinks, targetLinks} of nodes) {
+            sourceLinks.sort(ascendingTargetBreadth);
+            targetLinks.sort(ascendingSourceBreadth);
+          }
+        }
+      }
+
+      // Returns the target.y0 that would produce an ideal link from source to target.
+      function targetTop(source, target) {
+        let y = source.y0 - (source.sourceLinks.length - 1) * py / 2;
+        for (const {target: node, width} of source.sourceLinks) {
+          if (node === target) break;
+          y += width + py;
+        }
+        for (const {source: node, width} of target.targetLinks) {
+          if (node === source) break;
+          y -= width;
+        }
+        return y;
+      }
+
+      // Returns the source.y0 that would produce an ideal link from source to target.
+      function sourceTop(source, target) {
+        let y = target.y0 - (target.targetLinks.length - 1) * py / 2;
+        for (const {source: node, width} of target.targetLinks) {
+          if (node === source) break;
+          y += width + py;
+        }
+        for (const {target: node, width} of source.sourceLinks) {
+          if (node === target) break;
+          y -= width;
+        }
+        return y;
+      }
+
+      return sankey;
+    }
+
+    var pi = Math.PI,
+        tau = 2 * pi,
+        epsilon = 1e-6,
+        tauEpsilon = tau - epsilon;
+
+    function Path() {
+      this._x0 = this._y0 = // start of current subpath
+      this._x1 = this._y1 = null; // end of current subpath
+      this._ = "";
+    }
+
+    function path() {
+      return new Path;
+    }
+
+    Path.prototype = path.prototype = {
+      constructor: Path,
+      moveTo: function(x, y) {
+        this._ += "M" + (this._x0 = this._x1 = +x) + "," + (this._y0 = this._y1 = +y);
+      },
+      closePath: function() {
+        if (this._x1 !== null) {
+          this._x1 = this._x0, this._y1 = this._y0;
+          this._ += "Z";
+        }
+      },
+      lineTo: function(x, y) {
+        this._ += "L" + (this._x1 = +x) + "," + (this._y1 = +y);
+      },
+      quadraticCurveTo: function(x1, y1, x, y) {
+        this._ += "Q" + (+x1) + "," + (+y1) + "," + (this._x1 = +x) + "," + (this._y1 = +y);
+      },
+      bezierCurveTo: function(x1, y1, x2, y2, x, y) {
+        this._ += "C" + (+x1) + "," + (+y1) + "," + (+x2) + "," + (+y2) + "," + (this._x1 = +x) + "," + (this._y1 = +y);
+      },
+      arcTo: function(x1, y1, x2, y2, r) {
+        x1 = +x1, y1 = +y1, x2 = +x2, y2 = +y2, r = +r;
+        var x0 = this._x1,
+            y0 = this._y1,
+            x21 = x2 - x1,
+            y21 = y2 - y1,
+            x01 = x0 - x1,
+            y01 = y0 - y1,
+            l01_2 = x01 * x01 + y01 * y01;
+
+        // Is the radius negative? Error.
+        if (r < 0) throw new Error("negative radius: " + r);
+
+        // Is this path empty? Move to (x1,y1).
+        if (this._x1 === null) {
+          this._ += "M" + (this._x1 = x1) + "," + (this._y1 = y1);
+        }
+
+        // Or, is (x1,y1) coincident with (x0,y0)? Do nothing.
+        else if (!(l01_2 > epsilon));
+
+        // Or, are (x0,y0), (x1,y1) and (x2,y2) collinear?
+        // Equivalently, is (x1,y1) coincident with (x2,y2)?
+        // Or, is the radius zero? Line to (x1,y1).
+        else if (!(Math.abs(y01 * x21 - y21 * x01) > epsilon) || !r) {
+          this._ += "L" + (this._x1 = x1) + "," + (this._y1 = y1);
+        }
+
+        // Otherwise, draw an arc!
+        else {
+          var x20 = x2 - x0,
+              y20 = y2 - y0,
+              l21_2 = x21 * x21 + y21 * y21,
+              l20_2 = x20 * x20 + y20 * y20,
+              l21 = Math.sqrt(l21_2),
+              l01 = Math.sqrt(l01_2),
+              l = r * Math.tan((pi - Math.acos((l21_2 + l01_2 - l20_2) / (2 * l21 * l01))) / 2),
+              t01 = l / l01,
+              t21 = l / l21;
+
+          // If the start tangent is not coincident with (x0,y0), line to.
+          if (Math.abs(t01 - 1) > epsilon) {
+            this._ += "L" + (x1 + t01 * x01) + "," + (y1 + t01 * y01);
+          }
+
+          this._ += "A" + r + "," + r + ",0,0," + (+(y01 * x20 > x01 * y20)) + "," + (this._x1 = x1 + t21 * x21) + "," + (this._y1 = y1 + t21 * y21);
+        }
+      },
+      arc: function(x, y, r, a0, a1, ccw) {
+        x = +x, y = +y, r = +r, ccw = !!ccw;
+        var dx = r * Math.cos(a0),
+            dy = r * Math.sin(a0),
+            x0 = x + dx,
+            y0 = y + dy,
+            cw = 1 ^ ccw,
+            da = ccw ? a0 - a1 : a1 - a0;
+
+        // Is the radius negative? Error.
+        if (r < 0) throw new Error("negative radius: " + r);
+
+        // Is this path empty? Move to (x0,y0).
+        if (this._x1 === null) {
+          this._ += "M" + x0 + "," + y0;
+        }
+
+        // Or, is (x0,y0) not coincident with the previous point? Line to (x0,y0).
+        else if (Math.abs(this._x1 - x0) > epsilon || Math.abs(this._y1 - y0) > epsilon) {
+          this._ += "L" + x0 + "," + y0;
+        }
+
+        // Is this arc empty? We’re done.
+        if (!r) return;
+
+        // Does the angle go the wrong way? Flip the direction.
+        if (da < 0) da = da % tau + tau;
+
+        // Is this a complete circle? Draw two arcs to complete the circle.
+        if (da > tauEpsilon) {
+          this._ += "A" + r + "," + r + ",0,1," + cw + "," + (x - dx) + "," + (y - dy) + "A" + r + "," + r + ",0,1," + cw + "," + (this._x1 = x0) + "," + (this._y1 = y0);
+        }
+
+        // Is this arc non-empty? Draw an arc!
+        else if (da > epsilon) {
+          this._ += "A" + r + "," + r + ",0," + (+(da >= pi)) + "," + cw + "," + (this._x1 = x + r * Math.cos(a1)) + "," + (this._y1 = y + r * Math.sin(a1));
+        }
+      },
+      rect: function(x, y, w, h) {
+        this._ += "M" + (this._x0 = this._x1 = +x) + "," + (this._y0 = this._y1 = +y) + "h" + (+w) + "v" + (+h) + "h" + (-w) + "Z";
+      },
+      toString: function() {
+        return this._;
+      }
+    };
+
+    function constant(x) {
+      return function constant() {
+        return x;
+      };
+    }
+
+    function x(p) {
+      return p[0];
+    }
+
+    function y(p) {
+      return p[1];
+    }
+
+    var slice = Array.prototype.slice;
+
+    function linkSource(d) {
+      return d.source;
+    }
+
+    function linkTarget(d) {
+      return d.target;
+    }
+
+    function link(curve) {
+      var source = linkSource,
+          target = linkTarget,
+          x$1 = x,
+          y$1 = y,
+          context = null;
+
+      function link() {
+        var buffer, argv = slice.call(arguments), s = source.apply(this, argv), t = target.apply(this, argv);
+        if (!context) context = buffer = path();
+        curve(context, +x$1.apply(this, (argv[0] = s, argv)), +y$1.apply(this, argv), +x$1.apply(this, (argv[0] = t, argv)), +y$1.apply(this, argv));
+        if (buffer) return context = null, buffer + "" || null;
+      }
+
+      link.source = function(_) {
+        return arguments.length ? (source = _, link) : source;
+      };
+
+      link.target = function(_) {
+        return arguments.length ? (target = _, link) : target;
+      };
+
+      link.x = function(_) {
+        return arguments.length ? (x$1 = typeof _ === "function" ? _ : constant(+_), link) : x$1;
+      };
+
+      link.y = function(_) {
+        return arguments.length ? (y$1 = typeof _ === "function" ? _ : constant(+_), link) : y$1;
+      };
+
+      link.context = function(_) {
+        return arguments.length ? ((context = _ == null ? null : _), link) : context;
+      };
+
+      return link;
+    }
+
+    function curveHorizontal(context, x0, y0, x1, y1) {
+      context.moveTo(x0, y0);
+      context.bezierCurveTo(x0 = (x0 + x1) / 2, y0, x0, y1, x1, y1);
+    }
+
+    function linkHorizontal() {
+      return link(curveHorizontal);
+    }
+
+    function horizontalSource(d) {
+      return [d.source.x1, d.y0];
+    }
+
+    function horizontalTarget(d) {
+      return [d.target.x0, d.y1];
+    }
+
+    function sankeyLinkHorizontal() {
+      return linkHorizontal()
+          .source(horizontalSource)
+          .target(horizontalTarget);
+    }
+
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Tue Feb 18 18:33:04 CAT 2025
+    // Generated Thu Feb 20 16:22:35 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -4816,7 +5466,7 @@ var ChartModule = (function (exports) {
         hsv: (path) => dsv('#', path)
     };
     function loadData(path_1) {
-        return __awaiter(this, arguments, undefined, function* (path, format = "") {
+        return __awaiter(this, arguments, void 0, function* (path, format = "") {
             if (format == "") {
                 format = path.split(".").slice(-1)[0];
             }
@@ -4830,12 +5480,12 @@ var ChartModule = (function (exports) {
     }
     /// linechart.ts
     function linechart() {
-        return __awaiter(this, arguments, undefined, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, colors = defaultArgumentObject.colors, file, curved = 0) {
+        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, colors = defaultArgumentObject.colors, file, curved = 0) {
             var _a, _b, _c;
             const { width, height } = size;
             const margin = defaultMargin;
-            if (file === null || file === undefined ? undefined : file.path) {
-                data = yield loadData(file === null || file === undefined ? undefined : file.path, file === null || file === undefined ? undefined : file.format);
+            if (file === null || file === void 0 ? void 0 : file.path) {
+                data = yield loadData(file === null || file === void 0 ? void 0 : file.path, file === null || file === void 0 ? void 0 : file.format);
             }
             const processed_data = data;
             // Select the container div and clear any existing SVG
@@ -4848,12 +5498,12 @@ var ChartModule = (function (exports) {
             // Define X and Y scales
             const xScale = linear()
                 .domain([
-                (_a = min$1(processed_data, (d) => d.x)) !== null && _a !== undefined ? _a : 0,
-                (_b = max$1(processed_data, (d) => d.x)) !== null && _b !== undefined ? _b : 0,
+                (_a = min$2(processed_data, (d) => d.x)) !== null && _a !== void 0 ? _a : 0,
+                (_b = max$2(processed_data, (d) => d.x)) !== null && _b !== void 0 ? _b : 0,
             ])
                 .range([margin.left, width - margin.right]);
             const yScale = linear()
-                .domain([0, (_c = max$1(processed_data, (d) => d.y)) !== null && _c !== undefined ? _c : 0])
+                .domain([0, (_c = max$2(processed_data, (d) => d.y)) !== null && _c !== void 0 ? _c : 0])
                 .range([height - margin.bottom, margin.top]);
             // Create the line generator
             const line$1 = line()
@@ -4882,11 +5532,11 @@ var ChartModule = (function (exports) {
     }
     /// barchart.ts
     function barchart() {
-        return __awaiter(this, arguments, undefined, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, colors = defaultArgumentObject.colors, file) {
+        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, colors = defaultArgumentObject.colors, file) {
             const { width, height } = size;
             const margin = defaultMargin;
-            if (file === null || file === undefined ? undefined : file.path) {
-                data = yield loadData(file === null || file === undefined ? undefined : file.path, file === null || file === undefined ? undefined : file.format);
+            if (file === null || file === void 0 ? void 0 : file.path) {
+                data = yield loadData(file === null || file === void 0 ? void 0 : file.path, file === null || file === void 0 ? void 0 : file.format);
             }
             const processed_data = data;
             const svg = select(div)
@@ -4902,7 +5552,7 @@ var ChartModule = (function (exports) {
                 .range([0, chartWidth])
                 .padding(0.2);
             const y = linear()
-                .domain([0, max$1(processed_data, (d) => d.value)])
+                .domain([0, max$2(processed_data, (d) => d.value)])
                 .range([chartHeight, 0]);
             // Draw X axis
             svg
@@ -4927,11 +5577,11 @@ var ChartModule = (function (exports) {
     }
     /// piechart.ts
     function piechart() {
-        return __awaiter(this, arguments, undefined, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, colors = [], file, donut) {
+        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, colors = [], file, donut) {
             const { width, height } = size;
             const radius = Math.min(width, height) / 2;
-            if (file === null || file === undefined ? undefined : file.path) {
-                data = yield loadData(file === null || file === undefined ? undefined : file.path, file === null || file === undefined ? undefined : file.format);
+            if (file === null || file === void 0 ? void 0 : file.path) {
+                data = yield loadData(file === null || file === void 0 ? void 0 : file.path, file === null || file === void 0 ? void 0 : file.format);
             }
             const processed_data = data;
             if (colors.length < 10) {
@@ -4970,10 +5620,74 @@ var ChartModule = (function (exports) {
                 .text((d) => d.data.label);
         });
     }
+    /// skey.ts
+    function skey(div, data, // Assumed to contain 'nodes' and 'links'
+    size, colors) {
+        const { width, height } = size;
+        // Set up SVG container
+        const svg = select(div)
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+        // Define Sankey generator
+        const sankeyGenerator = Sankey()
+            .nodeWidth(20)
+            .nodePadding(10)
+            .extent([
+            [0, 0],
+            [width, height],
+        ]);
+        // Process the data
+        const graph = sankeyGenerator(data);
+        // Color scale
+        const color = ordinal().domain(data.nodes.map((d) => d.name)).range(colors);
+        // Draw Links
+        svg
+            .append("g")
+            .selectAll("path")
+            .data(graph.links)
+            .enter()
+            .append("path")
+            .attr("d", sankeyLinkHorizontal())
+            .attr("stroke", (d) => color(d.source.name) || "#999")
+            .attr("stroke-width", (d) => Math.max(1, d.width))
+            .attr("fill", "none")
+            .attr("opacity", 0.7);
+        // Draw Nodes
+        const node = svg
+            .append("g")
+            .selectAll("rect")
+            .data(graph.nodes)
+            .enter()
+            .append("rect")
+            .attr("x", (d) => d.x0)
+            .attr("y", (d) => d.y0)
+            .attr("height", (d) => d.y1 - d.y0)
+            .attr("width", sankeyGenerator.nodeWidth())
+            .attr("fill", (d) => color(d.name));
+        // Add Node Labels
+        node
+            .append("title")
+            .text((d) => `${d.name}\n${d.value}`);
+        svg
+            .append("g")
+            .selectAll("text")
+            .data(graph.nodes)
+            .enter()
+            .append("text")
+            .attr("x", (d) => d.x0 - 6)
+            .attr("y", (d) => (d.y0 + d.y1) / 2)
+            .attr("dy", "0.35em")
+            .attr("text-anchor", "end")
+            .text((d) => d.name)
+            .attr("fill", "#000");
+        return svg.node();
+    }
 
     exports.barchart = barchart;
     exports.linechart = linechart;
     exports.piechart = piechart;
+    exports.skey = skey;
 
     return exports;
 

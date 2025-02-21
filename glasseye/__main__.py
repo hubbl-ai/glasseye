@@ -2,6 +2,7 @@ import sys, os, re, pypandoc as py, shutil as sh
 from collections import OrderedDict
 import json
 from bs4 import BeautifulSoup
+import seaborn
 
 DEBUG = False
 
@@ -13,8 +14,22 @@ def main():
         contents = to_wrap.replace_with(wrap_in)
         wrap_in.append(contents)
 
+    def resolve_color_palette(colors,count,desat):
+        palette = seaborn.color_palette(
+            palette=colors, desat=desat, n_colors=count)
+
+        if palette:
+            palette = [
+                '#%02X%02X%02X' % tuple(
+                    map(
+                        lambda x: int(255 * x),
+                        hue
+                    )
+                ) for hue in [c for c in palette]]
+
+        return palette
+
     # Function to add charts
-    # Todo: Verify that OrderedDict respects the order of the args
     def add_chart(chart_id, fields, code_string):
         all_fields = {'data':[], 'size':{},'colors':{},'file':{}}
         if fields:
@@ -24,11 +39,20 @@ def main():
             attrs = d[1].attrs
             args = [f"'#{chart_id}_{str(d[0])}'"]
             for field,dv in all_fields.items():
-                # breakpoint()
-                # if DEBUG:
-                #     import pdb; pdb.set_trace()
                 if field in attrs:
-                    args.append(str(json.loads(attrs[field])))
+                    if field=='colors':
+                        # breakpoint()
+                        pallette_arg = attrs.get(field, "pastel")
+                        pallette_colors = []
+                        try:
+                            pallette_arg = json.loads(pallette_arg)
+                            pallette_colors = resolve_color_palette(pallette_arg,int(attrs.get('n_colors', '10')),float(attrs.get('desat', '1')))
+                        except:
+                            if type(pallette_arg) == type(""):
+                                pallette_colors = resolve_color_palette(attrs.get(field, "pastel"),int(attrs.get('n_colors', '10')),float(attrs.get('desat', '1')))
+                        args.append(str(pallette_colors))
+                    else:
+                        args.append(str(json.loads(attrs[field])))
                 else:
                     args.append(str(dv))
             code_string += f"{module_name}.{chart_id}({','.join(args)});"
@@ -119,16 +143,16 @@ def main():
     standard_charts = {
         'linechart':{'curved':1},
         'piechart':{'donut':0},
-        'skey':{},
-        'barchart':{},
-        'tree':{},
-        'vennchart':{},
-        'gantt':{},
-        'treemap':{},
-        'heatmap':{},
-        'dotplot':{},
-        'scatterplot':{},
-        'boxplot':{},
+        'skey':None,
+        'barchart':None,
+        'tree':None,
+        'vennchart':None,
+        'gantt':None,
+        'treemap':None,
+        'heatmap':None,
+        'dotplot':None,
+        'scatterplot':None,
+        'boxplot':None,
         }
 
     for s, args in standard_charts.items():
