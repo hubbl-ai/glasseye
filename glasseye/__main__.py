@@ -64,8 +64,9 @@ tpl = '''<!DOCTYPE html>
         <div id = "tufte_container">
             {soup}
         </div>
-
-        {code}
+        <script type="text/javascript">
+            {code}
+        </script>
 
         <script type="text/javascript">
             (function () {{
@@ -92,7 +93,7 @@ def wrap(to_wrap, wrap_in):
     contents = to_wrap.replace_with(wrap_in)
     wrap_in.append(contents)
 
-def resolve_color_palette(colors, n_colors, desat):
+def resolve_color_palette(colors, n_colors, desat=0):
     palette = seaborn.color_palette(
         palette=colors, desat=desat, n_colors=n_colors)
 
@@ -104,7 +105,7 @@ def resolve_color_palette(colors, n_colors, desat):
                     hue
                 )
             ) for hue in [c for c in palette]]
-
+        
     return palette
 
 # Function to add charts
@@ -112,13 +113,13 @@ def add_chart(chart_id, fields, soup, code_string):
     all_fields = {
         'data':[],
         'size':{},
-        'file':None,
-        'colors':[]
+        'colors':[],
+        'file':{}
     }
 
     palette_fields = {
         'colors':'pastel',
-        'desat':None,
+        'desat':0,
         'n_colors':10
     }
 
@@ -133,10 +134,13 @@ def add_chart(chart_id, fields, soup, code_string):
 
         for field, dv in palette_fields.items():
             if field in attrs:
-                palette_fields[field] = json.loads(attrs[field])
+                try:
+                    palette_fields[field] = json.loads(attrs[field])
+                except:
+                    breakpoint()
 
         # Compute the palette
-
+        logger.info(palette_fields)
         all_fields['colors'] = resolve_color_palette(**palette_fields)
 
         # Resolve everything but color.
