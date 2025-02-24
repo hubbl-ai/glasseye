@@ -1,5 +1,4 @@
 import sys, os, re, pypandoc as py, shutil as sh
-from collections import OrderedDict
 import json
 from bs4 import BeautifulSoup
 import seaborn
