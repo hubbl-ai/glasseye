@@ -15,8 +15,9 @@ data='[
   { "x": 6, "y": 35 }
   ]'
   size='{"width":600,"height":600}'
-  colors='["#FF6700","#008000"]'
+  colors='["#FF6700","#004E98"]'
   curved='0'
+  desat='0'
 >
 </linechart>
 
@@ -126,7 +127,7 @@ data='[
   { "label": "Grapes", "value": 25 }
 ]'
   size='{"width":500,"height":500}'
-  colors='["#FF6700","#008000"]'
+  colors='["#FF6700","#004E98"]'
 >
 </piechart>
 
@@ -145,7 +146,7 @@ data='[
   { "label": "Grapes", "value": 25 }
 ]'
   size='{"width":500,"height":500}'
-  colors='["#FF6700","#008000"]'
+  colors='["#FF6700","#004E98"]'
   donut = '1'
 >
 </piechart>
@@ -194,7 +195,7 @@ data='[
   { "label": "Grapes", "value": 25 }
 ]'
   size='{"width":500,"height":500}'
-  colors='deep'
+  colors='"deep"'
   n_colors='5'
   desat='0.9'
   donut = '1'
