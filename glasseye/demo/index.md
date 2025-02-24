@@ -17,7 +17,6 @@ data='[
   size='{"width":600,"height":600}'
   colors='["#FF6700","#004E98"]'
   curved='0'
-  desat='0'
 >
 </linechart>
 

@@ -93,7 +93,7 @@ def wrap(to_wrap, wrap_in):
     contents = to_wrap.replace_with(wrap_in)
     wrap_in.append(contents)
 
-def resolve_color_palette(colors, n_colors, desat=0):
+def resolve_color_palette(colors, n_colors, desat=1):
     palette = seaborn.color_palette(
         palette=colors, desat=desat, n_colors=n_colors)
 
@@ -119,7 +119,7 @@ def add_chart(chart_id, fields, soup, code_string):
 
     palette_fields = {
         'colors':'pastel',
-        'desat':0,
+        'desat':1,
         'n_colors':10
     }
 
@@ -140,7 +140,6 @@ def add_chart(chart_id, fields, soup, code_string):
                     breakpoint()
 
         # Compute the palette
-        logger.info(palette_fields)
         all_fields['colors'] = resolve_color_palette(**palette_fields)
 
         # Resolve everything but color.
