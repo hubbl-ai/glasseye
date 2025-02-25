@@ -9,7 +9,7 @@ SOURCE_FILES = \
 	barchart.ts \
 	piechart.ts \
 	skey.ts \
-	gantt.ts \
+	# gantt.ts \
 
 all: $(GENERATED_FILES) rollup copydemo
 
@@ -25,15 +25,13 @@ copydemo:
 ../index.ts: $(SOURCE_FILES)
 	@ echo Building bundle
 
-	nx build
+	@if [ -f $@ ]; then mv $@ $@~;  fi;
+	@echo "// Warning! THIS FILE WAS GENERATED! DO NOT EDIT!\n// Generated `date`\n" > $@
 
-	# @if [ -f $@ ]; then mv $@ $@~;  fi;
-	# @echo "// Warning! THIS FILE WAS GENERATED! DO NOT EDIT!\n// Generated `date`\n" > $@
-
-	# @for f in $^; do \
-	#     echo "\n/// $$f\n"; \
-	#     cat $$f; \
-	# done >> $@
+	@for f in $^; do \
+	    echo "\n/// $$f\n"; \
+	    cat $$f; \
+	done >> $@
 
 ../index-try.ts: $(SOURCE_FILES)
 	@ echo Building bundle

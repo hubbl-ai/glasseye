@@ -3,8 +3,8 @@ export async function piechart(
   div: string = defaultArgumentObject.div,
   data: any = defaultArgumentObject.data,
   size: Size = defaultArgumentObject.size,
-  file: DataFile | null = null,
-  colors: string[] | string,
+  file?: DataFile,
+  colors: string[]= defaultArgumentObject.colors,
   donut?: 0
 ) {
   const { width, height } = size;

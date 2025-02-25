@@ -36,11 +36,11 @@ base_scripts = [
 ]
 
 dev_scripts = base_scripts + [
-    "js/glasseyechart.js"
+    "ts/dist/glasseyechart.js"
 ]
 
 prod_scripts = base_scripts + [
-    'https://dev.hubbl.ai/js/glasseyeChart.css'
+    'https://dev.hubbl.ai/js/glasseyeChart.js'
 ]
 
 formatted_scripts = [
@@ -93,7 +93,7 @@ def wrap(to_wrap, wrap_in):
     contents = to_wrap.replace_with(wrap_in)
     wrap_in.append(contents)
 
-def resolve_color_palette(colors, n_colors, desat=1):
+def resolve_color_palette(colors, n_colors, desat):
     palette = seaborn.color_palette(
         palette=colors, desat=desat, n_colors=n_colors)
 
@@ -105,7 +105,7 @@ def resolve_color_palette(colors, n_colors, desat=1):
                     hue
                 )
             ) for hue in [c for c in palette]]
-        
+    logger.info(palette)
     return palette
 
 # Function to add charts
@@ -113,13 +113,14 @@ def add_chart(chart_id, fields, soup, code_string):
     all_fields = {
         'data':[],
         'size':{},
-        'file':{}
+        'file':{},
+        'colors':'pastel',
     }
 
     palette_fields = {
         'colors':'pastel',
+        'n_colors':10,
         'desat':1,
-        'n_colors':10
     }
 
     if fields:
@@ -143,12 +144,14 @@ def add_chart(chart_id, fields, soup, code_string):
 
                     if type(value) == list and len(value) == 1 and type(value[0] == str):
                         value = value[0]
-                try:
-                    palette_fields[field] = json.loads(attrs[field])
-                except:
-                    breakpoint()
+                else:
+                    try:
+                        palette_fields[field] = json.loads(attrs[field])
+                    except Exception as e:
+                        logger.error(e)
 
         # Compute the palette
+        logger.info(palette_fields)
         all_fields['colors'] = resolve_color_palette(**palette_fields)
 
         # Resolve everything but color.

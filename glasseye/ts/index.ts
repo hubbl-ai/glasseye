@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Thu Feb 20 16:22:35 CAT 2025
+// Generated Tue Feb 25 16:59:00 CAT 2025
 
 
 /// base.ts
@@ -82,8 +82,8 @@ export async function linechart(
   div: string = defaultArgumentObject.div,
   data: any = defaultArgumentObject.data,
   size: Size = defaultArgumentObject.size,
-  colors: string[] = defaultArgumentObject.colors,
-  file?: DataFile,
+  file: DataFile | null = null,
+  colors: string[],
   curved = 0
 ) {
   const { width, height } = size;
@@ -153,8 +153,8 @@ export async function barchart(
   div: string = defaultArgumentObject.div,
   data: any = defaultArgumentObject.data,
   size: Size = defaultArgumentObject.size,
+  file?: DataFile,
   colors: string[] = defaultArgumentObject.colors,
-  file?: DataFile
 ) {
   const { width, height } = size;
   const margin:Margin = defaultMargin;
@@ -217,8 +217,8 @@ export async function piechart(
   div: string = defaultArgumentObject.div,
   data: any = defaultArgumentObject.data,
   size: Size = defaultArgumentObject.size,
-  colors: string[] = [],
   file?: DataFile,
+  colors: string[]= defaultArgumentObject.colors,
   donut?: 0
 ) {
   const { width, height } = size;

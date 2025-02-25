@@ -5,7 +5,7 @@ export async function linechart(
   data: any = defaultArgumentObject.data,
   size: Size = defaultArgumentObject.size,
   file: DataFile | null = null,
-  colors: string[] | string,
+  colors: string[],
   curved = 0
 ) {
   const { width, height } = size;

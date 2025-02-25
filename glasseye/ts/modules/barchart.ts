@@ -3,8 +3,8 @@ export async function barchart(
   div: string = defaultArgumentObject.div,
   data: any = defaultArgumentObject.data,
   size: Size = defaultArgumentObject.size,
+  file?: DataFile,
   colors: string[] = defaultArgumentObject.colors,
-  file?: DataFile
 ) {
   const { width, height } = size;
   const margin:Margin = defaultMargin;
