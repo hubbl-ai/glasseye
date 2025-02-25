@@ -4,8 +4,8 @@ export async function linechart(
   div: string = defaultArgumentObject.div,
   data: any = defaultArgumentObject.data,
   size: Size = defaultArgumentObject.size,
-  colors: string[] = defaultArgumentObject.colors,
-  file?: DataFile,
+  file: DataFile | null = null,
+  colors: string[] | string,
   curved = 0
 ) {
   const { width, height } = size;
