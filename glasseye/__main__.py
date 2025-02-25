@@ -113,7 +113,6 @@ def add_chart(chart_id, fields, soup, code_string):
     all_fields = {
         'data':[],
         'size':{},
-        'colors':[],
         'file':{}
     }
 
@@ -134,6 +133,16 @@ def add_chart(chart_id, fields, soup, code_string):
 
         for field, dv in palette_fields.items():
             if field in attrs:
+                if field == 'colors':
+                    try:
+                        value = json.loads(attrs[field])
+                    except Exception as exp:
+                        value = attrs[field]
+                        if type(value) != str:
+                            raise
+
+                    if type(value) == list and len(value) == 1 and type(value[0] == str):
+                        value = value[0]
                 try:
                     palette_fields[field] = json.loads(attrs[field])
                 except:
