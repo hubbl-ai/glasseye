@@ -2,8 +2,8 @@ export async function gantt(
   div: string = defaultArgumentObject.div,
   data: any = defaultArgumentObject.data,
   size: Size = defaultArgumentObject.size,
-  colors: string[] = defaultArgumentObject.colors,
-  file?: DataFile
+  file?: DataFile,
+  colors: string[]= defaultArgumentObject.colors,
 ) {
   if (file?.path) {
     data = await loadData(file?.path, file?.format);
@@ -22,8 +22,8 @@ export async function gantt(
   const x = d3
     .scaleTime()
     .domain([
-      d3.min(data, (d: any) => new Date(d.start)),
-      d3.max(data, (d: any) => new Date(d.end)),
+      d3.min(data, (d: any) => new Date(d.start)) as Date,
+      d3.max(data, (d: any) => new Date(d.end)) as Date,
     ])
     .range([0, width]);
 
@@ -49,7 +49,7 @@ export async function gantt(
     .append("rect")
     .attr("class", "task")
     .attr("x", (d: any) => x(new Date(d.start)))
-    .attr("y", (d: any) => y(d.task))
+    .attr("y", (d: any) => y(d.task) as number)
     .attr("width", (d: any) => x(new Date(d.end)) - x(new Date(d.start)))
     .attr("height", y.bandwidth())
     .attr("fill", (d, i) => colors[i % colors.length]);

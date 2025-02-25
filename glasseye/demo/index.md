@@ -194,7 +194,7 @@ data='[
   { "label": "Grapes", "value": 25 }
 ]'
   size='{"width":500,"height":500}'
-  colors='"deep"'
+  colors='deep'
   n_colors='5'
   desat='0.9'
   donut = '1'
@@ -204,7 +204,7 @@ data='[
 
 
 
-### A Donut chart using Seaborn Pallette
+### A gantt chart using Seaborn Pallette
 
 
 <gantt
@@ -215,7 +215,7 @@ data='[
   { "task": "Testing", "start": "2024-03-26", "end": "2024-03-30" },
   { "task": "Deployment", "start": "2024-03-31", "end": "2024-04-02" }
 ]'
-  size='{"width":500,"height":500}'
-  colors='"deep"'
+  size='{"width":1000,"height":500}'
+  colors='deep'
 >
 </gantt>

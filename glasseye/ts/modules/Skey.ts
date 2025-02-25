@@ -1,8 +1,9 @@
 export function skey(
-  div: string,
-  data: any, // Assumed to contain 'nodes' and 'links'
-  size: Size,
-  colors: string[]
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[]= defaultArgumentObject.colors,
 ) {
   const { width, height } = size;
 
