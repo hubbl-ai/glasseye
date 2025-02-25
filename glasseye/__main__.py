@@ -12,16 +12,18 @@ fonts = [
     'http://fonts.googleapis.com/css?family=Lato',
 ]
 
-prod_stylesheets = [
+base_stylesheets = [
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css',
+]
+
+prod_stylesheets = [
     'https://dev.hubbl.ai/css/tufte.css',
     'https://dev.hubbl.ai/css/glasseyeCharts.css',
 ]
 
 dev_stylesheets = [
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css'
-    'css/tufte.css',
-    'css/glasseyeCharts.css',
+    '{dir}/css/tufte.css',
+    '{dir}/css/glasseyeCharts.css',
 ]
 
 base_scripts = [
@@ -35,11 +37,11 @@ base_scripts = [
     "https://benfred.github.io/venn.js/venn.js",
 ]
 
-dev_scripts = base_scripts + [
-    "ts/dist/glasseyechart.js"
+dev_scripts = [
+    "{dir}/ts/dist/glasseyechart.js"
 ]
 
-prod_scripts = base_scripts + [
+prod_scripts = [
     'https://dev.hubbl.ai/js/glasseyeChart.js'
 ]
 
@@ -48,7 +50,7 @@ formatted_scripts = [
  integrity="sha512-J5ha2LF4Le+PBQnI5+xAVJDR+sZG9uSgroy4n/A6TLjNkvYQbqZA8WHZdaOvJ0HiKkBC9Frmvs10rFDSHKmveQ=="
  crossorigin="anonymous"
  referrerpolicy="no-referrer"></script>'''
- ]
+]
 
 tpl = '''<!DOCTYPE html>
 <html>
@@ -86,6 +88,7 @@ tpl = '''<!DOCTYPE html>
 mode = 'prod'
 
 module_name = 'ChartModule'
+src_dir = '.'
 logger = None
 
 # Function to wrap with tags
@@ -201,13 +204,14 @@ In dev mode, the script must be run in the same folder as the script.
 
     opts, args = getopt(
         sys.argv[1:],
-        'Df:o:pt:v',
-        ('dev', 'filter', 'output', 'plt', 'title', 'verbose')
+        'D:f:o:pt:v',
+        ('dir', 'filter', 'output', 'plt', 'title', 'verbose')
     )
 
     for k, v in opts:
-        if k in ['-D', '--dev']:
+        if k in ['-D', '--dir']:
             mode = 'dev'
+            src_dir = os.path.abspath(v)
         elif k in ['-f', '--filter']:
             filters.append(v)
         elif k in ['-o', '--output']:
@@ -343,22 +347,28 @@ In dev mode, the script must be run in the same folder as the script.
     code_string = re.sub("[“’‘”]", "'", code_string)
 
     # Construct the mode-specificities
+    scripts = base_scripts
+    stylesheets = base_stylesheets
 
-    scripts = dev_scripts if mode == 'dev' else prod_scripts
-    stylesheets = dev_stylesheets if mode == 'dev' else prod_stylesheets
+    if mode == 'dev':
+        scripts = scripts + [path.format(dir=src_dir) for path in dev_scripts]
+        stylesheets = stylesheets + [path.format(dir=src_dir) for path in dev_stylesheets]
+    else:
+        scripts = scripts + prod_scripts
+        stylesheets = stylesheets + prod_stylesheets
 
     # Put it all together into a set of arguments for turning the template
     # into the finished document.
 
     tpl_args = {
         'title': title,
-        'fonts': "\n".join([
+        'fonts': "\n        ".join([
             f"<link href='{font}' rel='stylesheet' type='text/css'>" for font in fonts
         ]),
-        'scripts': "\n".join(
+        'scripts': "\n        ".join(
             [f'<script src="{script}"></script>' for script in scripts] + formatted_scripts
         ),
-        'stylesheets': "\n".join(
+        'stylesheets': "\n        ".join(
             f'<link rel="stylesheet" href="{sheet}" />' for sheet in stylesheets
         ),
         'soup': str(soup),
