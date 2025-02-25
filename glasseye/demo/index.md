@@ -200,3 +200,22 @@ data='[
   donut = '1'
 >
 </piechart>
+
+
+
+
+### A Donut chart using Seaborn Pallette
+
+
+<gantt
+data='[
+  { "task": "Planning", "start": "2024-03-01", "end": "2024-03-05" },
+  { "task": "Design", "start": "2024-03-06", "end": "2024-03-12" },
+  { "task": "Development", "start": "2024-03-13", "end": "2024-03-25" },
+  { "task": "Testing", "start": "2024-03-26", "end": "2024-03-30" },
+  { "task": "Deployment", "start": "2024-03-31", "end": "2024-04-02" }
+]'
+  size='{"width":500,"height":500}'
+  colors='"deep"'
+>
+</gantt>

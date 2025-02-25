@@ -9,6 +9,7 @@ SOURCE_FILES = \
 	barchart.ts \
 	piechart.ts \
 	skey.ts \
+	gantt.ts \
 
 all: $(GENERATED_FILES) rollup copydemo
 
