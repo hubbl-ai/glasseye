@@ -15,7 +15,8 @@ export async function gantt(
     .attr("width", size.width)
     .attr("height", size.height);
 
-  const margin = { top: 50, right: 20, bottom: 30, left: 150 };
+  
+  const margin = defaultMargin;
   const width = size.width - margin.left - margin.right;
   const height = size.height - margin.top - margin.bottom;
 

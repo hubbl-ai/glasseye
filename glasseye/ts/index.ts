@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Tue Feb 25 18:59:06 CAT 2025
+// Generated Wed Feb 26 15:44:45 CAT 2025
 
 
 /// base.ts
@@ -374,7 +374,8 @@ export async function gantt(
     .attr("width", size.width)
     .attr("height", size.height);
 
-  const margin = { top: 50, right: 20, bottom: 30, left: 150 };
+  
+  const margin = defaultMargin;
   const width = size.width - margin.left - margin.right;
   const height = size.height - margin.top - margin.bottom;
 
@@ -412,4 +413,132 @@ export async function gantt(
     .attr("width", (d: any) => x(new Date(d.end)) - x(new Date(d.start)))
     .attr("height", y.bandwidth())
     .attr("fill", (d, i) => colors[i % colors.length]);
+}
+
+/// dotplot.ts
+
+export async function dotplot(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+ 
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
+
+  const { width, height } = size;
+  const margin = defaultMargin;
+  const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
+  const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
+
+  // Remove previous SVG if exists
+  d3.select(div).select("svg").remove();
+
+  // Create the SVG container
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
+    .append("g")
+    .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
+
+  // Define scales
+  const xScale = d3
+    .scaleBand()
+    .domain(data.map((d: any) => d.category))
+    .range([0, width])
+    .padding(0.5);
+
+  const yScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, (d: any) => Number(d.value)) as number])
+    .nice()
+    .range([height, 0]);
+
+  // Define dots
+  svg
+    .selectAll("circle")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("cx", (d: any) => xScale(d.category)! + xScale.bandwidth() / 2)
+    .attr("cy", (d: any) => yScale(d.value))
+    .attr("r", 5)
+    .attr("fill", (d, i) => colors[i % colors.length]);
+
+  // Add X Axis
+  svg
+    .append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(xScale));
+
+  // Add Y Axis
+  svg.append("g").call(d3.axisLeft(yScale));
+}
+/// scatterplot.ts
+
+export async function scatterplot(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+ 
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
+
+  const { width, height } = size;
+  const margin = defaultMargin;
+  const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
+  const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
+
+  // Remove previous SVG if exists
+  d3.select(div).select("svg").remove();
+
+  // Create the SVG container
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
+    .append("g")
+    .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
+
+  // Define scales
+  const xScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, (d: any) => +d.x) || 0])
+    .range([0, width]);
+
+  const yScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, (d: any) => +d.y) || 0])
+    .range([height, 0]);
+
+  // Add X Axis
+  svg
+    .append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(xScale));
+
+  // Add Y Axis
+  svg.append("g").call(d3.axisLeft(yScale));
+
+  // Add dots
+  svg
+    .append("g")
+    .selectAll("dot")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("cx", (d: any) => xScale(+d.x))
+    .attr("cy", (d: any) => yScale(+d.y))
+    .attr("r", 5)
+    .style("fill", (d, i) => colors[i % colors.length]);
 }

@@ -1,118 +1,61 @@
-var ScatterPlot = function (processed_data, div, size) {
-  var margin =
-    size === "full_page"
-      ? {
-          top: 5,
-          bottom: 5,
-          left: 100,
-          right: 100,
-        }
-      : {
-          top: 5,
-          bottom: 5,
-          left: 50,
-          right: 50,
-        };
+export async function scatterplot(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+ 
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
 
-  GlasseyeChart.call(this, div, size, margin, undefined);
-  this.processed_data = processed_data;
-  // Scales
-  this.xScale = d3
-    .scaleLinear()
-    .domain([0, d3.max(this.processed_data, (d) => d.xScore) + 1])
-    .range([0, this.width]);
+  const { width, height } = size;
+  const margin = defaultMargin;
+  const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
+  const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
 
-  this.yScale = d3
-    .scaleLinear()
-    .domain([40, d3.max(this.processed_data, (d) => d.yScore) + 10])
-    .range([this.height, 0]);
-};
+  // Remove previous SVG if exists
+  d3.select(div).select("svg").remove();
 
-ScatterPlot.prototype = Object.create(GlasseyeChart.prototype);
-
-ScatterPlot.prototype.add_Scatterplot = function () {
-  this.chart_area
+  // Create the SVG container
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
     .append("g")
-    .attr("transform", `translate(0, ${this.height})`)
-    .call(d3.axisBottom(this.xScale).ticks(10));
+    .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
 
-  this.chart_area.append("g").call(d3.axisLeft(this.yScale));
+  // Define scales
+  const xScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, (d: any) => +d.x) || 0])
+    .range([0, width]);
 
-  // Add gridlines
-  this.chart_area
+  const yScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, (d: any) => +d.y) || 0])
+    .range([height, 0]);
+
+  // Add X Axis
+  svg
     .append("g")
-    .attr("class", "grid")
-    .call(d3.axisLeft(this.yScale).tickSize(-this.width).tickFormat(""))
-    .selectAll("line")
-    .attr("stroke", "#e0e0e0");
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(xScale));
 
-  // Add dots to scatter plot
-  this.chart_area
-    .selectAll(".dot")
-    .data(this.processed_data)
+  // Add Y Axis
+  svg.append("g").call(d3.axisLeft(yScale));
+
+  // Add dots
+  svg
+    .append("g")
+    .selectAll("dot")
+    .data(data)
     .enter()
     .append("circle")
-    .attr("class", "dot")
-    .attr("cx", (d) => this.xScale(d.xScore))
-    .attr("cy", (d) => this.yScale(d.yScore))
-    .attr("r", 6);
-
-  // Add axis labels
-  this.chart_area
-    .append("text")
-    .attr("x", this.width / 2)
-    .attr("y", this.height + this.margin.bottom - 10)
-    .attr("text-anchor", "middle")
-    .attr("class", "axis-label")
-    .text("X Score");
-
-  this.chart_area
-    .append("text")
-    .attr("x", -this.height / 2)
-    .attr("y", -this.margin.left + 20)
-    .attr("text-anchor", "middle")
-    .attr("class", "axis-label")
-    .attr("transform", "rotate(-90)")
-    .text("Y Score");
-
-  // Add trendline (simple linear regression)
-  xMean = d3.mean(this.processed_data, (d) => d.xScore);
-  yMean = d3.mean(this.processed_data, (d) => d.yScore);
-  slope =
-    d3.sum(this.processed_data, (d) => (d.xScore - xMean) * (d.yScore - yMean)) /
-    d3.sum(this.processed_data, (d) => (d.xScore - xMean) ** 2);
-  intercept = yMean - slope * xMean;
-
-  trendline = [
-    { xScore: 1, yScore: slope * 1 + intercept },
-    { xScore: 10, yScore: slope * 10 + intercept },
-  ];
-
-  this.chart_area
-    .append("line")
-    .attr("x1", this.xScale(trendline[0].xScore))
-    .attr("y1", this.yScale(trendline[0].yScore))
-    .attr("x2", this.xScale(trendline[1].xScore))
-    .attr("y2", this.yScale(trendline[1].yScore))
-    .attr("stroke", "red")
-    .attr("stroke-width", 2)
-    .attr("stroke-dasharray", "5,5");
-};
-
-function scatterplot(data, div, size) {
-  var inline_parser = function (data) {
-    return data;
-  };
-
-  var csv_parser = function (data) {
-    return data;
-  };
-
-  var draw = function (processed_data, div, size) {
-    var glasseye_chart = new ScatterPlot(processed_data, div, size);
-
-    glasseye_chart.add_svg().add_Scatterplot();
-  };
-
-  build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
+    .attr("cx", (d: any) => xScale(+d.x))
+    .attr("cy", (d: any) => yScale(+d.y))
+    .attr("r", 5)
+    .style("fill", (d, i) => colors[i % colors.length]);
 }

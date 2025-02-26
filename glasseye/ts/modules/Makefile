@@ -10,6 +10,8 @@ SOURCE_FILES = \
 	piechart.ts \
 	skey.ts \
 	gantt.ts \
+	dotplot.ts \
+	scatterplot.ts \
 
 all: $(GENERATED_FILES) rollup copydemo
 

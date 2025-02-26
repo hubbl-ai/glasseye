@@ -108,7 +108,7 @@ def resolve_color_palette(colors, n_colors, desat):
                     hue
                 )
             ) for hue in [c for c in palette]]
-    logger.info(palette)
+        
     return palette
 
 # Function to add charts
@@ -154,7 +154,6 @@ def add_chart(chart_id, fields, soup, code_string):
                         logger.error(e)
 
         # Compute the palette
-        logger.info(palette_fields)
         all_fields['colors'] = resolve_color_palette(**palette_fields)
 
         # Resolve everything but color.

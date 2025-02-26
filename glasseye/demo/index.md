@@ -219,3 +219,37 @@ data='[
   colors='deep'
 >
 </gantt>
+
+
+
+
+### A dotplot chart 
+
+
+<dotplot
+data='[
+    { "category": "A", "value": 10 },
+  { "category": "B", "value": 20 },
+  { "category": "C", "value": 30 }
+]'
+  size='{"width":1000,"height":500}'
+  colors='deep'
+>
+</dotplot>
+
+
+
+
+### A scatterplot chart 
+
+
+<scatterplot
+data='[
+     { "x": 10, "y": 20 },
+  { "x": 30, "y": 40 },
+  { "x": 50, "y": 60 }
+]'
+  size='{"width":500,"height":500}'
+  colors='deep'
+>
+</scatterplot>
