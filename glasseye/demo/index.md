@@ -253,3 +253,40 @@ data='[
   colors='deep'
 >
 </scatterplot>
+
+
+
+### A boxplot chart 
+
+
+<boxplot
+data='[
+   { "category": "A", "value": 10 },
+  { "category": "A", "value": 15 },
+  { "category": "A", "value": 20 },
+  { "category": "B", "value": 30 },
+  { "category": "B", "value": 35 },
+  { "category": "B", "value": 40 }
+]'
+  size='{"width":500,"height":500}'
+  colors='deep'
+>
+</boxplot>
+
+
+
+
+### A heatmap chart 
+
+
+<heatmap
+data='[
+  { "x": "A", "y": "1", "value": 5 },
+  { "x": "A", "y": "2", "value": 10 },
+  { "x": "B", "y": "1", "value": 15 },
+  { "x": "B", "y": "2", "value": 20 }
+]'
+  size='{"width":500,"height":500}'
+  colors='deep'
+>
+</heatmap>

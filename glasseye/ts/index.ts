@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Wed Feb 26 15:44:45 CAT 2025
+// Generated Wed Feb 26 17:33:58 CAT 2025
 
 
 /// base.ts
@@ -541,4 +541,205 @@ export async function scatterplot(
     .attr("cy", (d: any) => yScale(+d.y))
     .attr("r", 5)
     .style("fill", (d, i) => colors[i % colors.length]);
+}
+/// boxplot.ts
+
+export async function boxplot(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+ 
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
+
+  const { width, height } = size;
+  const margin = defaultMargin;
+  const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
+  const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
+
+  // Remove previous SVG if exists
+  d3.select(div).select("svg").remove();
+
+  // Create the SVG container
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
+    .append("g")
+    .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
+
+  // Compute summary statistics (quartiles, median, min, max)
+  const groupedData = d3.group(data, (d: any) => d.category);
+  const summaryData = Array.from(groupedData, ([key, values]) => {
+    const sorted = values.map((d: any) => +d.value).sort(d3.ascending);
+    const q1 = d3.quantile(sorted, 0.25) as number;
+    const median = d3.quantile(sorted, 0.5) as number;
+    const q3 = d3.quantile(sorted, 0.75) as number;
+    const min = sorted[0];
+    const max = sorted[sorted.length - 1];
+    return { category: key, min, q1, median, q3, max };
+  });
+
+  // Define scales
+  const xScale = d3
+    .scaleBand()
+    .domain(summaryData.map((d) => d.category))
+    .range([0, width])
+    .padding(0.5);
+
+  const yScale = d3
+    .scaleLinear()
+    .domain([d3.min(summaryData, (d) => d.min) as number, d3.max(summaryData, (d) => d.max) as number])
+    .nice()
+    .range([height, 0]);
+
+  // Draw box plot elements
+  const boxWidth = xScale.bandwidth() * 0.6;
+
+  const boxplotGroups = svg
+    .selectAll(".boxplot")
+    .data(summaryData)
+    .enter()
+    .append("g")
+    .attr("transform", (d) => `translate(${xScale(d.category)!},0)`);
+
+  // Draw vertical lines (min to max)
+  boxplotGroups
+    .append("line")
+    .attr("y1", (d) => yScale(d.min))
+    .attr("y2", (d) => yScale(d.max))
+    .attr("x1", xScale.bandwidth() / 2)
+    .attr("x2", xScale.bandwidth() / 2)
+    .attr("stroke", "black");
+
+  // Draw rectangles for the interquartile range (IQR)
+  boxplotGroups
+    .append("rect")
+    .attr("y", (d) => yScale(d.q3))
+    .attr("height", (d) => yScale(d.q1) - yScale(d.q3))
+    .attr("width", boxWidth)
+    .attr("x", (xScale.bandwidth() - boxWidth) / 2)
+    .attr("stroke", "black")
+    .attr("fill", (d, i) => colors[i % colors.length]);
+
+  // Draw median lines
+  boxplotGroups
+    .append("line")
+    .attr("y1", (d) => yScale(d.median))
+    .attr("y2", (d) => yScale(d.median))
+    .attr("x1", (xScale.bandwidth() - boxWidth) / 2)
+    .attr("x2", (xScale.bandwidth() + boxWidth) / 2)
+    .attr("stroke", "black");
+
+  // Add X Axis
+  svg
+    .append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(xScale));
+
+  // Add Y Axis
+  svg.append("g").call(d3.axisLeft(yScale));
+}
+/// heatmap.ts
+
+export async function heatmap(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+ 
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
+
+  const { width, height } = size;
+  const margin = defaultMargin;
+  const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
+  const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
+
+  // Remove previous SVG if exists
+  d3.select(div).select("svg").remove();
+
+  // Create the SVG container
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
+    .append("g")
+    .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
+
+  // Extract unique X and Y categories
+  const xCategories = Array.from(new Set(data.map((d: any) => d.x))) as string[];
+  const yCategories = Array.from(new Set(data.map((d: any) => d.y))) as string[];
+
+  // Define scales
+  const xScale = d3.scaleBand().domain(xCategories).range([0, width]).padding(0.05);
+  const yScale = d3.scaleBand().domain(yCategories).range([height, 0]).padding(0.05);
+  const colorScale = d3.scaleSequential(d3.interpolateBlues)
+    .domain([d3.min(data, (d: any) => +d.value) as number, d3.max(data, (d: any) => +d.value) as number])
+
+  // Add X Axis
+  svg.append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(xScale).tickSize(0))
+    .select(".domain").remove();
+
+  // Add Y Axis
+  svg.append("g")
+    .call(d3.axisLeft(yScale).tickSize(0))
+    .select(".domain").remove();
+
+  // Add heatmap squares
+  svg.selectAll()
+    .data(data)
+    .enter()
+    .append("rect")
+    .attr("x", (d: any) => xScale(d.x)!)
+    .attr("y", (d: any) => yScale(d.y)!)
+    .attr("width", xScale.bandwidth())
+    .attr("height", yScale.bandwidth())
+    .style("fill", (d: any) => colorScale(d.value));
+
+  // Add color legend
+  const legendWidth = 200, legendHeight = 10;
+  const legendSvg = svg.append("g").attr("transform", `translate(${width - legendWidth}, -30)`);
+
+  const legendScale = d3.scaleLinear()
+    .domain(colorScale.domain())
+    .range([0, legendWidth]);
+
+  const legendAxis = d3.axisBottom(legendScale).ticks(5);
+  
+  const legendGradient = legendSvg.append("defs")
+    .append("linearGradient")
+    .attr("id", "legend-gradient")
+    .attr("x1", "0%").attr("x2", "100%")
+    .attr("y1", "0%").attr("y2", "0%");
+  
+  legendGradient.selectAll("stop")
+    .data([
+      { offset: "0%", color: colors[0] },
+      { offset: "100%", color: colors[1] }
+    ])
+    .enter()
+    .append("stop")
+    .attr("offset", (d) => d.offset)
+    .attr("stop-color", (d) => d.color);
+
+  legendSvg.append("rect")
+    .attr("width", legendWidth)
+    .attr("height", legendHeight)
+    .style("fill", "url(#legend-gradient)");
+
+  legendSvg.append("g")
+    .attr("transform", `translate(0, ${legendHeight})`)
+    .call(legendAxis);
 }

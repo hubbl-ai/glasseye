@@ -1,123 +1,101 @@
-var Boxplot = function (processed_data, div, size) {
-  var margin =
-    size === "full_page"
-      ? {
-          top: 5,
-          bottom: 5,
-          left: 100,
-          right: 100,
-        }
-      : {
-          top: 5,
-          bottom: 5,
-          left: 50,
-          right: 50,
-        };
+export async function boxplot(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+ 
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
 
-  GlasseyeChart.call(this, div, size, margin, undefined);
-  this.processed_data = processed_data;
-    // Sort the data
-    this.processed_data.sort(d3.ascending);
-    this.plotWidth = this.width - this.margin.left - this.margin.right,
-    this.plotHeight = this.height - this.margin.top - this.margin.bottom;
+  const { width, height } = size;
+  const margin = defaultMargin;
+  const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
+  const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
 
-    this.categories = this.processed_data.map(d => d.category);
+  // Remove previous SVG if exists
+  d3.select(div).select("svg").remove();
 
-    this.xScale = d3.scaleBand()
-      .domain(this.categories)
-      .range([0, this.plotWidth])
-      .padding(0.5);
+  // Create the SVG container
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
+    .append("g")
+    .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
 
-      this.allValues = this.processed_data.flatMap(d => d.values);
-      this.yScale = d3.scaleLinear()
-      .domain([0, d3.max(this.allValues)])
-      .range([this.plotHeight, 0]);
-};
+  // Compute summary statistics (quartiles, median, min, max)
+  const groupedData = d3.group(data, (d: any) => d.category);
+  const summaryData = Array.from(groupedData, ([key, values]) => {
+    const sorted = values.map((d: any) => +d.value).sort(d3.ascending);
+    const q1 = d3.quantile(sorted, 0.25) as number;
+    const median = d3.quantile(sorted, 0.5) as number;
+    const q3 = d3.quantile(sorted, 0.75) as number;
+    const min = sorted[0];
+    const max = sorted[sorted.length - 1];
+    return { category: key, min, q1, median, q3, max };
+  });
 
-Boxplot.prototype = Object.create(GlasseyeChart.prototype);
+  // Define scales
+  const xScale = d3
+    .scaleBand()
+    .domain(summaryData.map((d) => d.category))
+    .range([0, width])
+    .padding(0.5);
 
-Boxplot.prototype.add_boxplot = function () {
-  this.chart_area.append("g")
-      .attr("transform", `translate(0, ${this.plotHeight})`)
-      .call(d3.axisBottom(this.xScale));
+  const yScale = d3
+    .scaleLinear()
+    .domain([d3.min(summaryData, (d) => d.min) as number, d3.max(summaryData, (d) => d.max) as number])
+    .nice()
+    .range([height, 0]);
 
-    this.chart_area.append("g")
-      .call(d3.axisLeft(this.yScale));
+  // Draw box plot elements
+  const boxWidth = xScale.bandwidth() * 0.6;
 
-    this.processed_data.forEach((d, i) => {
-      var sortedValues = d.values.sort(d3.ascending);
-      var q1 = d3.quantile(sortedValues, 0.25);
-      var median = d3.quantile(sortedValues, 0.5);
-      var q3 = d3.quantile(sortedValues, 0.75);
-      var min = d3.min(sortedValues);
-      var max = d3.max(sortedValues);
+  const boxplotGroups = svg
+    .selectAll(".boxplot")
+    .data(summaryData)
+    .enter()
+    .append("g")
+    .attr("transform", (d) => `translate(${xScale(d.category)!},0)`);
 
-      var centerX = this.xScale(d.category) + this.xScale.bandwidth() / 2;
+  // Draw vertical lines (min to max)
+  boxplotGroups
+    .append("line")
+    .attr("y1", (d) => yScale(d.min))
+    .attr("y2", (d) => yScale(d.max))
+    .attr("x1", xScale.bandwidth() / 2)
+    .attr("x2", xScale.bandwidth() / 2)
+    .attr("stroke", "black");
 
-      // Draw box
-      this.chart_area.append("rect")
-        .attr("x", centerX - 20)
-        .attr("y", this.yScale(q3))
-        .attr("width", 40)
-        .attr("height", this.yScale(q1) - this.yScale(q3))
-        .attr("stroke", "black")
-        .attr("fill", "lightblue");
+  // Draw rectangles for the interquartile range (IQR)
+  boxplotGroups
+    .append("rect")
+    .attr("y", (d) => yScale(d.q3))
+    .attr("height", (d) => yScale(d.q1) - yScale(d.q3))
+    .attr("width", boxWidth)
+    .attr("x", (xScale.bandwidth() - boxWidth) / 2)
+    .attr("stroke", "black")
+    .attr("fill", (d, i) => colors[i % colors.length]);
 
-      // Draw median line
-      this.chart_area.append("line")
-        .attr("x1", centerX - 20)
-        .attr("x2", centerX + 20)
-        .attr("y1", this.yScale(median))
-        .attr("y2", this.yScale(median))
-        .attr("stroke", "black");
+  // Draw median lines
+  boxplotGroups
+    .append("line")
+    .attr("y1", (d) => yScale(d.median))
+    .attr("y2", (d) => yScale(d.median))
+    .attr("x1", (xScale.bandwidth() - boxWidth) / 2)
+    .attr("x2", (xScale.bandwidth() + boxWidth) / 2)
+    .attr("stroke", "black");
 
-      // Draw min and max lines
-      this.chart_area.append("line")
-        .attr("x1", centerX)
-        .attr("x2", centerX)
-        .attr("y1", this.yScale(min))
-        .attr("y2", this.yScale(q1))
-        .attr("stroke", "black");
+  // Add X Axis
+  svg
+    .append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(xScale));
 
-      this.chart_area.append("line")
-        .attr("x1", centerX)
-        .attr("x2", centerX)
-        .attr("y1", this.yScale(q3))
-        .attr("y2", this.yScale(max))
-        .attr("stroke", "black");
-
-      // Draw whiskers
-      this.chart_area.append("line")
-        .attr("x1", centerX - 10)
-        .attr("x2", centerX + 10)
-        .attr("y1", this.yScale(min))
-        .attr("y2", this.yScale(min))
-        .attr("stroke", "black");
-
-      this.chart_area.append("line")
-        .attr("x1", centerX - 10)
-        .attr("x2", centerX + 10)
-        .attr("y1", this.yScale(max))
-        .attr("y2", this.yScale(max))
-        .attr("stroke", "black");
-    });
-  
-};
-
-function boxplot(data, div, size) {
-  var inline_parser = function (data) {
-    return data;
-  };
-
-  var csv_parser = function (data) {
-    return data;
-  };
-
-  var draw = function (processed_data, div, size) {
-    var glasseye_chart = new Boxplot(processed_data, div, size);
-
-    glasseye_chart.add_svg().add_boxplot();
-  };
-
-  build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
+  // Add Y Axis
+  svg.append("g").call(d3.axisLeft(yScale));
 }

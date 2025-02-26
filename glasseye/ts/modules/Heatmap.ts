@@ -1,82 +1,96 @@
-var Heatmap = function (processed_data, div, size) {
-  var margin =
-    size === "full_page"
-      ? {
-          top: 5,
-          bottom: 5,
-          left: 100,
-          right: 100,
-        }
-      : {
-          top: 5,
-          bottom: 5,
-          left: 50,
-          right: 50,
-        };
+export async function heatmap(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+ 
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
 
-  GlasseyeChart.call(this, div, size, margin, 300);
-  this.processed_data = processed_data;
+  const { width, height } = size;
+  const margin = defaultMargin;
+  const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
+  const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
 
-  this.xScale = d3
-    .scaleBand()
-    .domain([1, 2, 3]) // Unique x values
-    .range([0, this.width])
-    .padding(0.01);
+  // Remove previous SVG if exists
+  d3.select(div).select("svg").remove();
 
-  this.yScale = d3
-    .scaleBand()
-    .domain([1, 2, 3]) // Unique y values
-    .range([0, this.height])
-    .padding(0.01);
+  // Create the SVG container
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
+    .append("g")
+    .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
 
-  this.colorScale = d3.scaleSequential(d3.interpolateBlues).domain([10, 90]);
-};
+  // Extract unique X and Y categories
+  const xCategories = Array.from(new Set(data.map((d: any) => d.x))) as string[];
+  const yCategories = Array.from(new Set(data.map((d: any) => d.y))) as string[];
 
-Heatmap.prototype = Object.create(GlasseyeChart.prototype);
+  // Define scales
+  const xScale = d3.scaleBand().domain(xCategories).range([0, width]).padding(0.05);
+  const yScale = d3.scaleBand().domain(yCategories).range([height, 0]).padding(0.05);
+  const colorScale = d3.scaleSequential(d3.interpolateBlues)
+    .domain([d3.min(data, (d: any) => +d.value) as number, d3.max(data, (d: any) => +d.value) as number])
 
-Heatmap.prototype.add_heatmap = function () {
-  this.chart_area
-    .selectAll(".cell")
-    .data(this.processed_data)
+  // Add X Axis
+  svg.append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(xScale).tickSize(0))
+    .select(".domain").remove();
+
+  // Add Y Axis
+  svg.append("g")
+    .call(d3.axisLeft(yScale).tickSize(0))
+    .select(".domain").remove();
+
+  // Add heatmap squares
+  svg.selectAll()
+    .data(data)
     .enter()
     .append("rect")
-    .attr("class", "cell")
-    .attr("x", (d) => this.xScale(d.x))
-    .attr("y", (d) => this.yScale(d.y))
-    .attr("width", this.xScale.bandwidth())
-    .attr("height", this.yScale.bandwidth())
-    .style("fill", (d) => this.colorScale(d.value));
+    .attr("x", (d: any) => xScale(d.x)!)
+    .attr("y", (d: any) => yScale(d.y)!)
+    .attr("width", xScale.bandwidth())
+    .attr("height", yScale.bandwidth())
+    .style("fill", (d: any) => colorScale(d.value));
 
-  // Add x-axis
-  this.chart_area
-    .append("g")
-    .attr("transform", `translate(0, ${this.height})`)
-    .call(d3.axisBottom(this.xScale).tickFormat((d) => `Col ${d}`))
-    .selectAll("text")
-    .attr("class", "axis-label");
+  // Add color legend
+  const legendWidth = 200, legendHeight = 10;
+  const legendSvg = svg.append("g").attr("transform", `translate(${width - legendWidth}, -30)`);
 
-  // Add y-axis
-  this.chart_area
-    .append("g")
-    .call(d3.axisLeft(this.yScale).tickFormat((d) => `Row ${d}`))
-    .selectAll("text")
-    .attr("class", "axis-label");
-};
+  const legendScale = d3.scaleLinear()
+    .domain(colorScale.domain())
+    .range([0, legendWidth]);
 
-function heatmap(data, div, size) {
-  var inline_parser = function (data) {
-    return data;
-  };
+  const legendAxis = d3.axisBottom(legendScale).ticks(5);
+  
+  const legendGradient = legendSvg.append("defs")
+    .append("linearGradient")
+    .attr("id", "legend-gradient")
+    .attr("x1", "0%").attr("x2", "100%")
+    .attr("y1", "0%").attr("y2", "0%");
+  
+  legendGradient.selectAll("stop")
+    .data([
+      { offset: "0%", color: colors[0] },
+      { offset: "100%", color: colors[1] }
+    ])
+    .enter()
+    .append("stop")
+    .attr("offset", (d) => d.offset)
+    .attr("stop-color", (d) => d.color);
 
-  var csv_parser = function (data) {
-    return data;
-  };
+  legendSvg.append("rect")
+    .attr("width", legendWidth)
+    .attr("height", legendHeight)
+    .style("fill", "url(#legend-gradient)");
 
-  var draw = function (processed_data, div, size) {
-    var glasseye_chart = new Heatmap(processed_data, div, size);
-
-    glasseye_chart.add_svg().add_heatmap();
-  };
-
-  build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
+  legendSvg.append("g")
+    .attr("transform", `translate(0, ${legendHeight})`)
+    .call(legendAxis);
 }

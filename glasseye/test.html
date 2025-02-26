@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>test</title>
+        <link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Droid%20Sans' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+        <link rel="stylesheet" href="/Users/reni/Projects/hubbl/glasseye/glasseye/css/tufte.css" />
+        <link rel="stylesheet" href="/Users/reni/Projects/hubbl/glasseye/glasseye/css/glasseyeCharts.css" />
+        <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+        <script src="https://unpkg.com/d3-array@1"></script>
+        <script src="https://unpkg.com/d3-collection@1"></script>
+        <script src="https://unpkg.com/d3-path@1"></script>
+        <script src="https://unpkg.com/d3-shape@1"></script>
+        <script src="https://unpkg.com/d3-sankey@0"></script>
+        <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+        <script src="https://benfred.github.io/venn.js/venn.js"></script>
+        <script src="/Users/reni/Projects/hubbl/glasseye/glasseye/ts/dist/glasseyechart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.7/require.min.js"
+ integrity="sha512-J5ha2LF4Le+PBQnI5+xAVJDR+sZG9uSgroy4n/A6TLjNkvYQbqZA8WHZdaOvJ0HiKkBC9Frmvs10rFDSHKmveQ=="
+ crossorigin="anonymous"
+ referrerpolicy="no-referrer"></script>
+    </head>
+
+    <body>
+        <div id = "tufte_container">
+            <h2 id="a-linechart-typescript-demo">A Linechart Typescript Demo</h2>
+<h3 id="a-line-chart">A line chart</h3>
+<p>Similarly the line chart can be either created from a csv file (as
+long as it has columns with heading x and y) or from in line json. Here
+is an example.</p>
+<p><span colors='["#FF6700","#004E98"]' curved="0" data='[
+  { "x": 1, "y": 10 }, 
+  { "x": 2, "y": 20 },
+  { "x": 3, "y": 15 },
+  { "x": 4, "y": 25 },
+  { "x": 5, "y": 30 },
+  { "x": 6, "y": 35 }
+  ]' id="linechart_0" size='{"width":600,"height":600}'></span><br/></p>
+<h3 id="a-simplot-chart">A simplot chart</h3>
+<p>Similarly the line chart can be either created from a csv file (as
+long as it has columns with heading x and y) or from in line json. Here
+is an example.</p>
+<p><span colors='["#004E98","#008000"]' curved="1" data='[
+  { "x": 1, "y": 10 }, 
+  { "x": 2, "y": 20 },
+  { "x": 3, "y": 15 },
+  { "x": 4, "y": 25 },
+  { "x": 5, "y": 30 },
+  { "x": 6, "y": 35 }
+  ]' id="linechart_1" size='{"width":600,"height":600}'></span><br/></p>
+<h3 id="a-line-chart-from-.csv">A line chart FROM .CSV</h3>
+<p><span colors='["#FF0000","#008000"]' curved="0" file='{"path":"data/xy.csv","format":"csv"}' id="linechart_2" size='{"width":800,"height":800}'></span><br/></p>
+<h3 id="a-simplot-chart-from-.tsv">A simplot chart FROM .TSV</h3>
+<p><span colors='["#FFFF00","#008000"]' curved="1" file='{"path":"data/xy.tsv","format":"tsv"}' id="linechart_3" size='{"width":400,"height":400}'></span><br/></p>
+<h3 id="a-line-chart-from-.json">A line chart FROM .json</h3>
+<p><span colors='["#FFFF00","#008000"]' curved="0" file='{"path":"data/xy.json"}' id="linechart_4" size='{"width":400,"height":400}'></span><br/></p>
+<h3 id="a-line-chart-from-.hsv">A line chart FROM .hsv</h3>
+<p><span colors='["#FF0000","#008000"]' curved="1" file='{"path":"data/xy.hsv"}' id="linechart_5" size='{"width":400,"height":400}'></span><br/></p>
+<h3 id="a-bar-chart">A Bar chart</h3>
+<p><span colors='["#FF6700","#008000"]' data='[
+  { "label": "Apples", "value": 10 },
+  { "label": "Bananas", "value": 20 },
+  { "label": "Cherries", "value": 15 },
+  { "label": "Grapes", "value": 25 }
+]' id="barchart_0" size='{"width":500,"height":500}'></span><br/></p>
+<h3 id="a-pie-chart">A Pie chart</h3>
+<p><span colors='["#FF6700","#004E98"]' data='[
+  { "label": "Apples", "value": 10 },
+  { "label": "Bananas", "value": 20 },
+  { "label": "Cherries", "value": 15 },
+  { "label": "Grapes", "value": 25 }
+]' id="piechart_0" size='{"width":500,"height":500}'></span><br/></p>
+<h3 id="a-donut-chart">A Donut chart</h3>
+<p><span colors='["#FF6700","#004E98"]' data='[
+  { "label": "Apples", "value": 10 },
+  { "label": "Bananas", "value": 20 },
+  { "label": "Cherries", "value": 15 },
+  { "label": "Grapes", "value": 25 }
+]' donut="1" id="piechart_1" size='{"width":500,"height":500}'></span><br/></p>
+<h3 id="a-sankey">A Sankey</h3>
+<p><span colors='["#FFFF00","#FF0000"]' data='{
+  "nodes": [
+    { "name": "Source A" },
+    { "name": "Source B" },
+    { "name": "Destination X" },
+    { "name": "Destination Y" }
+  ],
+  "links": [
+    { "source": 0, "target": 2, "value": 10 },
+    { "source": 1, "target": 2, "value": 5 },
+    { "source": 1, "target": 3, "value": 15 }
+  ]
+}' desat="1" id="skey_0" n_colors="10" size='{"width":500,"height":500}'></span><br/></p>
+<h3 id="a-donut-chart-using-seaborn-pallette">A Donut chart using
+Seaborn Pallette</h3>
+<p><span colors="deep" data='[
+  { "label": "Apples", "value": 10 },
+  { "label": "Bananas", "value": 20 },
+  { "label": "Cherries", "value": 15 },
+  { "label": "Grapes", "value": 25 }
+]' desat="0.9" donut="1" id="piechart_2" n_colors="5" size='{"width":500,"height":500}'></span><br/></p>
+<h3 id="a-gantt-chart-using-seaborn-pallette">A gantt chart using
+Seaborn Pallette</h3>
+<p><span colors="deep" data='[
+  { "task": "Planning", "start": "2024-03-01", "end": "2024-03-05" },
+  { "task": "Design", "start": "2024-03-06", "end": "2024-03-12" },
+  { "task": "Development", "start": "2024-03-13", "end": "2024-03-25" },
+  { "task": "Testing", "start": "2024-03-26", "end": "2024-03-30" },
+  { "task": "Deployment", "start": "2024-03-31", "end": "2024-04-02" }
+]' id="gantt_0" size='{"width":1000,"height":500}'></span><br/></p>
+<h3 id="a-dotplot-chart">A dotplot chart</h3>
+<p><span colors="deep" data='[
+    { "category": "A", "value": 10 },
+  { "category": "B", "value": 20 },
+  { "category": "C", "value": 30 }
+]' id="dotplot_0" size='{"width":1000,"height":500}'></span><br/></p>
+<h3 id="a-scatterplot-chart">A scatterplot chart</h3>
+<p><span colors="deep" data='[
+     { "x": 10, "y": 20 },
+  { "x": 30, "y": 40 },
+  { "x": 50, "y": 60 }
+]' id="scatterplot_0" size='{"width":500,"height":500}'></span><br/></p>
+<h3 id="a-boxplot-chart">A boxplot chart</h3>
+<p><span colors="deep" data='[
+   { "category": "A", "value": 10 },
+  { "category": "A", "value": 15 },
+  { "category": "A", "value": 20 },
+  { "category": "B", "value": 30 },
+  { "category": "B", "value": 35 },
+  { "category": "B", "value": 40 }
+]' id="boxplot_0" size='{"width":500,"height":500}'></span><br/></p>
+<h3 id="a-heatmap-chart">A heatmap chart</h3>
+<p><span colors="deep" data='[
+  { "x": "A", "y": "1", "value": 5 },
+  { "x": "A", "y": "2", "value": 10 },
+  { "x": "B", "y": "1", "value": 15 },
+  { "x": "B", "y": "2", "value": 20 }
+]' id="heatmap_0" size='{"width":500,"height":500}'></span><br/></p>
+
+        </div>
+        <script type="text/javascript">
+            ChartModule.linechart('#linechart_0',[{'x': 1, 'y': 10}, {'x': 2, 'y': 20}, {'x': 3, 'y': 15}, {'x': 4, 'y': 25}, {'x': 5, 'y': 30}, {'x': 6, 'y': 35}],{'width': 600, 'height': 600},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],0);ChartModule.linechart('#linechart_1',[{'x': 1, 'y': 10}, {'x': 2, 'y': 20}, {'x': 3, 'y': 15}, {'x': 4, 'y': 25}, {'x': 5, 'y': 30}, {'x': 6, 'y': 35}],{'width': 600, 'height': 600},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],1);ChartModule.linechart('#linechart_2',[],{'width': 800, 'height': 800},{'path': 'data/xy.csv', 'format': 'csv'},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],0);ChartModule.linechart('#linechart_3',[],{'width': 400, 'height': 400},{'path': 'data/xy.tsv', 'format': 'tsv'},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],1);ChartModule.linechart('#linechart_4',[],{'width': 400, 'height': 400},{'path': 'data/xy.json'},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],0);ChartModule.linechart('#linechart_5',[],{'width': 400, 'height': 400},{'path': 'data/xy.hsv'},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],1);ChartModule.piechart('#piechart_0',[{'label': 'Apples', 'value': 10}, {'label': 'Bananas', 'value': 20}, {'label': 'Cherries', 'value': 15}, {'label': 'Grapes', 'value': 25}],{'width': 500, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],0);ChartModule.piechart('#piechart_1',[{'label': 'Apples', 'value': 10}, {'label': 'Bananas', 'value': 20}, {'label': 'Cherries', 'value': 15}, {'label': 'Grapes', 'value': 25}],{'width': 500, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],1);ChartModule.piechart('#piechart_2',[{'label': 'Apples', 'value': 10}, {'label': 'Bananas', 'value': 20}, {'label': 'Cherries', 'value': 15}, {'label': 'Grapes', 'value': 25}],{'width': 500, 'height': 500},{},['#A5C9EF', '#F8B588', '#91E0A3', '#FAA3A0', '#D1BEFB'],1);ChartModule.skey('#skey_0',{'nodes': [{'name': 'Source A'}, {'name': 'Source B'}, {'name': 'Destination X'}, {'name': 'Destination Y'}], 'links': [{'source': 0, 'target': 2, 'value': 10}, {'source': 1, 'target': 2, 'value': 5}, {'source': 1, 'target': 3, 'value': 15}]},{'width': 500, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0']);ChartModule.barchart('#barchart_0',[{'label': 'Apples', 'value': 10}, {'label': 'Bananas', 'value': 20}, {'label': 'Cherries', 'value': 15}, {'label': 'Grapes', 'value': 25}],{'width': 500, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0']);ChartModule.gantt('#gantt_0',[{'task': 'Planning', 'start': '2024-03-01', 'end': '2024-03-05'}, {'task': 'Design', 'start': '2024-03-06', 'end': '2024-03-12'}, {'task': 'Development', 'start': '2024-03-13', 'end': '2024-03-25'}, {'task': 'Testing', 'start': '2024-03-26', 'end': '2024-03-30'}, {'task': 'Deployment', 'start': '2024-03-31', 'end': '2024-04-02'}],{'width': 1000, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0']);ChartModule.heatmap('#heatmap_0',[{'x': 'A', 'y': '1', 'value': 5}, {'x': 'A', 'y': '2', 'value': 10}, {'x': 'B', 'y': '1', 'value': 15}, {'x': 'B', 'y': '2', 'value': 20}],{'width': 500, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0']);ChartModule.dotplot('#dotplot_0',[{'category': 'A', 'value': 10}, {'category': 'B', 'value': 20}, {'category': 'C', 'value': 30}],{'width': 1000, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0']);ChartModule.scatterplot('#scatterplot_0',[{'x': 10, 'y': 20}, {'x': 30, 'y': 40}, {'x': 50, 'y': 60}],{'width': 500, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0']);ChartModule.boxplot('#boxplot_0',[{'category': 'A', 'value': 10}, {'category': 'A', 'value': 15}, {'category': 'A', 'value': 20}, {'category': 'B', 'value': 30}, {'category': 'B', 'value': 35}, {'category': 'B', 'value': 40}],{'width': 500, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0']);
+        </script>
+
+        <script type="text/javascript">
+            (function () {
+                var script = document.createElement("script");
+                script.type = "text/javascript";
+                script.src  = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+                document.getElementsByTagName("head")[0].appendChild(script);
+            })();
+        </script>
+    </body>
+</html>

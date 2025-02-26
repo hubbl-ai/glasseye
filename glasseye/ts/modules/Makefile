@@ -2,6 +2,7 @@ GENERATED_FILE_NAMES = \
 	index.ts \
 
 GENERATED_FILES = $(patsubst %, ../%, $(GENERATED_FILE_NAMES))
+TARGET_FILE = ../dist/glasseyechart.js
 
 SOURCE_FILES = \
 	base.ts \
@@ -12,17 +13,17 @@ SOURCE_FILES = \
 	gantt.ts \
 	dotplot.ts \
 	scatterplot.ts \
+	boxplot.ts \
+	heatmap.ts \
 
-all: $(GENERATED_FILES) rollup copydemo
+all: $(TARGET_FILE)
 
 clean:
 	rm -f $(GENERATED_FILES)
 
-rollup:
+$(TARGET_FILE): $(GENERATED_FILES)
 	cd .. && npx rollup -c
 
-copydemo:
-	cd .. && cp ./dist/glasseyechart.js ../demo/js/glasseyechart.js
 
 ../index.ts: $(SOURCE_FILES)
 	@ echo Building bundle
