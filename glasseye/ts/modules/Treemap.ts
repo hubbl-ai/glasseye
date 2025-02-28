@@ -1,68 +1,72 @@
-var Treemap = function (processed_data, div, size) {
-  var margin =
-    size === "full_page"
-      ? {
-          top: 5,
-          bottom: 5,
-          left: 100,
-          right: 100,
-        }
-      : {
-          top: 5,
-          bottom: 5,
-          left: 50,
-          right: 50,
-        };
+export async function treemap(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
 
-  GlasseyeChart.call(this, div, size, margin, 300);
-  this.processed_data = processed_data;
+  const { width, height } = size;
+  const margin = defaultMargin;
+  const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
+  const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
 
-  this.root = d3.hierarchy(processed_data).sum((d) => d.size || 0);
+  // Remove previous SVG if exists
+  d3.select(div).select("svg").remove();
 
-  // Create the treemap layout
-  d3.treemap().size([this.width, this.height]).padding(1)(this.root);
-};
+  // Create the SVG container
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
+    .append("g")
+    .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
 
-Treemap.prototype = Object.create(GlasseyeChart.prototype);
+  // Create hierarchical data structure
+  const root = d3.hierarchy(data).sum((d: any) => d.value);
 
-Treemap.prototype.add_treemap = function () {
-  this.nodes = this.chart_area
-    .selectAll("g")
-    .data(this.root.descendants())
-    .join("g")
-    .attr("transform", (d) => `translate(${d.x0},${d.y0})`);
+  // Generate treemap layout
+  d3.treemap().size([width, height]).padding(2)(root);
 
-  this.nodes
+  // Define color scale
+  const colorScale = d3
+    .scaleOrdinal<string>()
+    .domain(root.leaves().map((d) => d.data.name))
+    .range(colors);
+
+  // Add rectangles
+  const nodes = svg
+    .selectAll("rect")
+    .data(root.leaves())
+    .enter()
     .append("rect")
+    .attr("x", (d) => d.x0)
+    .attr("y", (d) => d.y0)
     .attr("width", (d) => d.x1 - d.x0)
     .attr("height", (d) => d.y1 - d.y0)
-    .attr("fill", (d) => (d.children ? "#ccc" : "#69b3a2"))
-    .attr("stroke", "#fff");
+    .style("fill", (d) => colorScale(d.data.name))
+    .style("stroke", "#fff");
 
   // Add labels
-  this.nodes
+  svg
+    .selectAll("text")
+    .data(root.leaves())
+    .enter()
     .append("text")
-    .attr("class", "node")
-    .attr("x", 3)
-    .attr("y", 13)
+    .attr("x", (d) => d.x0 + 4)
+    .attr("y", (d) => d.y0 + 14)
+    .attr("font-size", "12px")
+    .attr("fill", "#fff")
     .text((d) => d.data.name)
-    .style("pointer-events", "none");
-};
-
-function treemap(data, div, size) {
-  var inline_parser = function (data) {
-    return data;
-  };
-
-  var csv_parser = function (data) {
-    return data;
-  };
-
-  var draw = function (processed_data, div, size) {
-    var glasseye_chart = new Treemap(processed_data, div, size);
-
-    glasseye_chart.add_svg().add_treemap();
-  };
-
-  build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
+    .each(function (d) {
+      const text = d3.select(this);
+      const rectWidth = d.x1 - d.x0;
+      if (text.node()?.getComputedTextLength() ?? 0 > rectWidth - 8) {
+        text.text("");
+      }
+    });
 }

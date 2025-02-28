@@ -290,3 +290,25 @@ data='[
   colors='deep'
 >
 </heatmap>
+
+
+
+
+### A treemap chart 
+
+
+<treemap
+data='{
+  "name": "root",
+  "children": [
+    { "name": "A", "value": 10 },
+    { "name": "B", "value": 20 },
+    { "name": "C", "value": 30 },
+    { "name": "D", "value": 40 }
+  ]
+}
+'
+  size='{"width":500,"height":500}'
+  colors='deep'
+>
+</treemap>

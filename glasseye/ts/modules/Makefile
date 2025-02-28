@@ -15,6 +15,7 @@ SOURCE_FILES = \
 	scatterplot.ts \
 	boxplot.ts \
 	heatmap.ts \
+	treemap.ts \
 
 all: $(TARGET_FILE)
 
