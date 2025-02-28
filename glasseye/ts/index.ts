@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Fri Feb 28 15:04:11 CAT 2025
+// Generated Fri Feb 28 15:50:24 CAT 2025
 
 
 /// base.ts
@@ -760,60 +760,209 @@ export async function treemap(
   const margin = defaultMargin;
   const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
   const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
+ // Remove previous SVG if exists
+ d3.select(div).select("svg").remove();
 
-  // Remove previous SVG if exists
+ // Create hierarchical data structure
+ const root = d3.hierarchy(data).sum((d: any) => d.value);
+
+ // Apply the treemap layout BEFORE accessing `leaves()`
+ const treemapRoot = d3.treemap<any>().size([width, height]).padding(2)(root);
+
+ // Now leaves() returns `HierarchyRectangularNode<T>`, which has `x0, y0, x1, y1`
+ const leaves = treemapRoot.leaves();
+
+ // Define color scale
+ const colorScale = d3.scaleOrdinal<string>().domain(leaves.map(d => d.data.name)).range(colors);
+
+ // Create SVG
+ const svg = d3
+   .select(div)
+   .append("svg")
+   .attr("width", svgWidth)
+   .attr("height", svgHeight)
+   .append("g")
+   .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
+
+ // Add rectangles
+ svg
+   .selectAll("rect")
+   .data(leaves)
+   .enter()
+   .append("rect")
+   .attr("x", (d) => d.x0)
+   .attr("y", (d) => d.y0)
+   .attr("width", (d) => d.x1 - d.x0)
+   .attr("height", (d) => d.y1 - d.y0)
+   .style("fill", (d) => colorScale(d.data.name))
+   .style("stroke", "#FFFFFF");
+
+ // Add labels
+ svg
+   .selectAll("text")
+   .data(leaves)
+   .enter()
+   .append("text")
+   .attr("x", (d) => d.x0 + (d.x1 - d.x0) / 2) // Center horizontally
+   .attr("y", (d) => d.y0 + (d.y1 - d.y0) / 2) // Center vertically
+   .attr("text-anchor", "middle") // Align text in the center
+   .attr("dominant-baseline", "middle") // Align text vertically
+   .attr("font-size", "16px")
+   .attr("fill", "#FFFFFF")
+   .text((d) => d.data.name);
+}
+
+/// tree.ts
+
+export async function tree(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+  
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
+
+  const { width, height } = size;
+  const margin = defaultMargin;
+  const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
+  const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
+
+  // Remove existing SVG if present
   d3.select(div).select("svg").remove();
 
-  // Create the SVG container
+  // Create SVG container
   const svg = d3
     .select(div)
     .append("svg")
     .attr("width", svgWidth)
     .attr("height", svgHeight)
     .append("g")
-    .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
+    .attr("transform", `translate(${margin?.left || 0}, ${margin?.top || 0})`);
 
   // Create hierarchical data structure
-  const root = d3.hierarchy(data).sum((d: any) => d.value);
+  const root = d3.hierarchy(data);
 
-  // Generate treemap layout
-  d3.treemap().size([width, height]).padding(2)(root);
+  // Create a tree layout
+  const treeLayout = d3.tree().size([width, height - 100]);
+  treeLayout(root);
 
-  // Define color scale
-  const colorScale = d3
-    .scaleOrdinal<string>()
-    .domain(root.leaves().map((d) => d.data.name))
-    .range(colors);
+  // Define a link generator (curved lines)
+  const linkGenerator = d3
+    .linkVertical()
+    .x((d:any) => (d as d3.HierarchyPointNode<any>).x)
+    .y((d:any) => (d as d3.HierarchyPointNode<any>).y);
 
-  // Add rectangles
-  const nodes = svg
-    .selectAll("rect")
-    .data(root.leaves())
+  // Draw links (lines between nodes)
+  svg
+    .selectAll("path.link")
+    .data(root.links())
     .enter()
-    .append("rect")
-    .attr("x", (d) => d.x0)
-    .attr("y", (d) => d.y0)
-    .attr("width", (d) => d.x1 - d.x0)
-    .attr("height", (d) => d.y1 - d.y0)
-    .style("fill", (d) => colorScale(d.data.name))
-    .style("stroke", "#fff");
+    .append("path")
+    .attr("class", "link")
+    .attr("d", (d:any) => linkGenerator(d)!)
+    .style("fill", "none")
+    .style("stroke",colors[0])
+    .style("stroke-width", 2);
 
-  // Add labels
+  // Draw nodes (circles)
+  const nodes = svg
+    .selectAll("g.node")
+    .data(root.descendants())
+    .enter()
+    .append("g")
+    .attr("class", "node")
+    .attr("transform", (d) => `translate(${d.x},${d.y})`);
+
+  nodes
+    .append("circle")
+    .attr("r", 6)
+    .style("fill", (d, i) => colors[i % colors.length])
+    .style("stroke", colors[0])
+    .style("stroke-width", 1.5);
+
+  // Add text labels
+  nodes
+    .append("text")
+    .attr("dy", -10) // Position text slightly above nodes
+    .attr("text-anchor", "middle")
+    .style("font-size", "12px")
+    .style("fill", colors[0])
+    .text((d) => d.data.name);
+}
+/// venn.ts
+
+export async function venn(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
+
+  const { width, height } = size;
+  const margin = defaultMargin;
+  const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
+  const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
+
+  // Remove existing SVG if present
+  d3.select(div).select("svg").remove();
+
+  // Create SVG container
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
+    .append("g")
+    .attr("transform", `translate(${svgWidth / 2}, ${svgHeight / 2})`);
+
+  // Define a pack layout to determine circle positions
+  const pack = d3.pack().size([width, height]).padding(10);
+
+  // Convert data to a hierarchy structure
+  const root = d3.hierarchy({ children: data }).sum((d: any) => d.size);
+
+  // Apply pack layout to get node positions
+  const nodes = pack(root).leaves();
+
+  // Draw circles
+  svg
+    .selectAll("circle")
+    .data(nodes)
+    .enter()
+    .append("circle")
+    .attr("cx", (d) => d.x - width / 2) // Center circles
+    .attr("cy", (d) => d.y - height / 2)
+    .attr("r", (d) => d.r)
+    .style("fill", (d, i) => colors[i % colors.length])
+    .style("opacity", 0.7)
+    .style("stroke", colors[0])
+    .style("stroke-width", 1.5)
+    .on("mouseover", function () {
+      d3.select(this).style("opacity", 1);
+    })
+    .on("mouseout", function () {
+      d3.select(this).style("opacity", 0.7);
+    });
+
+  // Add text labels
   svg
     .selectAll("text")
-    .data(root.leaves())
+    .data(nodes)
     .enter()
     .append("text")
-    .attr("x", (d) => d.x0 + 4)
-    .attr("y", (d) => d.y0 + 14)
-    .attr("font-size", "12px")
-    .attr("fill", "#fff")
-    .text((d) => d.data.name)
-    .each(function (d) {
-      const text = d3.select(this);
-      const rectWidth = d.x1 - d.x0;
-      if (text.node()?.getComputedTextLength() ?? 0 > rectWidth - 8) {
-        text.text("");
-      }
-    });
+    .attr("x", (d) => d.x - width / 2)
+    .attr("y", (d) => d.y - height / 2)
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "middle")
+    .style("fill", colors[0])
+    .style("font-size", "14px")
+    .text((d:any) => d.data.name);
 }

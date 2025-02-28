@@ -1,88 +1,79 @@
+export async function tree(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+  
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
 
-var Tree = function (processed_data, div, size) {
-  this.margin =
-    size === "full_page"
-      ? {
-          top: 5,
-          bottom: 5,
-          left: 100,
-          right: 100,
-        }
-      : {
-          top: 5,
-          bottom: 5,
-          left: 50,
-          right: 50,
-        };
+  const { width, height } = size;
+  const margin = defaultMargin;
+  const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
+  const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
 
-  GlasseyeChart.call(this, div, size, this.margin, 300);
+  // Remove existing SVG if present
+  d3.select(div).select("svg").remove();
 
-  this.processed_data = processed_data;
-};
+  // Create SVG container
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
+    .append("g")
+    .attr("transform", `translate(${margin?.left || 0}, ${margin?.top || 0})`);
 
-Tree.prototype = Object.create(GlasseyeChart.prototype);
+  // Create hierarchical data structure
+  const root = d3.hierarchy(data);
 
-Tree.prototype.add_tree = function () {
-   // Create a hierarchical layout
-   const root = d3.hierarchy(this.processed_data);
+  // Create a tree layout
+  const treeLayout = d3.tree().size([width, height - 100]);
+  treeLayout(root);
 
-   // Create a tree layout with size
-   const treeLayout = d3.tree().size([this.height - this.margin.top - this.margin.bottom, this.width - this.margin.left - this.margin.right]);
+  // Define a link generator (curved lines)
+  const linkGenerator = d3
+    .linkVertical()
+    .x((d:any) => (d as d3.HierarchyPointNode<any>).x)
+    .y((d:any) => (d as d3.HierarchyPointNode<any>).y);
 
-   // Apply the layout to the data
-   const treeData = treeLayout(root);
+  // Draw links (lines between nodes)
+  svg
+    .selectAll("path.link")
+    .data(root.links())
+    .enter()
+    .append("path")
+    .attr("class", "link")
+    .attr("d", (d:any) => linkGenerator(d)!)
+    .style("fill", "none")
+    .style("stroke",colors[0])
+    .style("stroke-width", 2);
 
-   // Nodes and links
-   const nodes = treeData.descendants();
-   const links = treeData.links();
+  // Draw nodes (circles)
+  const nodes = svg
+    .selectAll("g.node")
+    .data(root.descendants())
+    .enter()
+    .append("g")
+    .attr("class", "node")
+    .attr("transform", (d) => `translate(${d.x},${d.y})`);
 
-   // Add links
-   this.chart_area
-   .selectAll(".link")
-       .data(links)
-       .enter()
-       .append("path")
-       .attr("class", "link")
-       .attr("d", d3.linkHorizontal()
-           .x(d => d.y)
-           .y(d => d.x)
-       );
+  nodes
+    .append("circle")
+    .attr("r", 6)
+    .style("fill", (d, i) => colors[i % colors.length])
+    .style("stroke", colors[0])
+    .style("stroke-width", 1.5);
 
-   // Add nodes
-   const node = this.chart_area.selectAll(".node")
-       .data(nodes)
-       .enter()
-       .append("g")
-       .attr("class", "node")
-       .attr("transform", d => `translate(${d.y},${d.x})`);
-
-   // Add circles to the nodes
-   node.append("circle")
-       .attr("r", 5);
-
-   // Add labels to the nodes
-   node.append("text")
-       .attr("dy", 3)
-       .attr("x", d => d.children ? -10 : 10)
-       .style("text-anchor", d => d.children ? "end" : "start")
-       .text(d => d.data.name);
-
-};
-
-function tree(data, div, size) {
-  var inline_parser = function (data) {
-    return data;
-  };
-
-  var csv_parser = function (data) {
-    return data;
-  };
-
-  var draw = function (processed_data, div, size) {
-    var glasseye_chart = new Tree(processed_data, div, size);
-
-    glasseye_chart.add_svg().add_tree();
-  };
-
-  build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
+  // Add text labels
+  nodes
+    .append("text")
+    .attr("dy", -10) // Position text slightly above nodes
+    .attr("text-anchor", "middle")
+    .style("font-size", "12px")
+    .style("fill", colors[0])
+    .text((d) => d.data.name);
 }

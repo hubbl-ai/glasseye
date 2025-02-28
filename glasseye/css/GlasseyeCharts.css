@@ -22,12 +22,6 @@ svg {
   margin-bottom: 20px;
 }
 
-text {
-  stroke: none;
-  font-family: var(--font);
-  font-size: var(--font-size);
-}
-
 .line {
   fill: none;
   stroke: var(--blue);

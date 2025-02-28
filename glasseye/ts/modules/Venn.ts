@@ -1,44 +1,71 @@
-var Venn = function (processed_data, div, size) {
-  margin = {
-    top: 5,
-    bottom: 5,
-    left: 5,
-    right: 5,
-  };
+export async function venn(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
 
-  GlasseyeChart.call(this, div, size, margin);
+  const { width, height } = size;
+  const margin = defaultMargin;
+  const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
+  const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
 
-  this.processed_data = processed_data;
+  // Remove existing SVG if present
+  d3.select(div).select("svg").remove();
 
-  this.venn_chart = venn.VennDiagram().width(500).height(400);
-};
+  // Create SVG container
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
+    .append("g")
+    .attr("transform", `translate(${svgWidth / 2}, ${svgHeight / 2})`);
 
-Venn.prototype = Object.create(GlasseyeChart.prototype);
+  // Define a pack layout to determine circle positions
+  const pack = d3.pack().size([width, height]).padding(10);
 
-Venn.prototype.add_venn = function () {
-  this.chart_area.datum(this.processed_data).call(this.venn_chart);
-  this.chart_area.selectAll(".venn-circle path").style("fill-opacity", 0.5);
+  // Convert data to a hierarchy structure
+  const root = d3.hierarchy({ children: data }).sum((d: any) => d.size);
 
-  this.chart_area
-    .selectAll(".venn-circle text")
+  // Apply pack layout to get node positions
+  const nodes = pack(root).leaves();
+
+  // Draw circles
+  svg
+    .selectAll("circle")
+    .data(nodes)
+    .enter()
+    .append("circle")
+    .attr("cx", (d) => d.x - width / 2) // Center circles
+    .attr("cy", (d) => d.y - height / 2)
+    .attr("r", (d) => d.r)
+    .style("fill", (d, i) => colors[i % colors.length])
+    .style("opacity", 0.7)
+    .style("stroke", colors[0])
+    .style("stroke-width", 1.5)
+    .on("mouseover", function () {
+      d3.select(this).style("opacity", 1);
+    })
+    .on("mouseout", function () {
+      d3.select(this).style("opacity", 0.7);
+    });
+
+  // Add text labels
+  svg
+    .selectAll("text")
+    .data(nodes)
+    .enter()
+    .append("text")
+    .attr("x", (d) => d.x - width / 2)
+    .attr("y", (d) => d.y - height / 2)
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "middle")
+    .style("fill", colors[0])
     .style("font-size", "14px")
-    .style("fill", "#000");
-};
-
-function vennchart(data, div, size) {
-  var inline_parser = function (data) {
-    return data;
-  };
-
-  var csv_parser = function (data) {
-    return data;
-  };
-
-  var draw = function (processed_data, div, size) {
-    var glasseye_chart = new Venn(processed_data, div, size);
-
-    glasseye_chart.add_svg().add_venn();
-  };
-
-  build_chart(data, div, size, undefined, csv_parser, inline_parser, draw);
+    .text((d:any) => d.data.name);
 }

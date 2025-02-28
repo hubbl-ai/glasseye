@@ -328,7 +328,7 @@ In dev mode, the script must be run in the same folder as the script.
         'skey':None,
         'barchart':None,
         'tree':None,
-        'vennchart':None,
+        'venn':None,
         'gantt':None,
         'treemap':None,
         'heatmap':None,
