@@ -27,10 +27,10 @@ export async function venn(
     .attr("transform", `translate(${svgWidth / 2}, ${svgHeight / 2})`);
 
   // Define a pack layout to determine circle positions
-  const pack = d3.pack().size([width, height]).padding(10);
+  const pack = d3.pack<DataNode>().size([width, height]).padding(10);
 
   // Convert data to a hierarchy structure
-  const root = d3.hierarchy({ children: data }).sum((d: any) => d.size);
+  const root = d3.hierarchy<DataNode>(data).sum((d: any) => d.size);
 
   // Apply pack layout to get node positions
   const nodes = pack(root).leaves();

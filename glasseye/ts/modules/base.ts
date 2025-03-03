@@ -29,6 +29,12 @@ interface DataFile {
   format: string;
 }
 
+interface DataNode {
+  name?: string;
+  size?: number;
+  children?: DataNode[];
+}
+
 interface ArgumentObject {
   data: any;
   div: string;

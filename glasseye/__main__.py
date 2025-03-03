@@ -263,15 +263,15 @@ In dev mode, the script must be run in the same folder as the script.
     logger.info(f'creating {output_file}')
 
     # Call pandoc and parse the HTML with BeautifulSoup
-
-    with NamedTemporaryFile(suffix='html', delete_on_close=False) as pfp:
+    output_dir = os.path.dirname(output_file)
+    with NamedTemporaryFile(suffix='html', delete_on_close=False, dir=output_dir) as pfp:
         pfp.close()
 
         if hasattr(py, 'convert'):
             convert = py.convert
         else:
             convert = py.convert_file
-
+        
         convert(
             input_file,
             'html',

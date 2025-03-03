@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Fri Feb 28 15:50:24 CAT 2025
+// Generated Tue Mar  4 00:19:53 CAT 2025
 
 
 /// base.ts
@@ -33,6 +33,12 @@ interface Size {
 interface DataFile {
   path: string;
   format: string;
+}
+
+interface DataNode {
+  name?: string;
+  size?: number;
+  children?: DataNode[];
 }
 
 interface ArgumentObject {
@@ -924,10 +930,10 @@ export async function venn(
     .attr("transform", `translate(${svgWidth / 2}, ${svgHeight / 2})`);
 
   // Define a pack layout to determine circle positions
-  const pack = d3.pack().size([width, height]).padding(10);
+  const pack = d3.pack<DataNode>().size([width, height]).padding(10);
 
   // Convert data to a hierarchy structure
-  const root = d3.hierarchy({ children: data }).sum((d: any) => d.size);
+  const root = d3.hierarchy<DataNode>(data).sum((d: any) => d.size);
 
   // Apply pack layout to get node positions
   const nodes = pack(root).leaves();
