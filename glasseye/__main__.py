@@ -26,17 +26,6 @@ dev_stylesheets = [
     '{dir}/css/glasseyeCharts.css',
 ]
 
-base_scripts = [
-    "https://cdn.jsdelivr.net/npm/d3@7",
-    "https://unpkg.com/d3-array@1",
-    "https://unpkg.com/d3-collection@1",
-    "https://unpkg.com/d3-path@1",
-    "https://unpkg.com/d3-shape@1",
-    "https://unpkg.com/d3-sankey@0",
-    "http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js",
-    "https://benfred.github.io/venn.js/venn.js",
-]
-
 dev_scripts = [
     "{dir}/ts/dist/glasseyechart.js"
 ]
@@ -346,7 +335,7 @@ In dev mode, the script must be run in the same folder as the script.
     code_string = re.sub("[“’‘”]", "'", code_string)
 
     # Construct the mode-specificities
-    scripts = base_scripts
+    scripts = []
     stylesheets = base_stylesheets
 
     if mode == 'dev':
