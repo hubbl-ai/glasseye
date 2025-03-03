@@ -339,13 +339,23 @@ data='{
 
 
 <venn
-data='[
-  { "name": "A", "size": 40 },
-  { "name": "B", "size": 40 },
-  { "name": "A ∩ B", "size": 20 }
-]
+data='
+{
+  "children": [
+    { "name": "A", "size": 10 },
+    { "name": "B", "size": 20 },
+    { "name": "C", "size": 30 }
+  ]
+}
 '
   size='{"width":500,"height":500}'
   colors='deep'
 >
 </venn>
+
+
+```{.matplotlib}
+import seaborn as sns
+df = sns.load_dataset("penguins")
+sns.pairplot(df, hue="species")
+```
