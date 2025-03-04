@@ -316,7 +316,30 @@ data='{
 
 
 
-### A tree diagram 
+### A Vertical tree diagram 
+
+
+<tree
+data='{
+  "name": "Root",
+  "children": [
+    { "name": "Child 1", "children": [{ "name": "Grandchild 1" }, { "name": "Grandchild 2" }] },
+    { "name": "Child 2", "children": [{ "name": "Grandchild 3" }] }
+  ]
+}
+'
+  size='{"width":500,"height":500}'
+  colors='deep'
+  vertical="1"
+>
+</tree>
+
+
+
+
+
+
+### A Horizontal tree diagram 
 
 
 <tree
@@ -332,7 +355,6 @@ data='{
   colors='deep'
 >
 </tree>
-
 
 
 ### A venn diagram 

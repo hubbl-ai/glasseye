@@ -34,13 +34,6 @@ prod_scripts = [
     'https://dev.hubbl.ai/js/glasseyeChart.js'
 ]
 
-formatted_scripts = [
-    '''<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.7/require.min.js"
- integrity="sha512-J5ha2LF4Le+PBQnI5+xAVJDR+sZG9uSgroy4n/A6TLjNkvYQbqZA8WHZdaOvJ0HiKkBC9Frmvs10rFDSHKmveQ=="
- crossorigin="anonymous"
- referrerpolicy="no-referrer"></script>'''
-]
-
 tpl = '''<!DOCTYPE html>
 <html>
     <head>
@@ -57,15 +50,6 @@ tpl = '''<!DOCTYPE html>
         </div>
         <script type="text/javascript">
             {code}
-        </script>
-
-        <script type="text/javascript">
-            (function () {{
-                var script = document.createElement("script");
-                script.type = "text/javascript";
-                script.src  = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
-                document.getElementsByTagName("head")[0].appendChild(script);
-            }})();
         </script>
     </body>
 </html>
@@ -316,7 +300,7 @@ In dev mode, the script must be run in the same folder as the script.
         'piechart':{'donut':0},
         'skey':None,
         'barchart':None,
-        'tree':None,
+        'tree':{'vertical':0},
         'venn':None,
         'gantt':None,
         'treemap':None,
@@ -354,7 +338,7 @@ In dev mode, the script must be run in the same folder as the script.
             f"<link href='{font}' rel='stylesheet' type='text/css'>" for font in fonts
         ]),
         'scripts': "\n        ".join(
-            [f'<script src="{script}"></script>' for script in scripts] + formatted_scripts
+            [f'<script src="{script}"></script>' for script in scripts]
         ),
         'stylesheets': "\n        ".join(
             f'<link rel="stylesheet" href="{sheet}" />' for sheet in stylesheets

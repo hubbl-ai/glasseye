@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Tue Mar  4 00:19:53 CAT 2025
+// Generated Tue Mar  4 00:59:47 CAT 2025
 
 
 /// base.ts
@@ -825,7 +825,8 @@ export async function tree(
   data: any = defaultArgumentObject.data,
   size: Size = defaultArgumentObject.size,
   file?: DataFile,
-  colors: string[] = defaultArgumentObject.colors
+  colors: string[] = defaultArgumentObject.colors,
+  vertical = 0
 ) {
   
   if (file?.path) {
@@ -853,14 +854,23 @@ export async function tree(
   const root = d3.hierarchy(data);
 
   // Create a tree layout
-  const treeLayout = d3.tree().size([width, height - 100]);
+  const layoutSize : [number, number] = vertical ? [width, height - 100] : [height,  width- 100] ;
+  const treeLayout = d3.tree().size(layoutSize);
   treeLayout(root);
 
   // Define a link generator (curved lines)
-  const linkGenerator = d3
+  const linkGenerator = vertical
+    ?
+     d3
     .linkVertical()
     .x((d:any) => (d as d3.HierarchyPointNode<any>).x)
-    .y((d:any) => (d as d3.HierarchyPointNode<any>).y);
+    .y((d:any) => (d as d3.HierarchyPointNode<any>).y)
+    :
+    d3
+    .linkHorizontal()
+    .x((d:any) => (d as d3.HierarchyPointNode<any>).y)
+    .y((d:any) => (d as d3.HierarchyPointNode<any>).x)
+    ;
 
   // Draw links (lines between nodes)
   svg
@@ -881,7 +891,7 @@ export async function tree(
     .enter()
     .append("g")
     .attr("class", "node")
-    .attr("transform", (d) => `translate(${d.x},${d.y})`);
+    .attr("transform", (d) => `translate(${vertical? d.x: d.y},${vertical ? d.y: d.x})`);
 
   nodes
     .append("circle")
