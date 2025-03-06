@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import logging
 import sys, os, re, pypandoc as py
 import json
@@ -17,8 +18,8 @@ base_stylesheets = [
 ]
 
 prod_stylesheets = [
-    'https://dev.hubbl.ai/css/tufte.css',
-    'https://dev.hubbl.ai/css/glasseyeCharts.css',
+    'https://dev.hubbl.ai/glasseye/css/tufte.css',
+    'https://dev.hubbl.ai/glasseye/css/glasseyeCharts.css',
 ]
 
 dev_stylesheets = [
@@ -31,7 +32,7 @@ dev_scripts = [
 ]
 
 prod_scripts = [
-    'https://dev.hubbl.ai/js/glasseyeChart.js'
+    'https://dev.hubbl.ai/glasseye/js/glasseyeChart.js'
 ]
 
 tpl = '''<!DOCTYPE html>

@@ -60,7 +60,29 @@ export async function tree(
     .attr("d", (d:any) => linkGenerator(d)!)
     .style("fill", "none")
     .style("stroke",colors[0])
-    .style("stroke-width", 2);
+    .style("stroke-width", 2)
+    .on("mouseover", function (event, d) {
+      
+      d3.select(this).transition().duration(200).attr("stroke-width", 3).style("fill", colors[colors.length-1]);
+    })
+    .on("mouseout", function () {
+      d3.select(this).transition().duration(200).attr("stroke-width", 2).style("fill", "none");
+    })
+    ;
+
+  const tooltip = d3
+    .select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("padding", "6px")
+    .style("background", "#333")
+    .style("color", "#fff")
+    .style("border-radius", "4px")
+    .style("font-size", "12px")
+    .style("display", "none");
+
+  let children_store:any[] = [];
+  const node_radius = 6;
 
   // Draw nodes (circles)
   const nodes = svg
@@ -69,11 +91,44 @@ export async function tree(
     .enter()
     .append("g")
     .attr("class", "node")
-    .attr("transform", (d) => `translate(${vertical? d.x: d.y},${vertical ? d.y: d.x})`);
+    .attr("transform", (d) => `translate(${vertical? d.x: d.y},${vertical ? d.y: d.x})`)
+    .on("mouseover", function (event, d) {
+      // 🌟 Highlight node on hover
+      d3.select(this).select("circle").transition().duration(200).attr("r", node_radius * 2).style("fill", colors[colors.length-1]);
+
+      // 🌟 Show tooltip
+      tooltip
+        .style("display", "block")
+        .style("left", `${event.pageX + node_radius * 3}px`)
+        .style("top", `${event.pageY - node_radius * 4}px`)
+        .text(d.data.name);
+    })
+    .on("mouseout", function () {
+      // 🌟 Remove highlight on mouse out
+      d3.select(this).select("circle").transition().duration(200).attr("r", node_radius).style("fill", (_, i) => colors[i % colors.length]);
+
+      // 🌟 Hide tooltip
+      tooltip.style("display", "none");
+    })
+    .on("click", function (event, d) {
+      console.log("Clicked node:", d.data);
+
+      // 🌟 Expand/Collapse nodes on click
+      if (d.children) {
+        children_store = d.children;
+        d.children = undefined;
+      } else {
+        d.children = children_store;
+        children_store = [];
+      }
+
+      // Redraw tree with updated structure
+      tree(div, data, size, file, colors, vertical);
+    });
 
   nodes
     .append("circle")
-    .attr("r", 6)
+    .attr("r", node_radius)
     .style("fill", (d, i) => colors[i % colors.length])
     .style("stroke", colors[0])
     .style("stroke-width", 1.5);
