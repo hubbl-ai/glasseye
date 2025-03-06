@@ -63,7 +63,7 @@ export async function tree(
     .style("stroke-width", 2)
     .on("mouseover", function (event, d) {
       
-      d3.select(this).transition().duration(200).attr("stroke-width", 3).style("fill", colors[colors.length-1]);
+      d3.select(this).transition().duration(200).attr("stroke-width", 1).style("fill", colors[colors.length-1]);
     })
     .on("mouseout", function () {
       d3.select(this).transition().duration(200).attr("stroke-width", 2).style("fill", "none");
@@ -93,10 +93,10 @@ export async function tree(
     .attr("class", "node")
     .attr("transform", (d) => `translate(${vertical? d.x: d.y},${vertical ? d.y: d.x})`)
     .on("mouseover", function (event, d) {
-      // 🌟 Highlight node on hover
+      
       d3.select(this).select("circle").transition().duration(200).attr("r", node_radius * 2).style("fill", colors[colors.length-1]);
 
-      // 🌟 Show tooltip
+     
       tooltip
         .style("display", "block")
         .style("left", `${event.pageX + node_radius * 3}px`)
@@ -104,10 +104,8 @@ export async function tree(
         .text(d.data.name);
     })
     .on("mouseout", function () {
-      // 🌟 Remove highlight on mouse out
       d3.select(this).select("circle").transition().duration(200).attr("r", node_radius).style("fill", (_, i) => colors[i % colors.length]);
 
-      // 🌟 Hide tooltip
       tooltip.style("display", "none");
     })
     .on("click", function (event, d) {

@@ -42,12 +42,38 @@ export async function piechart(
     .innerRadius(donut ? radius * 0.5 :0)
     .outerRadius(radius);
 
+    const tooltip = d3
+    .select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("padding", "6px")
+    .style("background", "#333")
+    .style("color", "#fff")
+    .style("border-radius", "4px")
+    .style("font-size", "12px")
+    .style("display", "none");
+
   const arcs = svg
     .selectAll("arc")
     .data(pie(processed_data))
     .enter()
     .append("g")
-    .attr("class", "arc");
+    .attr("class", "arc")
+    .on("mouseover", function (event, d:any) {
+      d3.select(this).transition().duration(200).style("opacity", 0.7);
+
+      tooltip
+      .style("display", "block")
+      .style("left", `${event.pageX}px`)
+      .style("top", `${event.pageY}px`)
+      .text(d.data.label);
+
+    })
+    .on("mouseout", function () {
+      d3.select(this).transition().duration(200).style("opacity", 1);
+      tooltip.style("display", "none");
+    });
+    
 
   arcs
     .append("path")

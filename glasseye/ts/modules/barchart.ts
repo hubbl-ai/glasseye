@@ -47,6 +47,17 @@ export async function barchart(
   // Draw Y axis
   svg.append("g").call(d3.axisLeft(y));
 
+  const tooltip = d3
+  .select("body")
+  .append("div")
+  .style("position", "absolute")
+  .style("padding", "6px")
+  .style("background", "#333")
+  .style("color", "#fff")
+  .style("border-radius", "4px")
+  .style("font-size", "12px")
+  .style("display", "none");
+
   // Draw bars
   svg
     .selectAll(".bar")
@@ -58,5 +69,19 @@ export async function barchart(
     .attr("y", (d: any) => y(d.value))
     .attr("width", x.bandwidth())
     .attr("height", (d: any) => chartHeight - y(d.value))
-    .attr("fill", colors[0]);
+    .attr("fill", colors[0])
+    .on("mouseover", function (event, d:any) {
+      d3.select(this).transition().duration(200).style("opacity", 0.7);
+
+      tooltip
+      .style("display", "block")
+      .style("left", `${event.pageX}px`)
+      .style("top", `${event.pageY}px`)
+      .text(d.label);
+
+    })
+    .on("mouseout", function () {
+      d3.select(this).transition().duration(200).style("opacity", 1);
+      tooltip.style("display", "none");
+    });
 }

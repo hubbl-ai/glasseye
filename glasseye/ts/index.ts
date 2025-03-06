@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Wed Mar  5 17:58:06 CAT 2025
+// Generated Thu Mar  6 15:30:18 CAT 2025
 
 
 /// base.ts
@@ -203,6 +203,17 @@ export async function barchart(
   // Draw Y axis
   svg.append("g").call(d3.axisLeft(y));
 
+  const tooltip = d3
+  .select("body")
+  .append("div")
+  .style("position", "absolute")
+  .style("padding", "6px")
+  .style("background", "#333")
+  .style("color", "#fff")
+  .style("border-radius", "4px")
+  .style("font-size", "12px")
+  .style("display", "none");
+
   // Draw bars
   svg
     .selectAll(".bar")
@@ -214,7 +225,21 @@ export async function barchart(
     .attr("y", (d: any) => y(d.value))
     .attr("width", x.bandwidth())
     .attr("height", (d: any) => chartHeight - y(d.value))
-    .attr("fill", colors[0]);
+    .attr("fill", colors[0])
+    .on("mouseover", function (event, d:any) {
+      d3.select(this).transition().duration(200).style("opacity", 0.7);
+
+      tooltip
+      .style("display", "block")
+      .style("left", `${event.pageX}px`)
+      .style("top", `${event.pageY}px`)
+      .text(d.label);
+
+    })
+    .on("mouseout", function () {
+      d3.select(this).transition().duration(200).style("opacity", 1);
+      tooltip.style("display", "none");
+    });
 }
 /// piechart.ts
 
@@ -262,12 +287,38 @@ export async function piechart(
     .innerRadius(donut ? radius * 0.5 :0)
     .outerRadius(radius);
 
+    const tooltip = d3
+    .select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("padding", "6px")
+    .style("background", "#333")
+    .style("color", "#fff")
+    .style("border-radius", "4px")
+    .style("font-size", "12px")
+    .style("display", "none");
+
   const arcs = svg
     .selectAll("arc")
     .data(pie(processed_data))
     .enter()
     .append("g")
-    .attr("class", "arc");
+    .attr("class", "arc")
+    .on("mouseover", function (event, d:any) {
+      d3.select(this).transition().duration(200).style("opacity", 0.7);
+
+      tooltip
+      .style("display", "block")
+      .style("left", `${event.pageX}px`)
+      .style("top", `${event.pageY}px`)
+      .text(d.data.label);
+
+    })
+    .on("mouseout", function () {
+      d3.select(this).transition().duration(200).style("opacity", 1);
+      tooltip.style("display", "none");
+    });
+    
 
   arcs
     .append("path")
@@ -885,7 +936,7 @@ export async function tree(
     .style("stroke-width", 2)
     .on("mouseover", function (event, d) {
       
-      d3.select(this).transition().duration(200).attr("stroke-width", 3).style("fill", colors[colors.length-1]);
+      d3.select(this).transition().duration(200).attr("stroke-width", 1).style("fill", colors[colors.length-1]);
     })
     .on("mouseout", function () {
       d3.select(this).transition().duration(200).attr("stroke-width", 2).style("fill", "none");
@@ -915,10 +966,10 @@ export async function tree(
     .attr("class", "node")
     .attr("transform", (d) => `translate(${vertical? d.x: d.y},${vertical ? d.y: d.x})`)
     .on("mouseover", function (event, d) {
-      // 🌟 Highlight node on hover
+      
       d3.select(this).select("circle").transition().duration(200).attr("r", node_radius * 2).style("fill", colors[colors.length-1]);
 
-      // 🌟 Show tooltip
+     
       tooltip
         .style("display", "block")
         .style("left", `${event.pageX + node_radius * 3}px`)
@@ -926,10 +977,8 @@ export async function tree(
         .text(d.data.name);
     })
     .on("mouseout", function () {
-      // 🌟 Remove highlight on mouse out
       d3.select(this).select("circle").transition().duration(200).attr("r", node_radius).style("fill", (_, i) => colors[i % colors.length]);
 
-      // 🌟 Hide tooltip
       tooltip.style("display", "none");
     })
     .on("click", function (event, d) {
@@ -1003,6 +1052,17 @@ export async function venn(
   // Apply pack layout to get node positions
   const nodes = pack(root).leaves();
 
+  const tooltip = d3
+    .select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("padding", "6px")
+    .style("background", "#333")
+    .style("color", "#fff")
+    .style("border-radius", "4px")
+    .style("font-size", "12px")
+    .style("display", "none");
+
   // Draw circles
   svg
     .selectAll("circle")
@@ -1016,11 +1076,21 @@ export async function venn(
     .style("opacity", 0.7)
     .style("stroke", colors[0])
     .style("stroke-width", 1.5)
-    .on("mouseover", function () {
-      d3.select(this).style("opacity", 1);
+    .on("mouseover", function (event, d:any) {
+      d3.select(this).transition().duration(200).style("opacity", 1);
+      d3.select(this).transition().duration(200).attr("r", (d:any) => d.r * 1.05);
+
+      tooltip
+      .style("display", "block")
+      .style("left", `${event.pageX}px`)
+      .style("top", `${event.pageY}px`)
+      .text(d.data.name);
+
     })
     .on("mouseout", function () {
-      d3.select(this).style("opacity", 0.7);
+      d3.select(this).transition().duration(200).style("opacity", 0.7);
+      d3.select(this).transition().duration(200).attr("r", (d:any) => d.r);
+      tooltip.style("display", "none");
     });
 
   // Add text labels

@@ -35,6 +35,17 @@ export async function venn(
   // Apply pack layout to get node positions
   const nodes = pack(root).leaves();
 
+  const tooltip = d3
+    .select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("padding", "6px")
+    .style("background", "#333")
+    .style("color", "#fff")
+    .style("border-radius", "4px")
+    .style("font-size", "12px")
+    .style("display", "none");
+
   // Draw circles
   svg
     .selectAll("circle")
@@ -48,11 +59,21 @@ export async function venn(
     .style("opacity", 0.7)
     .style("stroke", colors[0])
     .style("stroke-width", 1.5)
-    .on("mouseover", function () {
-      d3.select(this).style("opacity", 1);
+    .on("mouseover", function (event, d:any) {
+      d3.select(this).transition().duration(200).style("opacity", 1);
+      d3.select(this).transition().duration(200).attr("r", (d:any) => d.r * 1.05);
+
+      tooltip
+      .style("display", "block")
+      .style("left", `${event.pageX}px`)
+      .style("top", `${event.pageY}px`)
+      .text(d.data.name);
+
     })
     .on("mouseout", function () {
-      d3.select(this).style("opacity", 0.7);
+      d3.select(this).transition().duration(200).style("opacity", 0.7);
+      d3.select(this).transition().duration(200).attr("r", (d:any) => d.r);
+      tooltip.style("display", "none");
     });
 
   // Add text labels
