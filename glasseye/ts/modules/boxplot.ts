@@ -55,12 +55,38 @@ export async function boxplot(
   // Draw box plot elements
   const boxWidth = xScale.bandwidth() * 0.6;
 
+
+  const tooltip = d3
+  .select("body")
+  .append("div")
+  .style("position", "absolute")
+  .style("padding", "6px")
+  .style("background", "#333")
+  .style("color", "#fff")
+  .style("border-radius", "4px")
+  .style("font-size", "12px")
+  .style("display", "none");
+
   const boxplotGroups = svg
     .selectAll(".boxplot")
     .data(summaryData)
     .enter()
     .append("g")
-    .attr("transform", (d) => `translate(${xScale(d.category)!},0)`);
+    .attr("transform", (d) => `translate(${xScale(d.category)!},0)`)
+    .on("mouseover", function (event, d:any) {
+      d3.select(this).transition().duration(200).style("opacity", 0.7);
+
+      tooltip
+      .style("display", "block")
+      .style("left", `${event.pageX}px`)
+      .style("top", `${event.pageY}px`)
+      .text(d.category);
+
+    })
+    .on("mouseout", function () {
+      d3.select(this).transition().duration(200).style("opacity", 1);
+      tooltip.style("display", "none");
+    });
 
   // Draw vertical lines (min to max)
   boxplotGroups
@@ -69,7 +95,8 @@ export async function boxplot(
     .attr("y2", (d) => yScale(d.max))
     .attr("x1", xScale.bandwidth() / 2)
     .attr("x2", xScale.bandwidth() / 2)
-    .attr("stroke", "black");
+    .attr("stroke", "black")
+    
 
   // Draw rectangles for the interquartile range (IQR)
   boxplotGroups

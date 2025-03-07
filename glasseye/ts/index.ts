@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Thu Mar  6 15:30:18 CAT 2025
+// Generated Thu Mar  6 17:30:06 CAT 2025
 
 
 /// base.ts
@@ -516,6 +516,17 @@ export async function dotplot(
     .nice()
     .range([height, 0]);
 
+  const tooltip = d3
+    .select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("padding", "6px")
+    .style("background", "#333")
+    .style("color", "#fff")
+    .style("border-radius", "4px")
+    .style("font-size", "12px")
+    .style("display", "none");
+
   // Define dots
   svg
     .selectAll("circle")
@@ -525,7 +536,23 @@ export async function dotplot(
     .attr("cx", (d: any) => xScale(d.category)! + xScale.bandwidth() / 2)
     .attr("cy", (d: any) => yScale(d.value))
     .attr("r", 5)
-    .attr("fill", (d, i) => colors[i % colors.length]);
+    .attr("fill", (d, i) => colors[i % colors.length])
+    .on("mouseover", function (event, d:any) {
+      d3.select(this).transition().duration(200).style("opacity", 0.7);
+      d3.select(this).transition().duration(200).attr("r", 7);
+
+      tooltip
+      .style("display", "block")
+      .style("left", `${event.pageX}px`)
+      .style("top", `${event.pageY}px`)
+      .text(`${d.category}-${d.value}`);
+
+    })
+    .on("mouseout", function () {
+      d3.select(this).transition().duration(200).style("opacity", 1);
+      d3.select(this).transition().duration(200).attr("r", 5);
+      tooltip.style("display", "none");
+    });
 
   // Add X Axis
   svg
@@ -578,6 +605,18 @@ export async function scatterplot(
     .domain([0, d3.max(data, (d: any) => +d.y) || 0])
     .range([height, 0]);
 
+
+  const tooltip = d3
+  .select("body")
+  .append("div")
+  .style("position", "absolute")
+  .style("padding", "6px")
+  .style("background", "#333")
+  .style("color", "#fff")
+  .style("border-radius", "4px")
+  .style("font-size", "12px")
+  .style("display", "none");
+
   // Add X Axis
   svg
     .append("g")
@@ -597,7 +636,23 @@ export async function scatterplot(
     .attr("cx", (d: any) => xScale(+d.x))
     .attr("cy", (d: any) => yScale(+d.y))
     .attr("r", 5)
-    .style("fill", (d, i) => colors[i % colors.length]);
+    .style("fill", (d, i) => colors[i % colors.length])
+    .on("mouseover", function (event, d:any) {
+      d3.select(this).transition().duration(200).style("opacity", 0.7);
+      d3.select(this).transition().duration(200).attr("r", 7);
+
+      tooltip
+      .style("display", "block")
+      .style("left", `${event.pageX}px`)
+      .style("top", `${event.pageY}px`)
+      .text(`${d.x}-${d.y}`);
+
+    })
+    .on("mouseout", function () {
+      d3.select(this).transition().duration(200).style("opacity", 1);
+      d3.select(this).transition().duration(200).attr("r", 5);
+      tooltip.style("display", "none");
+    });
 }
 /// boxplot.ts
 
@@ -658,12 +713,38 @@ export async function boxplot(
   // Draw box plot elements
   const boxWidth = xScale.bandwidth() * 0.6;
 
+
+  const tooltip = d3
+  .select("body")
+  .append("div")
+  .style("position", "absolute")
+  .style("padding", "6px")
+  .style("background", "#333")
+  .style("color", "#fff")
+  .style("border-radius", "4px")
+  .style("font-size", "12px")
+  .style("display", "none");
+
   const boxplotGroups = svg
     .selectAll(".boxplot")
     .data(summaryData)
     .enter()
     .append("g")
-    .attr("transform", (d) => `translate(${xScale(d.category)!},0)`);
+    .attr("transform", (d) => `translate(${xScale(d.category)!},0)`)
+    .on("mouseover", function (event, d:any) {
+      d3.select(this).transition().duration(200).style("opacity", 0.7);
+
+      tooltip
+      .style("display", "block")
+      .style("left", `${event.pageX}px`)
+      .style("top", `${event.pageY}px`)
+      .text(d.category);
+
+    })
+    .on("mouseout", function () {
+      d3.select(this).transition().duration(200).style("opacity", 1);
+      tooltip.style("display", "none");
+    });
 
   // Draw vertical lines (min to max)
   boxplotGroups
@@ -672,7 +753,8 @@ export async function boxplot(
     .attr("y2", (d) => yScale(d.max))
     .attr("x1", xScale.bandwidth() / 2)
     .attr("x2", xScale.bandwidth() / 2)
-    .attr("stroke", "black");
+    .attr("stroke", "black")
+    
 
   // Draw rectangles for the interquartile range (IQR)
   boxplotGroups

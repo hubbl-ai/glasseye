@@ -38,6 +38,18 @@ export async function scatterplot(
     .domain([0, d3.max(data, (d: any) => +d.y) || 0])
     .range([height, 0]);
 
+
+  const tooltip = d3
+  .select("body")
+  .append("div")
+  .style("position", "absolute")
+  .style("padding", "6px")
+  .style("background", "#333")
+  .style("color", "#fff")
+  .style("border-radius", "4px")
+  .style("font-size", "12px")
+  .style("display", "none");
+
   // Add X Axis
   svg
     .append("g")
@@ -57,5 +69,21 @@ export async function scatterplot(
     .attr("cx", (d: any) => xScale(+d.x))
     .attr("cy", (d: any) => yScale(+d.y))
     .attr("r", 5)
-    .style("fill", (d, i) => colors[i % colors.length]);
+    .style("fill", (d, i) => colors[i % colors.length])
+    .on("mouseover", function (event, d:any) {
+      d3.select(this).transition().duration(200).style("opacity", 0.7);
+      d3.select(this).transition().duration(200).attr("r", 7);
+
+      tooltip
+      .style("display", "block")
+      .style("left", `${event.pageX}px`)
+      .style("top", `${event.pageY}px`)
+      .text(`${d.x}-${d.y}`);
+
+    })
+    .on("mouseout", function () {
+      d3.select(this).transition().duration(200).style("opacity", 1);
+      d3.select(this).transition().duration(200).attr("r", 5);
+      tooltip.style("display", "none");
+    });
 }
