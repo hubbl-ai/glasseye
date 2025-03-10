@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+<#!/usr/bin/env python3
 import logging
 import sys, os, re, pypandoc as py
 import json
@@ -126,6 +126,13 @@ def add_chart(chart_id, fields, soup, code_string):
                         palette_fields[field] = json.loads(attrs[field])
                     except Exception as e:
                         logger.error(e)
+            elif field in ['path', 'format']:
+                try:
+                    value = json.loads(attrs[field])
+                except Exception as exp:
+                    raise
+
+                all_fields['file'][field] = value[field]
 
         # Compute the palette
         all_fields['colors'] = resolve_color_palette(**palette_fields)
@@ -168,7 +175,7 @@ where args arg one of:
 -f|--filter	filter # Add a filter to be passed to pandoc
 -h|--help              # Print this message
 -o|--output	file   # File to which to store HTML document
--p|--plt	       # Short cut for adding the pandoc-plot filter
+-p|--plot	       # Short cut for adding the pandoc-plot filter
 -t|--title	       # Title for generated HTML document
 -v|--verbose           # Increase debugging output. May be repeated
 
@@ -178,7 +185,7 @@ In dev mode, the script must be run in the same folder as the script.
     opts, args = getopt(
         sys.argv[1:],
         'D:f:o:pt:v',
-        ('dir', 'filter', 'output', 'plt', 'title', 'verbose')
+        ('dir', 'filter', 'output', 'plot', 'title', 'verbose')
     )
 
     for k, v in opts:
@@ -189,7 +196,7 @@ In dev mode, the script must be run in the same folder as the script.
             filters.append(v)
         elif k in ['-o', '--output']:
             output_file = v
-        elif k in ['-p', '--plt']:
+        elif k in ['-p', '--plot']:
             filters.append('pandoc-plot')
         elif k in ['-t', '--title']:
             title = v

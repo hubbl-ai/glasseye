@@ -2,7 +2,12 @@
 
 ## What is glasseye?
 
-Glasseye<sidenote>See the [github repository](https://github.com/coppeliaMLA/glasseye) for the source code</sidenote> is something I'm developing to present the results of statistical analysis in an attractive and hopefully interesting way.
+Glasseye
+<sidenote>
+See the [github repository](https://github.com/coppeliaMLA/glasseye) for the source code.
+</sidenote>
+is something I'm developing to present the results of statistical
+analysis in an attractive and hopefully interesting way.
 
 Glasseye brings together three great things that I use a lot:
 
@@ -14,9 +19,36 @@ The idea is to be able to write up work in markdown<sidenote>Markdown is a light
 
 Here's an example: a d3 force directed graph, which can be easily added in to a glasseye document using html like tags.
 
-<force>
-	{ "nodes": [{ "name": "Brand X", "group": 1 }, { "name": "Brand Y", "group": 1 }, { "name": "Brand Z", "group": 1 }, { "name": "Agent 1", "group": 2 }, { "name": "Agent 2", "group": 2 }, { "name": "Agent 3", "group": 3 }, { "name": "Agent 4", "group": 3}, { "name": "Agent 5", "group": 2}, { "name": "Agent 6", "group": 2} , {"name": "Agent 7", "group": 2} , { "name": "Agent 8", "group": 2 } , { "name": "Agent 9", "group": 2 } , { "name": "Agent 10", "group": 2 } , { "name": "Agent 11", "group": 2 }], "links": [{ "source": 0, "target": 6, "value": 20 }, { "source": 1, "target": 4, "value": 30 }, { "source": 2, "target": 7, "value": 22 }, { "source": 6, "target": 11, "value": 5 }, { "source": 10, "target": 7, "value": 5 }, { "source": 3, "target": 8, "value": 15 }, { "source": 5, "target": 8, "value": 15 }, { "source": 5, "target": 9, "value": 15 }, { "source": 4, "target": 7, "value": 15 }, { "source": 10, "target": 6, "value": 15 }] }
-</force>
+<force data='
+	{ "nodes": [
+        { "name": "Brand X", "group": 1 },
+        { "name": "Brand Y", "group": 1 },
+        { "name": "Brand Z", "group": 1 },
+        { "name": "Agent 1", "group": 2 },
+        { "name": "Agent 2", "group": 2 },
+        { "name": "Agent 3", "group": 3 },
+        { "name": "Agent 4", "group": 3},
+        { "name": "Agent 5", "group": 2},
+        { "name": "Agent 6", "group": 2},
+        { "name": "Agent 7", "group": 2},
+        { "name": "Agent 8", "group": 2 },
+        { "name": "Agent 9", "group": 2 },
+        { "name": "Agent 10", "group": 2 },
+        { "name": "Agent 11", "group": 2 }
+    ],
+    "links": [
+        { "source": 0, "target": 6, "value": 20 },
+        { "source": 1, "target": 4, "value": 30 },
+        { "source": 2, "target": 7, "value": 22 },
+        { "source": 6, "target": 11, "value": 5 },
+        { "source": 10, "target": 7, "value": 5 },
+        { "source": 3, "target": 8, "value": 15 },
+        { "source": 5, "target": 8, "value": 15 },
+        { "source": 5, "target": 9, "value": 15 },
+        { "source": 4, "target": 7, "value": 15 },
+        { "source": 10, "target": 6, "value": 15 }
+    ] }
+'></force>
 
 ## What it can do
 
@@ -48,19 +80,31 @@ $$ \mathrm{B}(\alpha) = \frac{\prod*{i=1}^N \Gamma(\alpha*i)}{\Gamma\bigl(\sum*{
 
 ### d3 charts
 
-I've tried to create charts that are simple and uncluttered with the tooltip taking over some of the work. This is so that they can fit in the margin nicely. I've been thinking about making them as intellegent as possible so that choices are made for you about formatting (for example label positioning). That may prove annoying though so we'll see how it goes. It's easy to include any of the d3 charts into either the main body of the text or into the margin.
+I've tried to create charts that are simple and uncluttered with the
+tooltip taking over some of the work. This is so that they can fit in
+the margin nicely. I've been thinking about making them as intellegent
+as possible so that choices are made for you about formatting (for
+example label positioning). That may prove annoying though so we'll
+see how it goes. It's easy to include any of the d3 charts into either
+the main body of the text or into the margin.
 
-Inserting a plot is again just a matter of using some custom tags. For example to generate a line plot just surround a string containing the path and filname of a csv file with a `<linechart>` tag. You can optionally supply axis labels.<sidenote>
-An example of a line plot. Note the tooltip means we don't need y axis tick labels.
-This plot was created by inserting the following line into the markdown. 
+Inserting a plot is again just a matter of using some custom tags. For
+example to generate a line plot just surround a string containing the
+path and filename of a csv file with a `<linechart>` tag. You can
+optionally supply axis labels.
+
+<sidenote> An example of a line plot. Note the tooltip means we don't
+need y axis tick labels.  This plot was created by inserting the
+following line into the markdown.
 
 Alternatively you can write the data in json into the markdown. For example we can create an interactive treemap<sidenote>An example of an intreactive treemap. Click on the rectangles to zoom in <treemap>{ "name": "All", "children": [{ "name": "Bakery", "size": 34 }, { "name": "Tinned Goods", "children": [{ "name": "Beans", "size": 34 }, { "name": "Soups", "size": 56 }, { "name": "Puddings", "children": [{ "name": "Fruit", "children": [{ "name": "Tangerines", "size": 15 }, { "name": "Pears", "size": 17 }]}, { "name": "Apricots", "size": 89 } ] }] }, { "name": "Meat and Fish", "children": [{ "name": "Meat", "children": [{ "name": "Poultry", "size": 15 }, { "name": "Beef", "size": 17 }]}, { "name": "Fish", "size": 89 } ] }] }</treemap>
 </sidenote>
+
 by inserting the following into the markdown<sidenote>See the section below for the full json</sidenote>
 
 ```
 
-<treemap>
+<treemap data='
 {
     "name": "All",
     "children": [
@@ -85,7 +129,7 @@ by inserting the following into the markdown<sidenote>See the section below for 
                         {"name": "Apricots",
                          "size": 89}
 ...
-</treemap>
+'></treemap>
 ```
 
 Javascript charts also allow us to animate content which can be useful. I created a chart type `<sim_plot>` for a project using agent based simulation. It animates a time line which helps bring home the fact that the data is computer generated
@@ -128,7 +172,7 @@ In no particular order here are the d3 charts I have added so far.<sidenote>You 
 You'll just need to put the json describing your sets between `<venn>` tags as in this example. 
 
 ```
-<vennchart>
+<vennchart data='
 [ 
   {sets: ['Badgers'], size: 300},
   {sets: ['Peanuts'], size: 42},
@@ -137,10 +181,10 @@ You'll just need to put the json describing your sets between `<venn>` tags as i
   {sets: ['Peanuts','Mushrooms'], size: 2},
   {sets: ['Peanuts','Badgers'], size: 0}
 ]
-</vennchart>
+'></vennchart>
 ```
 
-<vennchart>
+<vennchart data='
 [ 
     {sets: ['Badgers'], size: 300},
     {sets: ['Peanuts'], size: 42},
@@ -149,25 +193,52 @@ You'll just need to put the json describing your sets between `<venn>` tags as i
     {sets: ['Peanuts','Mushrooms'], size: 2},
     {sets: ['Peanuts','Badgers'], size: 0}
 ]
-</vennchart>
+'></vennchart>
 
 ### A tree layout
 
 This ia a fairly standard layout for a hierarchy, adapated from Mike Bostocks [original design](http://bl.ocks.org/mbostock/4063570).
 
-<tree>
-{"name": "root", "children": [{ "name": "purpledog.com" }, { "name": "squishedfish.co.uk" }, { "name": "blogs", "children": [{ "name": "political", "children": [{ "name": "flatbat.com" }, { "name": "netfrog.co.uk" }]}, { "name": "squarespider.com" } ] }]}
+<tree data='
+    {
+        "name": "root",
+        "children": [
+            { "name": "purpledog.com" },
+            { "name": "squishedfish.co.uk" },
+            { "name": "blogs", "children": [
+                { "name": "political", "children": [
+                    { "name": "flatbat.com" },
+                    { "name": "netfrog.co.uk" }
+                ]},
+                { "name": "squarespider.com" }
+            ] }
+        ]
+    }'>
 </tree>
 
-Like all of the charts it can appear in the main body or in the margin.<sidenote>The same tree layout as it appears in the margin.<tree>
-{"name": "root", "children": [{ "name": "purpledog.com" }, { "name": "squishedfish.co.uk" }, { "name": "blogs", "children": [{ "name": "political", "children": [{ "name": "flatbat.com" }, { "name": "netfrog.co.uk" }]}, { "name": "squarespider.com" } ] }]}
-</tree></sidenote>
+Like all of the charts it can appear in the main body or in the margin.<sidenote>The same tree layout as it appears in the margin.
+<tree data='
+    {
+        "name": "root",
+        "children": [
+            { "name": "purpledog.com" },
+            { "name": "squishedfish.co.uk" },
+            { "name": "blogs", "children": [
+                { "name": "political", "children": [
+                    { "name": "flatbat.com" },
+                    { "name": "netfrog.co.uk" }
+                ]},
+                { "name": "squarespider.com" }
+            ] }
+        ]
+    }'>
+</tree>
+</sidenote>
 
 To create a treelayout include some nested json within the tree tags.
 
-```
 
-<tree>
+<tree data='
 {
     "name": "root",
     "children": [
@@ -186,12 +257,15 @@ To create a treelayout include some nested json within the tree tags.
         }
     ]
 }
-</tree>
+'></tree>
 ```
 
-### SANKEY chart
+### Sankey chart
 
-<skey>
+A sankey chart shows flow and volume between objects. It can be
+thought of as a sort of bi-directional dendogram.
+
+<skey data='
 {
   nodes: [
       { name: "Product 1" },
@@ -208,42 +282,36 @@ To create a treelayout include some nested json within the tree tags.
       { source: 3, target: 4, value: 8 }
   ]
 }
-</skey>
+'></skey>
 
 ### A simple bar chart
 
 A simple bar chart can be created using the barchart tags.<sidenote>
 A bar chart as it appears in the margin.
-<barchart>
-[
-{"label":"Apples", "value":"33"},
-{"label":"Pears", "value":"12"},
-{"label":"Oranges", "value":"9"},
-]
-</barchart>
-</sidenote>
-
-```
+<barchart data='
 [
     {"label":"Apples", "value":"33"},
     {"label":"Pears", "value":"12"},
     {"label":"Oranges", "value":"9"},
 ]
+'></barchart>
+</sidenote>
 
+```
+<barchart data='
+[
+    {"label":"Apples", "value":"33"},
+    {"label":"Pears", "value":"12"},
+    {"label":"Oranges", "value":"9"},
+]
+'></barchart>
 ```
 
 ### A force directed layout
 
 Another fairly standard chart in the d3 world, you can create a force directed layout of a graph using the force tags and some json.<sidenote>
 A force directed layout of a graph.
-<force>
-{ "nodes": [{ "name": "squishedfish.com", "group": 1 }, { "name": "reddog.co.uk", "group": 1 }, { "name": "blankcat.com", "group": 2 }, { "name": "scrimpledfeet.com", "group": 2 }, { "name": "sickbag.com", "group": 2 }, { "name": "bluehouse.co.uk", "group": 3 }, { "name": "webbedcat.com", "group": 3 }, { "name": "flatrhino.co.uk", "group": 1 }, { "name": "greycamel.com", "group": 3 } ], "links": [{ "source": 0, "target": 1, "value": 20 }, { "source": 0, "target": 2, "value": 30 }, { "source": 1, "target": 4, "value": 22 }, { "source": 6, "target": 2, "value": 5 }, { "source": 1, "target": 7, "value": 5 }, { "source": 3, "target": 8, "value": 15 }, { "source": 5, "target": 8, "value": 15 }] }
-</force>
-</sidenote>
-
-```
-
-<force>
+<force data='
 	{
     "nodes": [
         {"name": "squishedfish.com", "group": 1},
@@ -266,34 +334,64 @@ A force directed layout of a graph.
     	{ "source": 5, "target": 8, "value": 15 }
     	]
     }
-</force>
+'></force>
+</sidenote>
+
+```
+
+<force data='
+	{
+    "nodes": [
+        {"name": "squishedfish.com", "group": 1},
+        {"name": "reddog.co.uk", "group": 1},
+        {"name": "blankcat.com", "group": 2},
+        {"name": "scrimpledfeet.com", "group": 2},
+        {"name": "sickbag.com", "group": 2},
+        {"name": "bluehouse.co.uk", "group": 3},
+        {"name": "webbedcat.com", "group": 3},
+        {"name": "flatrhino.co.uk","group": 1},
+        {"name": "greycamel.com", "group": 3}
+    ],
+    "links": [
+    	{ "source": 0, "target": 1, "value": 20 },
+    	{ "source": 0, "target": 2, "value": 30 },
+    	{ "source": 1, "target": 4, "value": 22 },
+    	{ "source": 6, "target": 2, "value": 5 },
+    	{ "source": 1, "target": 7, "value": 5 },
+    	{ "source": 3, "target": 8, "value": 15 },
+    	{ "source": 5, "target": 8, "value": 15 }
+    	]
+    }
+'></force>
 ```
 
 ### A gantt chart
 
-I find a simple version of a Gantt chart useful when creating plans and proposals. It gives a rough idea of the time scales involved. The syntax is as follows:
+I find a simple version of a Gantt chart useful when creating plans
+and proposals. It gives a rough idea of the time scales involved. The
+syntax is as follows:
 
 ```
-<gantt>
+<gantt data='
 		[{"task": "Analysis phase", "start": "2015-03-01", "end": "2015-03-12"},
 		{"task": "Build phase", "start": "2015-03-13", "end": "2015-03-24"},
 		{"task": "Testing phase", "start": "2015-03-25", "end": "2015-04-15"}]
-</gantt>
+'></gantt>
 ```
 
 This will give you the following
 
-<gantt>
+<gantt data='
 		[{"task": "Analysis phase", "start": "2015-03-01", "end": "2015-03-12"},
 		{"task": "Build phase", "start": "2015-03-13", "end": "2015-03-24"},
 		{"task": "Testing phase", "start": "2015-03-25", "end": "2015-04-15"}]
-</gantt>
+'></gantt>
 
 ### A pie chart
 
 As seen above, you can create a donut plot from a csv file (you just need columns with headings `label` and `value`). Alternatively you can use inline json as in this example.<sidenote>
 A pie created from inline json.
-<piechart>
+<piechart data='
 [
 { label: "Category A", value: 30 },
 { label: "Category B", value: 70 },
@@ -301,27 +399,28 @@ A pie created from inline json.
 { label: "Category D", value: 55 },
 { label: "Category E", value: 20 }
 ]
-</piechart>
+'></piechart>
 </sidenote>
 
 ```
 
-<piechart>
+<piechart data='
 [
-            { label: "Category A", value: 30 },
-            { label: "Category B", value: 70 },
-            { label: "Category C", value: 45 },
-            { label: "Category D", value: 55 },
-            { label: "Category E", value: 20 }
+{ label: "Category A", value: 30 },
+{ label: "Category B", value: 70 },
+{ label: "Category C", value: 45 },
+{ label: "Category D", value: 55 },
+{ label: "Category E", value: 20 }
 ]
-</piechart>
-```
+'></piechart>```
 
 ### A donut chart
 
-As seen above, you can create a donut plot from a csv file (you just need columns with headings `label` and `value`). Alternatively you can use inline json as in this example.<sidenote>
+As seen above, you can create a donut plot from a csv file (you just
+need columns with headings `label` and `value`). Alternatively you can
+use inline json as in this example.<sidenote>
 A donut created from inline json.
-<donut>
+<piechart data='
 [
 { label: "Category A", value: 30 },
 { label: "Category B", value: 70 },
@@ -329,23 +428,23 @@ A donut created from inline json.
 { label: "Category D", value: 55 },
 { label: "Category E", value: 20 }
 ]
-</donut>
+', donut='true'>
+</piechart
 </sidenote>
 
 ```
 
-<donut>
+<piechart data='
 [
-            { label: "Category A", value: 30 },
-            { label: "Category B", value: 70 },
-            { label: "Category C", value: 45 },
-            { label: "Category D", value: 55 },
-            { label: "Category E", value: 20 }
+{ label: "Category A", value: 30 },
+{ label: "Category B", value: 70 },
+{ label: "Category C", value: 45 },
+{ label: "Category D", value: 55 },
+{ label: "Category E", value: 20 }
 ]
-</donut>
+', donut='true'>
+</piechart
 ```
-
-
 
 ### A Heatmap
 

@@ -1,11 +1,11 @@
 from setuptools import setup
 
 setup(name='glasseye',
-      version='0.1.17',
-      description='A python module for converting markdown documents into the glasseye format',
-      url='https://github.com/coppeliaMLA/glasseye',
-      author='coppeliamla',
-      author_email='info@coppelia.io',
+      version='0.2.0',
+      description='A python module for including beautiful charts in Markdown for conversion to HTML',
+      url='https://github.com/hubbl-ai/glasseye',
+      author='hubbl-ai',
+      author_email='info@hubbl.ai',
       license='MIT',
       packages=['glasseye'],
       zip_safe=False,
