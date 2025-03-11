@@ -381,3 +381,30 @@ import seaborn as sns
 df = sns.load_dataset("penguins")
 sns.pairplot(df, hue="species")
 ```
+
+
+
+### A force diagram 
+
+
+<force
+data='
+{
+  nodes: [
+    { id: "A", group: 1 },
+    { id: "B", group: 2 },
+    { id: "C", group: 1 },
+    { id: "D", group: 2 },
+  ],
+  links: [
+    { source: "A", target: "B" },
+    { source: "A", target: "C" },
+    { source: "B", target: "D" },
+    { source: "C", target: "D" },
+  ],
+}
+'
+  size='{"width":500,"height":500}'
+  colors='deep'
+>
+</force>
