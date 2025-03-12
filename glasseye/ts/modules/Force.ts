@@ -1,36 +1,3 @@
-import * as d3 from "d3";
-
-interface Node {
-  id: string;
-  group: number;
-}
-
-interface Link {
-  source: string;
-  target: string;
-}
-
-interface Graph {
-  nodes: Node[];
-  links: Link[];
-}
-
-interface Size {
-  width: number;
-  height: number;
-}
-
-interface DataFile {
-  url: string;
-}
-
-const defaultArgumentObject = {
-  div: "#graph",
-  data: { nodes: [], links: [] },
-  size: { width: 800, height: 600 },
-  colors: d3.schemeCategory10 as string[],
-};
-
 export async function force(
   div: string = defaultArgumentObject.div,
   data: any = defaultArgumentObject.data,
@@ -47,7 +14,7 @@ export async function force(
 
   const simulation = d3
     .forceSimulation<Node>(data.nodes)
-    .force("link", d3.forceLink<Node, Link>(data.links).id((d) => d.id).distance(100))
+    .force("link", d3.forceLink<Node, Link>(data.links).id((d:any) => d.id).distance(100))
     .force("charge", d3.forceManyBody().strength(-300))
     .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -65,9 +32,9 @@ export async function force(
     .enter()
     .append("circle")
     .attr("r", 10)
-    .attr("fill", (d, i) => colors[d.group % colors.length])
+    .attr("fill", (d:any, i) => colors[d.group % colors.length])
     .call(
-      d3.drag<SVGCircleElement, Node>()
+      d3.drag<any, any>()
         .on("start", (event, d) => {
           if (!event.active) simulation.alphaTarget(0.3).restart();
           d.fx = d.x;

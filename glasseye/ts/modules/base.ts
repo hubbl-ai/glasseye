@@ -1,5 +1,6 @@
 import * as d3 from "d3";
 import { sankey, sankeyLinkHorizontal, SankeyGraph } from "d3-sankey";
+import { SimulationNodeDatum } from "d3";
 
 
 interface Margin {
@@ -72,4 +73,14 @@ async function loadData(path: string, format: string = ""): Promise<any> {
 
   const data = await formatters[format](path);
   return data;
+}
+
+interface Node extends SimulationNodeDatum {
+  id: string;
+  group: number;
+}
+
+interface Link {
+  source: string;
+  target: string;
 }

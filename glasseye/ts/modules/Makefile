@@ -18,6 +18,7 @@ SOURCE_FILES = \
 	treemap.ts \
 	tree.ts \
 	venn.ts \
+	force.ts \
 
 all: $(TARGET_FILE)
 

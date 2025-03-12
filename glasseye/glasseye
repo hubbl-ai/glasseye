@@ -1,4 +1,4 @@
-<#!/usr/bin/env python3
+#!/usr/bin/env python3
 import logging
 import sys, os, re, pypandoc as py
 import json
@@ -316,6 +316,7 @@ In dev mode, the script must be run in the same folder as the script.
         'dotplot':None,
         'scatterplot':None,
         'boxplot':None,
+        'force':None,
         }
 
     for s, args in standard_charts.items():

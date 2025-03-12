@@ -63,6 +63,15 @@ export async function heatmap(
   const legendWidth = 200, legendHeight = 10;
   const legendSvg = svg.append("g").attr("transform", `translate(${width - legendWidth}, -30)`);
 
+  legendSvg.append("text")
+  .attr("x", legendWidth / 2)
+  .attr("y", 0) 
+  .attr("text-anchor", "middle")
+  .style("font-size", "14px")
+  .style("font-weight", "bold")
+  .style("color", "#000")
+  .text("Legend");
+
   const legendScale = d3.scaleLinear()
     .domain(colorScale.domain())
     .range([0, legendWidth]);
@@ -87,7 +96,7 @@ export async function heatmap(
 
   legendSvg.append("rect")
     .attr("width", legendWidth)
-    .attr("height", legendHeight)
+    .attr("height", legendHeight * 2.5)
     .style("fill", "url(#legend-gradient)");
 
   legendSvg.append("g")
