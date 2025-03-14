@@ -1,4 +1,4 @@
-<#!/usr/bin/env python3
+#!/usr/bin/env python3
 import logging
 import sys, os, re, pypandoc as py
 import json
@@ -85,8 +85,36 @@ def resolve_color_palette(colors, n_colors, desat):
         
     return palette
 
+class ChartDefinition:
+    def __init__(self, *args, **kwargs):
+        self.tag = None
+        self.module = None
+        self.function = None
+        self.optional = {}
+
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+        for attr in ['tag', 'module']:
+            if not hasattr(self, attr):
+                raise Exception('invalid function definition')
+
+        if not self.function:
+            self.function = self.tag
+
+# Register a custom chart
+def register_chart(filename, defs):
+    with open(filename) as ifp:
+        # Parse the file, and add it to a list of function
+        # definitions.
+        defn_dict = json.loads(ifp.read())
+        defn = ChartDefinition(**defn_dict)
+        defs.append(defn)
+
+    return defs
+
 # Function to add charts
-def add_chart(chart_id, fields, soup, code_string):
+def add_chart(chart_id, fields, soup, code_string, module=module_name):
     all_fields = {
         'data':[],
         'size':{},
@@ -149,7 +177,7 @@ def add_chart(chart_id, fields, soup, code_string):
             else:
                 args.append(str(dv))
 
-        code_string += f"{module_name}.{chart_id}({','.join(args)});"
+        code_string += f"{module}.{chart_id}({','.join(args)});"
         d[1].name = "span"
         d[1].contents = ""
         d[1]['id'] = chart_id + "_" + str(d[0])
@@ -163,6 +191,7 @@ def main():
     global logger
 
     filters = []
+    chart_defs = []
     extras = ['--mathjax']
     title = None
     input_file = None
@@ -171,6 +200,7 @@ def main():
     errors = 0
     usage = '''Usage: glasseye args input_file
 where args arg one of:
+-c|--chart      file   # Add a custom chart to glasseye
 -D|--dev               # Run this script in development mode
 -f|--filter	filter # Add a filter to be passed to pandoc
 -h|--help              # Print this message
@@ -179,17 +209,21 @@ where args arg one of:
 -t|--title	       # Title for generated HTML document
 -v|--verbose           # Increase debugging output. May be repeated
 
+
 In dev mode, the script must be run in the same folder as the script.
 '''
 
     opts, args = getopt(
         sys.argv[1:],
-        'D:f:o:pt:v',
-        ('dir', 'filter', 'output', 'plot', 'title', 'verbose')
+        'c:D:f:o:pt:v',
+        ('chart', 'dir', 'filter', 'output', 'plot', 'title', 'verbose')
     )
 
     for k, v in opts:
-        if k in ['-D', '--dir']:
+        if k in ['-c', '--chart']:
+            chart_file = v
+            chart_defs = register_chart(v, chart_defs)
+        elif k in ['-D', '--dir']:
             mode = 'dev'
             src_dir = os.path.abspath(v)
         elif k in ['-f', '--filter']:
@@ -320,6 +354,11 @@ In dev mode, the script must be run in the same folder as the script.
 
     for s, args in standard_charts.items():
         code_string = add_chart(s, args, soup, code_string)
+
+    # Add any custom chart defs
+
+    for defn in chart_defs:
+        code_string = add_chart(defn.tag, defn.args, soup, code_string, defn.module)
 
     # Account for Apple's tendency to be a nanny
 
