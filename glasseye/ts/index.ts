@@ -1,11 +1,12 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Thu Mar  6 17:30:06 CAT 2025
+// Generated Wed Mar 12 16:49:57 CAT 2025
 
 
 /// base.ts
 
 import * as d3 from "d3";
 import { sankey, sankeyLinkHorizontal, SankeyGraph } from "d3-sankey";
+import { SimulationNodeDatum } from "d3";
 
 
 interface Margin {
@@ -80,6 +81,15 @@ async function loadData(path: string, format: string = ""): Promise<any> {
   return data;
 }
 
+interface Node extends SimulationNodeDatum {
+  id: string;
+  group: number;
+}
+
+interface Link {
+  source: string;
+  target: string;
+}
 /// linechart.ts
 
 
@@ -851,6 +861,15 @@ export async function heatmap(
   const legendWidth = 200, legendHeight = 10;
   const legendSvg = svg.append("g").attr("transform", `translate(${width - legendWidth}, -30)`);
 
+  legendSvg.append("text")
+  .attr("x", legendWidth / 2)
+  .attr("y", 0) 
+  .attr("text-anchor", "middle")
+  .style("font-size", "14px")
+  .style("font-weight", "bold")
+  .style("color", "#000")
+  .text("Legend");
+
   const legendScale = d3.scaleLinear()
     .domain(colorScale.domain())
     .range([0, legendWidth]);
@@ -875,7 +894,7 @@ export async function heatmap(
 
   legendSvg.append("rect")
     .attr("width", legendWidth)
-    .attr("height", legendHeight)
+    .attr("height", legendHeight * 2.5)
     .style("fill", "url(#legend-gradient)");
 
   legendSvg.append("g")
@@ -1188,4 +1207,69 @@ export async function venn(
     .style("fill", colors[0])
     .style("font-size", "14px")
     .text((d:any) => d.data.name);
+}
+/// force.ts
+
+export async function force(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+): Promise<void> {
+  const { width, height } = size;
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  const simulation = d3
+    .forceSimulation<Node>(data.nodes)
+    .force("link", d3.forceLink<Node, Link>(data.links).id((d:any) => d.id).distance(100))
+    .force("charge", d3.forceManyBody().strength(-300))
+    .force("center", d3.forceCenter(width / 2, height / 2));
+
+  const link = svg
+    .selectAll("line")
+    .data(data.links)
+    .enter()
+    .append("line")
+    .attr("stroke", "#999")
+    .attr("stroke-opacity", 0.6);
+
+  const node = svg
+    .selectAll("circle")
+    .data(data.nodes)
+    .enter()
+    .append("circle")
+    .attr("r", 10)
+    .attr("fill", (d:any, i) => colors[d.group % colors.length])
+    .call(
+      d3.drag<any, any>()
+        .on("start", (event, d) => {
+          if (!event.active) simulation.alphaTarget(0.3).restart();
+          d.fx = d.x;
+          d.fy = d.y;
+        })
+        .on("drag", (event, d) => {
+          d.fx = event.x;
+          d.fy = event.y;
+        })
+        .on("end", (event, d) => {
+          if (!event.active) simulation.alphaTarget(0);
+          d.fx = null;
+          d.fy = null;
+        })
+    );
+
+  simulation.on("tick", () => {
+    link
+      .attr("x1", (d:any) => (d.source as Node).x!)
+      .attr("y1", (d:any) => (d.source as Node).y!)
+      .attr("x2", (d:any) => (d.target as Node).x!)
+      .attr("y2", (d:any) => (d.target as Node).y!);
+
+    node.attr("cx", (d:any) => d.x!).attr("cy", (d:any) => d.y!);
+  });
 }
