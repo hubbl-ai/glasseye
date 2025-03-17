@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Wed Mar 12 16:49:57 CAT 2025
+// Generated Mon Mar 17 18:09:39 CAT 2025
 
 
 /// base.ts
@@ -821,8 +821,9 @@ export async function heatmap(
     .select(div)
     .append("svg")
     .attr("width", svgWidth)
-    .attr("height", svgHeight)
-    .append("g")
+    .attr("height", svgHeight);
+
+  const zoomGroup = svg.append("g")
     .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
 
   // Extract unique X and Y categories
@@ -836,18 +837,18 @@ export async function heatmap(
     .domain([d3.min(data, (d: any) => +d.value) as number, d3.max(data, (d: any) => +d.value) as number])
 
   // Add X Axis
-  svg.append("g")
+  zoomGroup.append("g")
     .attr("transform", `translate(0,${height})`)
     .call(d3.axisBottom(xScale).tickSize(0))
     .select(".domain").remove();
 
   // Add Y Axis
-  svg.append("g")
+  zoomGroup.append("g")
     .call(d3.axisLeft(yScale).tickSize(0))
     .select(".domain").remove();
 
   // Add heatmap squares
-  svg.selectAll()
+  zoomGroup.selectAll()
     .data(data)
     .enter()
     .append("rect")
@@ -900,6 +901,15 @@ export async function heatmap(
   legendSvg.append("g")
     .attr("transform", `translate(0, ${legendHeight})`)
     .call(legendAxis);
+
+  const zoom = d3.zoom()
+    .scaleExtent([1, 5]) // Min and max zoom levels
+    .translateExtent([[0, 0], [svgWidth, svgHeight]]) // Restrict panning
+    .on("zoom", (event) => {
+      zoomGroup.attr("transform", event.transform);
+    });
+
+  svg.call(zoom);
 }
 /// treemap.ts
 
