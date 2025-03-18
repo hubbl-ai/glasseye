@@ -19,6 +19,7 @@ SOURCE_FILES = \
 	tree.ts \
 	venn.ts \
 	force.ts \
+	chord.ts \
 
 all: $(TARGET_FILE)
 

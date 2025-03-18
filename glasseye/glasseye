@@ -358,6 +358,7 @@ In dev mode, the script must be run in the same folder as the script.
         'scatterplot':None,
         'boxplot':None,
         'force':None,
+        'chord':None,
         }
 
     for s, args in standard_charts.items():
