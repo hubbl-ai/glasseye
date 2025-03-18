@@ -111,5 +111,5 @@ export async function heatmap(
       zoomGroup.attr("transform", event.transform);
     });
 
-  svg.call(zoom);
+    svg.call(zoom as unknown as (selection: d3.Selection<SVGSVGElement, unknown, HTMLElement, any>) => void);
 }

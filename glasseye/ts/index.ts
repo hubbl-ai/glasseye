@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Mon Mar 17 18:09:39 CAT 2025
+// Generated Tue Mar 18 14:44:20 CAT 2025
 
 
 /// base.ts
@@ -909,7 +909,7 @@ export async function heatmap(
       zoomGroup.attr("transform", event.transform);
     });
 
-  svg.call(zoom);
+    svg.call(zoom as unknown as (selection: d3.Selection<SVGSVGElement, unknown, HTMLElement, any>) => void);
 }
 /// treemap.ts
 
