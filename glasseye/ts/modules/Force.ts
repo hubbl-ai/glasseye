@@ -5,6 +5,12 @@ export async function force(
   file?: DataFile,
   colors: string[] = defaultArgumentObject.colors
 ): Promise<void> {
+  
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
+
+
   const { width, height } = size;
   const svg = d3
     .select(div)
