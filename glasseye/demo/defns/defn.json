@@ -2,8 +2,8 @@
     "optional": {
         "vertical": 0
     },
-    "tag": "reni",
-    "function": "force",
-    "module_name": "ChartModule",
-    "module_source": "/Users/reni/Projects/hubbl/glasseye/glasseye/ts/dist/glasseyechart.js"
+    "tag": "bollinger",
+    "function": "bollinger",
+    "module_name": "bollinger",
+    "module_source": "/Users/reni/Projects/custom-chart/dist/index.js"
 }
