@@ -61,7 +61,7 @@ tpl = '''<!DOCTYPE html>
 
 mode = 'prod'
 
-module_name = 'ChartModule'
+module_name = 'Glasseye'
 src_dir = '.'
 logger = None
 
