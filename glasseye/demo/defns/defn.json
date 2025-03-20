@@ -4,6 +4,6 @@
     },
     "tag": "bollinger",
     "function": "bollinger",
-    "module_name": "bollinger",
-    "module_source": "/Users/reni/Projects/custom-chart/dist/index.js"
+    "module_name": "BollingerModule",
+    "module_source": "/Users/reni/Projects/custom-chart/dist/bollinger.js"
 }
