@@ -35,7 +35,7 @@ GlasseyeChart.prototype.set_size = function () {
 
   if (self.size === "full_page") {
     self.svg_width =
-      (rect.width < fullpage_width) & (rect.width > 0)
+      (rect.width < fullpage_width) && (rect.width > 0)
         ? rect.width
         : fullpage_width;
     self.svg_height =

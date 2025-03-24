@@ -235,7 +235,7 @@ function abbrev(text, max) {
 }
 
 function minmax_across_groups(processed_data, variable) {
-  y_values = processed_data.map(function (d) {
+  var y_values = processed_data.map(function (d) {
     return d.values.map(function (e) {
       if (e.variable === variable) {
         return e.value;
