@@ -118,7 +118,7 @@ def register_chart(filename, defs):
     return defs
 
 # Function to add charts
-def add_chart(chart_id, fields, soup, code_parts, module=module_name,function_name=None):
+def add_chart(chart_id, fields, soup, code_parts, module=module_name, function_name=None):
     all_fields = {
         'data':[],
         'size':{},

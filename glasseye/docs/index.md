@@ -1,25 +1,12 @@
 ---
-# https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
 hero:
   name: "Glasseye"
-  text: "Glasseye"
-  tagline: My great project tagline
+  text: "A publishing platform marrying d3, Markdown and the Tufte layout"
+  tagline: High quality documents, with live visualizations.
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
-    - theme: alt
-      text: API Examples
-      link: /api-examples
-
-features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+      text: Charts
+      link: /charts/
 ---
-
