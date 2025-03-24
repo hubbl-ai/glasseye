@@ -18,8 +18,8 @@ base_stylesheets = [
 ]
 
 prod_stylesheets = [
-    'https://dev.hubbl.ai/glasseye/css/tufte.css',
-    'https://dev.hubbl.ai/glasseye/css/glasseyeCharts.css',
+    'https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/css/tufte.css',
+    'https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/css/GlasseyeCharts.css',
 ]
 
 dev_stylesheets = [
@@ -32,7 +32,7 @@ dev_scripts = [
 ]
 
 prod_scripts = [
-    'https://dev.hubbl.ai/glasseye/js/glasseyeChart.js'
+    'https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/ts/dist/glasseyechart.js'
 ]
 
 tpl = '''<!DOCTYPE html>

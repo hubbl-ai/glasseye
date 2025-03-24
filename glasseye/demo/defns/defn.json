@@ -5,5 +5,5 @@
     "tag": "bollinger",
     "function": "bollinger",
     "module_name": "BollingerModule",
-    "module_source": "/Users/reni/Projects/custom-chart/dist/bollinger.js"
+    "module_source": "https://cdn.jsdelivr.net/gh/hubbl-ai/bollinger-chart@main/dist/bollinger.js"
 }
