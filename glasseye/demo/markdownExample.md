@@ -21,34 +21,37 @@ Here's an example: a d3 force directed graph, which can be easily added in to a 
 
 <force data='
 	{ "nodes": [
-        { "name": "Brand X", "group": 1 },
-        { "name": "Brand Y", "group": 1 },
-        { "name": "Brand Z", "group": 1 },
-        { "name": "Agent 1", "group": 2 },
-        { "name": "Agent 2", "group": 2 },
-        { "name": "Agent 3", "group": 3 },
-        { "name": "Agent 4", "group": 3},
-        { "name": "Agent 5", "group": 2},
-        { "name": "Agent 6", "group": 2},
-        { "name": "Agent 7", "group": 2},
-        { "name": "Agent 8", "group": 2 },
-        { "name": "Agent 9", "group": 2 },
-        { "name": "Agent 10", "group": 2 },
-        { "name": "Agent 11", "group": 2 }
+        { "id": "Brand X", "group": 1 },
+        { "id": "Brand Y", "group": 1 },
+        { "id": "Brand Z", "group": 1 },
+        { "id": "Agent 1", "group": 2 },
+        { "id": "Agent 2", "group": 2 },
+        { "id": "Agent 3", "group": 3 },
+        { "id": "Agent 4", "group": 3},
+        { "id": "Agent 5", "group": 2},
+        { "id": "Agent 6", "group": 2},
+        { "id": "Agent 7", "group": 2},
+        { "id": "Agent 8", "group": 2 },
+        { "id": "Agent 9", "group": 2 },
+        { "id": "Agent 10", "group": 2 },
+        { "id": "Agent 11", "group": 2 }
     ],
     "links": [
-        { "source": 0, "target": 6, "value": 20 },
-        { "source": 1, "target": 4, "value": 30 },
-        { "source": 2, "target": 7, "value": 22 },
-        { "source": 6, "target": 11, "value": 5 },
-        { "source": 10, "target": 7, "value": 5 },
-        { "source": 3, "target": 8, "value": 15 },
-        { "source": 5, "target": 8, "value": 15 },
-        { "source": 5, "target": 9, "value": 15 },
-        { "source": 4, "target": 7, "value": 15 },
-        { "source": 10, "target": 6, "value": 15 }
+        { "source": "Brand X", "target": "Agent 4", "value": 20 },
+        { "source": "Brand Y", "target": "Agent 2", "value": 30 },
+        { "source": "Brand Z", "target": "Agent 5", "value": 22 },
+        { "source": "Agent 4", "target": "Agent 9", "value": 5 },
+        { "source": "Agent 8", "target": "Agent 5", "value": 5 },
+        { "source": "Agent 1", "target": "Agent 6", "value": 15 },
+        { "source": "Agent 3", "target": "Agent 6", "value": 15 },
+        { "source": "Agent 3", "target": "Agent 7", "value": 15 },
+        { "source": "Agent 2", "target": "Agent 5", "value": 15 },
+        { "source": "Agent 8", "target": "Agent 4", "value": 15 }
     ] }
-'></force>
+'
+  size='{"width":500,"height":500}'
+  colors='deep'
+></force>
 
 ## What it can do
 
@@ -172,28 +175,31 @@ In no particular order here are the d3 charts I have added so far.<sidenote>You 
 You'll just need to put the json describing your sets between `<venn>` tags as in this example. 
 
 ```
-<vennchart data='
+<venn data='
 [ 
-  {sets: ['Badgers'], size: 300},
-  {sets: ['Peanuts'], size: 42},
-  {sets: ['Mushrooms'], size: 130},
-  {sets: ['Badgers','Mushrooms'], size: 67},
-  {sets: ['Peanuts','Mushrooms'], size: 2},
-  {sets: ['Peanuts','Badgers'], size: 0}
+  {"name": "Badgers", "size": 300},
+  {"name": "Peanuts", "size": 42},
+  {"name": "Mushrooms", "size": 130},
+  {"name": "Badgers','Mushrooms", "size": 67},
+  {"name": "Peanuts','Mushrooms", "size": 2},
+  {"name": "Peanuts','Badgers", "size": 0}
 ]
-'></vennchart>
+'></venn>
 ```
 
-<vennchart data='
+<venn data='
+{
+  "children":
 [ 
-    {sets: ['Badgers'], size: 300},
-    {sets: ['Peanuts'], size: 42},
-    {sets: ['Mushrooms'], size: 130},
-    {sets: ['Badgers','Mushrooms'], size: 67},
-    {sets: ['Peanuts','Mushrooms'], size: 2},
-    {sets: ['Peanuts','Badgers'], size: 0}
+    {"name": "Badgers", "size": 300},
+    {"name": "Peanuts", "size": 42},
+    {"name": "Mushrooms", "size": 130},
+    {"name": "Badgers ,Mushrooms", "size": 67},
+    {"name": "Peanuts , Mushrooms", "size": 2},
+    {"name": "Peanuts , Badgers", "size": 0}
 ]
-'></vennchart>
+}
+'></venn>
 
 ### A tree layout
 
@@ -267,19 +273,19 @@ thought of as a sort of bi-directional dendogram.
 
 <skey data='
 {
-  nodes: [
-      { name: "Product 1" },
-      { name: "Product 2" },
-      { name: "Product 3" },
-      { name: "Product 4" },
-      { name: "Product 5" }
+  "nodes": [
+      { "name": "Product 1" },
+      { "name": "Product 2" },
+      { "name": "Product 3" },
+      { "name": "Product 4" },
+      { "name": "Product 5" }
   ],
-  links: [
-      { source: 0, target: 1, value: 10 },
-      { source: 0, target: 2, value: 5 },
-      { source: 1, target: 3, value: 6 },
-      { source: 2, target: 3, value: 2 },
-      { source: 3, target: 4, value: 8 }
+  "links": [
+      { "source": 0, "target": 1, "value": 10 },
+      { "source": 0, "target": 2, "value": 5 },
+      { "source": 1, "target": 3, "value": 6 },
+      { "source": 2, "target": 3, "value": 2 },
+      { "source": 3, "target": 4, "value": 8 }
   ]
 }
 '></skey>
@@ -292,7 +298,7 @@ A bar chart as it appears in the margin.
 [
     {"label":"Apples", "value":"33"},
     {"label":"Pears", "value":"12"},
-    {"label":"Oranges", "value":"9"},
+    {"label":"Oranges", "value":"9"}
 ]
 '></barchart>
 </sidenote>
@@ -302,7 +308,7 @@ A bar chart as it appears in the margin.
 [
     {"label":"Apples", "value":"33"},
     {"label":"Pears", "value":"12"},
-    {"label":"Oranges", "value":"9"},
+    {"label":"Oranges", "value":"9"}
 ]
 '></barchart>
 ```
@@ -393,11 +399,11 @@ As seen above, you can create a donut plot from a csv file (you just need column
 A pie created from inline json.
 <piechart data='
 [
-{ label: "Category A", value: 30 },
-{ label: "Category B", value: 70 },
-{ label: "Category C", value: 45 },
-{ label: "Category D", value: 55 },
-{ label: "Category E", value: 20 }
+{ "label": "Category A", "value": 30 },
+{ "label": "Category B", "value": 70 },
+{ "label": "Category C", "value": 45 },
+{ "label": "Category D", "value": 55 },
+{ "label": "Category E", "value": 20 }
 ]
 '></piechart>
 </sidenote>
@@ -406,11 +412,11 @@ A pie created from inline json.
 
 <piechart data='
 [
-{ label: "Category A", value: 30 },
-{ label: "Category B", value: 70 },
-{ label: "Category C", value: 45 },
-{ label: "Category D", value: 55 },
-{ label: "Category E", value: 20 }
+{ "label": "Category A", "value": 30 },
+{ "label": "Category B", "value": 70 },
+{ "label": "Category C", "value": 45 },
+{ "label": "Category D", "value": 55 },
+{ "label": "Category E", "value": 20 }
 ]
 '></piechart>```
 
@@ -422,11 +428,11 @@ use inline json as in this example.<sidenote>
 A donut created from inline json.
 <piechart data='
 [
-{ label: "Category A", value: 30 },
-{ label: "Category B", value: 70 },
-{ label: "Category C", value: 45 },
-{ label: "Category D", value: 55 },
-{ label: "Category E", value: 20 }
+{ "label": "Category A", "value": 30 },
+{ "label": "Category B", "value": 70 },
+{ "label": "Category C", "value": 45 },
+{ "label": "Category D", "value": 55 },
+{ "label": "Category E", "value": 20 }
 ]
 ', donut='true'>
 </piechart
@@ -436,11 +442,11 @@ A donut created from inline json.
 
 <piechart data='
 [
-{ label: "Category A", value: 30 },
-{ label: "Category B", value: 70 },
-{ label: "Category C", value: 45 },
-{ label: "Category D", value: 55 },
-{ label: "Category E", value: 20 }
+{ "label": "Category A", "value": 30 },
+{ "label": "Category B", "value": 70 },
+{ "label": "Category C", "value": 45 },
+{ "label": "Category D", "value": 55 },
+{ "label": "Category E", "value": 20 }
 ]
 ', donut='true'>
 </piechart
@@ -454,15 +460,15 @@ As seen above, you can create a donut plot from a csv file (you just need column
 
 <heatmap>
 [
-            { x: 1, y: 1, value: 10 },
-            { x: 2, y: 1, value: 20 },
-            { x: 3, y: 1, value: 30 },
-            { x: 1, y: 2, value: 40 },
-            { x: 2, y: 2, value: 50 },
-            { x: 3, y: 2, value: 60 },
-            { x: 1, y: 3, value: 70 },
-            { x: 2, y: 3, value: 80 },
-            { x: 3, y: 3, value: 90 },
+            { "x": 1, "y": 1, "value": 10 },
+            { "x": 2, "y": 1, "value": 20 },
+            { "x": 3, "y": 1, "value": 30 },
+            { "x": 1, "y": 2, "value": 40 },
+            { "x": 2, "y": 2, "value": 50 },
+            { "x": 3, "y": 2, "value": 60 },
+            { "x": 1, "y": 3, "value": 70 },
+            { "x": 2, "y": 3, "value": 80 },
+            { "x": 3, "y": 3, "value": 90 },
         ]
 </heatmap>
 </sidenote>
@@ -471,15 +477,15 @@ As seen above, you can create a donut plot from a csv file (you just need column
 
 <heatmap>
 [
-            { x: 1, y: 1, value: 10 },
-            { x: 2, y: 1, value: 20 },
-            { x: 3, y: 1, value: 30 },
-            { x: 1, y: 2, value: 40 },
-            { x: 2, y: 2, value: 50 },
-            { x: 3, y: 2, value: 60 },
-            { x: 1, y: 3, value: 70 },
-            { x: 2, y: 3, value: 80 },
-            { x: 3, y: 3, value: 90 },
+            { "x": 1, "y": 1, "value": 10 },
+            { "x": 2, "y": 1, "value": 20 },
+            { "x": 3, "y": 1, "value": 30 },
+            { "x": 1, "y": 2, "value": 40 },
+            { "x": 2, "y": 2, "value": 50 },
+            { "x": 3, "y": 2, "value": 60 },
+            { "x": 1, "y": 3, "value": 70 },
+            { "x": 2, "y": 3, "value": 80 },
+            { "x": 3, "y": 3, "value": 90 },
         ]
 </heatmap>
 
@@ -495,24 +501,24 @@ Similarly the line chart can be either created from a csv file (as long as it ha
 
 <linechart>
 	 [
-            { x: 1, y: 10 },
-            { x: 2, y: 20 },
-            { x: 3, y: 15 },
-            { x: 4, y: 25 },
-            { x: 5, y: 30 },
-            { x: 6, y: 35 }
+            { "x": 1, "y": 10 },
+            { "x": 2, "y": 20 },
+            { "x": 3, "y": 15 },
+            { "x": 4, "y": 25 },
+            { "x": 5, "y": 30 },
+            { "x": 6, "y": 35 }
         ]
 </linechart>
 ```
 
 <linechart>
  [
-            { x: 1, y: 10 },
-            { x: 2, y: 20 },
-            { x: 3, y: 15 },
-            { x: 4, y: 25 },
-            { x: 5, y: 30 },
-            { x: 6, y: 35 }
+            { "x": 1, "y": 10 },
+            { "x": 2, "y": 20 },
+            { "x": 3, "y": 15 },
+            { "x": 4, "y": 25 },
+            { "x": 5, "y": 30 },
+            { "x": 6, "y": 35 }
   ]
 </linechart>
 
@@ -524,12 +530,12 @@ Similarly the line chart can be either created from a csv file (as long as it ha
 Using sample data from line chart above
 <simplot>
 	 [
-            { x: 1, y: 10 },
-            { x: 2, y: 20 },
-            { x: 3, y: 15 },
-            { x: 4, y: 25 },
-            { x: 5, y: 30 },
-            { x: 6, y: 35 }
+            { "x": 1, "y": 10 },
+            { "x": 2, "y": 20 },
+            { "x": 3, "y": 15 },
+            { "x": 4, "y": 25 },
+            { "x": 5, "y": 30 },
+            { "x": 6, "y": 35 }
         ]
 </simplot>
 
@@ -649,32 +655,32 @@ Below is an axample of how to do tags for Scatterplot and the output chart
 
 <scatterplot>
 [
-    { xScore: 1, yScore: 50 },
-    { xScore: 2, yScore: 55 },
-    { xScore: 3, yScore: 65 },
-    { xScore: 4, yScore: 70 },
-    { xScore: 5, yScore: 72 },
-    { xScore: 6, yScore: 78 },
-    { xScore: 7, yScore: 80 },
-    { xScore: 8, yScore: 85 },
-    { xScore: 9, yScore: 88 },
-    { xScore: 10, yScore: 95 }
+    { "x": 1, "y": 50 },
+    { "x": 2, "y": 55 },
+    { "x": 3, "y": 65 },
+    { "x": 4, "y": 70 },
+    { "x": 5, "y": 72 },
+    { "x": 6, "y": 78 },
+    { "x": 7, "y": 80 },
+    { "x": 8, "y": 85 },
+    { "x": 9, "y": 88 },
+    { "x": 10, "y": 95 }
 ]
 </scatterplot>
 
 ```
 <scatterplot>
 [
-    { xScore: 1, yScore: 50 },
-    { xScore: 2, yScore: 55 },
-    { xScore: 3, yScore: 65 },
-    { xScore: 4, yScore: 70 },
-    { xScore: 5, yScore: 72 },
-    { xScore: 6, yScore: 78 },
-    { xScore: 7, yScore: 80 },
-    { xScore: 8, yScore: 85 },
-    { xScore: 9, yScore: 88 },
-    { xScore: 10, yScore: 95 }
+    { "x": 1, "y": 50 },
+    { "x": 2, "y": 55 },
+    { "x": 3, "y": 65 },
+    { "x": 4, "y": 70 },
+    { "x": 5, "y": 72 },
+    { "x": 6, "y": 78 },
+    { "x": 7, "y": 80 },
+    { "x": 8, "y": 85 },
+    { "x": 9, "y": 88 },
+    { "x": 10, "y": 95 }
 ]
 </scatterplot>
 ```
@@ -686,18 +692,18 @@ Below is an axample of how to do tags for boxplot and the output chart
 
 <boxplot>
     [
-      { category: "A", values: [10, 15, 20, 25, 30, 35] },
-      { category: "B", values: [5, 10, 15, 20, 25, 30] },
-      { category: "C", values: [20, 25, 30, 35, 40, 45] }
+      { "category": "A", "values": [10, 15, 20, 25, 30, 35] },
+      { "category": "B", "values": [5, 10, 15, 20, 25, 30] },
+      { "category": "C", "values": [20, 25, 30, 35, 40, 45] }
     ]
 </boxplot>
 
 ```
 <boxplot>
     [
-      { category: "A", values: [10, 15, 20, 25, 30, 35] },
-      { category: "B", values: [5, 10, 15, 20, 25, 30] },
-      { category: "C", values: [20, 25, 30, 35, 40, 45] }
+      { "category": "A", "values": [10, 15, 20, 25, 30, 35] },
+      { "category": "B", "values": [5, 10, 15, 20, 25, 30] },
+      { "category": "C", "values": [20, 25, 30, 35, 40, 45] }
     ]
 </boxplot>
 ```

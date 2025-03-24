@@ -176,14 +176,18 @@ def add_chart(chart_id, fields, soup, code_parts, module=module_name,function_na
         # Resolve everything but color.
 
         for field,dv in all_fields.items():
-            if field == 'colors':
-                args.append(str(all_fields['colors']))
-            elif field in palette_fields:
-                continue
-            elif field in attrs:
-                args.append(str(json.loads(attrs[field])))
-            else:
-                args.append(str(dv))
+            try:
+                if field == 'colors':
+                    args.append(str(all_fields['colors']))
+                elif field in palette_fields:
+                    continue
+                elif field in attrs:
+                    args.append(str(json.loads(attrs[field])))
+                else:
+                    args.append(str(dv))
+            except:
+                logger.error(f'Error on chart : {chart_id}')
+                raise
 
         code_parts.append(f"{module}.{function_name}({','.join(args)});")
         d[1].name = "span"
