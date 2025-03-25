@@ -24,7 +24,7 @@ export default defineConfig({
         nav: [
             { text: 'Home', link: '/' },
             { text: 'Documentation', link: '/markdown' },
-            { text: 'Charts', link: '/chart-types' }
+            { text: 'Charts', link: '/charts/' }
         ],
 
         sidebar: [
