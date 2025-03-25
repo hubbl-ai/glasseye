@@ -16,7 +16,6 @@ build/
 develop-eggs/
 downloads/
 demo/plots
-docs/.vitepress/cache/
 eggs/
 .eggs/
 lib/
@@ -72,3 +71,4 @@ glasseye/.idea/
 *workspace.xml
 
 node_modules
+cache
