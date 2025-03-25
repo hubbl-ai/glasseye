@@ -189,8 +189,7 @@ You'll just need to put the json describing your sets between `<venn>` tags as i
 
 <venn data='
 {
-  "children":
-[ 
+  "children": [ 
     {"name": "Badgers", "size": 300},
     {"name": "Peanuts", "size": 42},
     {"name": "Mushrooms", "size": 130},
@@ -199,7 +198,10 @@ You'll just need to put the json describing your sets between `<venn>` tags as i
     {"name": "Peanuts , Badgers", "size": 0}
 ]
 }
-'></venn>
+'
+  size='{"width":500,"height":500}'
+  colors='deep'
+></venn>
 
 ### A tree layout
 
@@ -219,7 +221,10 @@ This ia a fairly standard layout for a hierarchy, adapated from Mike Bostocks [o
                 { "name": "squarespider.com" }
             ] }
         ]
-    }'>
+    }'
+    size='{"width":500,"height":500}'
+    colors='deep'
+    >
 </tree>
 
 Like all of the charts it can appear in the main body or in the margin.<sidenote>The same tree layout as it appears in the margin.
@@ -237,7 +242,10 @@ Like all of the charts it can appear in the main body or in the margin.<sidenote
                 { "name": "squarespider.com" }
             ] }
         ]
-    }'>
+    }'
+      size='{"width":300,"height":300}'
+  colors='deep'
+    >
 </tree>
 </sidenote>
 
@@ -263,8 +271,11 @@ To create a treelayout include some nested json within the tree tags.
         }
     ]
 }
-'></tree>
-```
+'
+  size='{"width":500,"height":500}'
+  colors='deep'
+></tree>
+
 
 ### Sankey chart
 
@@ -288,7 +299,10 @@ thought of as a sort of bi-directional dendogram.
       { "source": 3, "target": 4, "value": 8 }
   ]
 }
-'></skey>
+'
+  size='{"width":500,"height":500}'
+  colors='deep'
+></skey>
 
 ### A simple bar chart
 
@@ -300,7 +314,10 @@ A bar chart as it appears in the margin.
     {"label":"Pears", "value":"12"},
     {"label":"Oranges", "value":"9"}
 ]
-'></barchart>
+'
+  size='{"width":500,"height":500}'
+  colors='deep'
+></barchart>
 </sidenote>
 
 ```
@@ -310,7 +327,10 @@ A bar chart as it appears in the margin.
     {"label":"Pears", "value":"12"},
     {"label":"Oranges", "value":"9"}
 ]
-'></barchart>
+'
+  size='{"width":500,"height":500}'
+  colors='deep'
+></barchart>
 ```
 
 ### A force directed layout
@@ -331,20 +351,22 @@ A force directed layout of a graph.
         {"name": "greycamel.com", "group": 3}
     ],
     "links": [
-    	{ "source": 0, "target": 1, "value": 20 },
-    	{ "source": 0, "target": 2, "value": 30 },
-    	{ "source": 1, "target": 4, "value": 22 },
-    	{ "source": 6, "target": 2, "value": 5 },
-    	{ "source": 1, "target": 7, "value": 5 },
-    	{ "source": 3, "target": 8, "value": 15 },
-    	{ "source": 5, "target": 8, "value": 15 }
+    	{ "source": "squishedfish.com", "target": "reddog.co.uk", "value": 20 },
+    	{ "source": "squishedfish.com", "target": "blankcat.com", "value": 30 },
+    	{ "source": "reddog.co.uk", "target": "sickbag.com", "value": 22 },
+    	{ "source": "webbedcat.com", "target": "blankcat.com", "value": 5 },
+    	{ "source": "reddog.co.uk", "target": "flatrhino.co.uk", "value": 5 },
+    	{ "source": "scrimpledfeet.com", "target": "greycamel.com", "value": 15 },
+    	{ "source": "bluehouse.co.uk", "target": "greycamel.com", "value": 15 }
     	]
     }
-'></force>
+'
+  size='{"width":500,"height":500}'
+  colors='deep'
+></force>
 </sidenote>
 
 ```
-
 <force data='
 	{
     "nodes": [
@@ -359,13 +381,13 @@ A force directed layout of a graph.
         {"name": "greycamel.com", "group": 3}
     ],
     "links": [
-    	{ "source": 0, "target": 1, "value": 20 },
-    	{ "source": 0, "target": 2, "value": 30 },
-    	{ "source": 1, "target": 4, "value": 22 },
-    	{ "source": 6, "target": 2, "value": 5 },
-    	{ "source": 1, "target": 7, "value": 5 },
-    	{ "source": 3, "target": 8, "value": 15 },
-    	{ "source": 5, "target": 8, "value": 15 }
+    	{ "source": "squishedfish.com", "target": "reddog.co.uk", "value": 20 },
+    	{ "source": "squishedfish.com", "target": "blankcat.com", "value": 30 },
+    	{ "source": "reddog.co.uk", "target": "sickbag.com", "value": 22 },
+    	{ "source": "webbedcat.com", "target": "blankcat.com", "value": 5 },
+    	{ "source": "reddog.co.uk", "target": "flatrhino.co.uk", "value": 5 },
+    	{ "source": "scrimpledfeet.com", "target": "greycamel.com", "value": 15 },
+    	{ "source": "bluehouse.co.uk", "target": "greycamel.com", "value": 15 }
     	]
     }
 '></force>
@@ -391,7 +413,10 @@ This will give you the following
 		[{"task": "Analysis phase", "start": "2015-03-01", "end": "2015-03-12"},
 		{"task": "Build phase", "start": "2015-03-13", "end": "2015-03-24"},
 		{"task": "Testing phase", "start": "2015-03-25", "end": "2015-04-15"}]
-'></gantt>
+'
+  size='{"width":500,"height":500}'
+  colors='deep'
+></gantt>
 
 ### A pie chart
 
@@ -405,7 +430,10 @@ A pie created from inline json.
 { "label": "Category D", "value": 55 },
 { "label": "Category E", "value": 20 }
 ]
-'></piechart>
+'
+  size='{"width":500,"height":500}'
+  colors='deep'
+></piechart>
 </sidenote>
 
 ```
@@ -418,7 +446,11 @@ A pie created from inline json.
 { "label": "Category D", "value": 55 },
 { "label": "Category E", "value": 20 }
 ]
-'></piechart>```
+'
+  size='{"width":500,"height":500}'
+  colors='deep'
+></piechart>
+```
 
 ### A donut chart
 
@@ -434,8 +466,12 @@ A donut created from inline json.
 { "label": "Category D", "value": 55 },
 { "label": "Category E", "value": 20 }
 ]
-', donut='true'>
-</piechart
+'
+ size='{"width":500,"height":500}'
+  colors='["#FF6700","#004E98"]'
+  donut = '1'
+>
+</piechart>
 </sidenote>
 
 ```
@@ -448,8 +484,12 @@ A donut created from inline json.
 { "label": "Category D", "value": 55 },
 { "label": "Category E", "value": 20 }
 ]
-', donut='true'>
-</piechart
+'
+ size='{"width":500,"height":500}'
+  colors='["#FF6700","#004E98"]'
+  donut = '1'
+>
+</piechart>
 ```
 
 ### A Heatmap
@@ -458,8 +498,8 @@ As seen above, you can create a donut plot from a csv file (you just need column
 
 <sidenote>
 
-<heatmap>
-[
+<heatmap
+data='[
             { "x": 1, "y": 1, "value": 10 },
             { "x": 2, "y": 1, "value": 20 },
             { "x": 3, "y": 1, "value": 30 },
@@ -468,15 +508,17 @@ As seen above, you can create a donut plot from a csv file (you just need column
             { "x": 3, "y": 2, "value": 60 },
             { "x": 1, "y": 3, "value": 70 },
             { "x": 2, "y": 3, "value": 80 },
-            { "x": 3, "y": 3, "value": 90 },
-        ]
+            { "x": 3, "y": 3, "value": 90 }
+        ]'
+  size='{"width":500,"height":500}'
+  colors='deep'
+  >
 </heatmap>
 </sidenote>
 
 ```
-
-<heatmap>
-[
+<heatmap
+data='[
             { "x": 1, "y": 1, "value": 10 },
             { "x": 2, "y": 1, "value": 20 },
             { "x": 3, "y": 1, "value": 30 },
@@ -485,8 +527,11 @@ As seen above, you can create a donut plot from a csv file (you just need column
             { "x": 3, "y": 2, "value": 60 },
             { "x": 1, "y": 3, "value": 70 },
             { "x": 2, "y": 3, "value": 80 },
-            { "x": 3, "y": 3, "value": 90 },
-        ]
+            { "x": 3, "y": 3, "value": 90 }
+        ]'
+  size='{"width":500,"height":500}'
+  colors='deep'
+  >
 </heatmap>
 
 ```
@@ -499,27 +544,35 @@ Similarly the line chart can be either created from a csv file (as long as it ha
 
 ```
 
-<linechart>
-	 [
+<linechart
+ data='[
             { "x": 1, "y": 10 },
             { "x": 2, "y": 20 },
             { "x": 3, "y": 15 },
             { "x": 4, "y": 25 },
             { "x": 5, "y": 30 },
             { "x": 6, "y": 35 }
-        ]
+  ]'
+  size='{"width":600,"height":600}'
+  colors='["#FF6700","#004E98"]'
+  curved='0'
+  >
 </linechart>
 ```
 
-<linechart>
- [
+<linechart
+ data='[
             { "x": 1, "y": 10 },
             { "x": 2, "y": 20 },
             { "x": 3, "y": 15 },
             { "x": 4, "y": 25 },
             { "x": 5, "y": 30 },
             { "x": 6, "y": 35 }
-  ]
+  ]'
+  size='{"width":600,"height":600}'
+  colors='["#FF6700","#004E98"]'
+  curved='0'
+  >
 </linechart>
 
 
@@ -528,22 +581,27 @@ Similarly the line chart can be either created from a csv file (as long as it ha
 ### A simplot
 
 Using sample data from line chart above
-<simplot>
-	 [
+
+<linechart
+ data=' [
             { "x": 1, "y": 10 },
             { "x": 2, "y": 20 },
             { "x": 3, "y": 15 },
             { "x": 4, "y": 25 },
             { "x": 5, "y": 30 },
             { "x": 6, "y": 35 }
-        ]
-</simplot>
+        ]'
+  size='{"width":600,"height":600}'
+  colors='deep'
+  curved='1'
+  >
+</linechart>
 
 
 ### A tree map
 
-<treemap>
-{
+<treemap
+data='{
     "name": "All",
     "children": [
         {"name": "Bakery",
@@ -581,15 +639,18 @@ Using sample data from line chart above
                                 ]
                 }
             ]
-}
+}'
+  size='{"width":500,"height":500}'
+  colors='deep'
+>
 </treemap>
 
 At present the treemap can only be generated from inline json. Here's the full json.
 
 ```
 
-<treemap>
-{
+<treemap
+data='{
     "name": "All",
     "children": [
         {"name": "Bakery",
@@ -627,7 +688,10 @@ At present the treemap can only be generated from inline json. Here's the full j
                                 ]
                 }
             ]
-}
+}'
+  size='{"width":500,"height":500}'
+  colors='deep'
+>
 </treemap>
 ```
 
@@ -636,13 +700,37 @@ At present the treemap can only be generated from inline json. Here's the full j
 
 Below is an axample of how to do tags for dotplot and the output chart
 
-<dotplot>
-    [85, 87, 87, 90, 90, 90, 92, 95]
+<dotplot
+data='[
+    { "category": "A", "value": 85 },
+  { "category": "B", "value": 87 },
+  { "category": "C", "value": 87 },
+  { "category": "D", "value": 90 },
+  { "category": "E", "value": 90 },
+  { "category": "F", "value": 90 },
+  { "category": "G", "value": 92 },
+  { "category": "H", "value": 95 }
+]'
+  size='{"width":1000,"height":500}'
+  colors='deep'
+>
 </dotplot>
 
 ```
-<dotplot>
-    [85, 87, 87, 90, 90, 90, 92, 95]
+<dotplot
+data='[
+    { "category": "A", "value": 85 },
+  { "category": "B", "value": 87 },
+  { "category": "C", "value": 87 },
+  { "category": "D", "value": 90 },
+  { "category": "E", "value": 90 },
+  { "category": "F", "value": 90 },
+  { "category": "G", "value": 92 },
+  { "category": "H", "value": 95 }
+]'
+  size='{"width":1000,"height":500}'
+  colors='deep'
+>
 </dotplot>
 ```
 
@@ -653,7 +741,8 @@ Below is an axample of how to do tags for dotplot and the output chart
 
 Below is an axample of how to do tags for Scatterplot and the output chart
 
-<scatterplot>
+<scatterplot
+data='
 [
     { "x": 1, "y": 50 },
     { "x": 2, "y": 55 },
@@ -665,11 +754,15 @@ Below is an axample of how to do tags for Scatterplot and the output chart
     { "x": 8, "y": 85 },
     { "x": 9, "y": 88 },
     { "x": 10, "y": 95 }
-]
+]'
+  size='{"width":500,"height":500}'
+  colors='deep'
+>
 </scatterplot>
 
 ```
-<scatterplot>
+<scatterplot
+data='
 [
     { "x": 1, "y": 50 },
     { "x": 2, "y": 55 },
@@ -681,7 +774,10 @@ Below is an axample of how to do tags for Scatterplot and the output chart
     { "x": 8, "y": 85 },
     { "x": 9, "y": 88 },
     { "x": 10, "y": 95 }
-]
+]'
+  size='{"width":500,"height":500}'
+  colors='deep'
+>
 </scatterplot>
 ```
 
@@ -690,25 +786,68 @@ Below is an axample of how to do tags for Scatterplot and the output chart
 
 Below is an axample of how to do tags for boxplot and the output chart
 
-<boxplot>
-    [
-      { "category": "A", "values": [10, 15, 20, 25, 30, 35] },
-      { "category": "B", "values": [5, 10, 15, 20, 25, 30] },
-      { "category": "C", "values": [20, 25, 30, 35, 40, 45] }
-    ]
+<boxplot
+data='[
+   { "category": "A", "value": 10 },
+  { "category": "A", "value": 15 },
+  { "category": "A", "value": 20 },
+   { "category": "A", "value": 25 },
+  { "category": "A", "value": 30 },
+  { "category": "A", "value": 35 },
+  { "category": "B", "value": 5 },
+  { "category": "B", "value": 10 },
+  { "category": "B", "value": 15 },
+   { "category": "B", "value": 20 },
+  { "category": "B", "value": 25 },
+  { "category": "B", "value": 30 },
+   { "category": "C", "value": 20 },
+  { "category": "C", "value": 25 },
+  { "category": "C", "value": 30 },
+   { "category": "C", "value": 35 },
+  { "category": "C", "value": 40 },
+  { "category": "C", "value": 45 }
+]'
+  size='{"width":500,"height":500}'
+  colors='deep'
+>
 </boxplot>
 
 ```
-<boxplot>
-    [
-      { "category": "A", "values": [10, 15, 20, 25, 30, 35] },
-      { "category": "B", "values": [5, 10, 15, 20, 25, 30] },
-      { "category": "C", "values": [20, 25, 30, 35, 40, 45] }
-    ]
+
+<boxplot
+data='[
+   { "category": "A", "value": 10 },
+  { "category": "A", "value": 15 },
+  { "category": "A", "value": 20 },
+   { "category": "A", "value": 25 },
+  { "category": "A", "value": 30 },
+  { "category": "A", "value": 35 },
+  { "category": "B", "value": 5 },
+  { "category": "B", "value": 10 },
+  { "category": "B", "value": 15 },
+   { "category": "B", "value": 20 },
+  { "category": "B", "value": 25 },
+  { "category": "B", "value": 30 },
+   { "category": "C", "value": 20 },
+  { "category": "C", "value": 25 },
+  { "category": "C", "value": 30 },
+   { "category": "C", "value": 35 },
+  { "category": "C", "value": 40 },
+  { "category": "C", "value": 45 }
+]'
+  size='{"width":500,"height":500}'
+  colors='deep'
+>
 </boxplot>
 ```
 
 
 ### Simplot CSV
 
-<simplot>"data/xy.csv"</simplot>
+<linechart
+ file='{"path":"data/xy.csv","format":"csv"}'
+  size='{"width":800,"height":800}'
+  colors='["#FF0000","#008000"]'
+  curved='1'
+>
+</linechart>
