@@ -12,13 +12,13 @@ export default defineConfig({
                 'src': 'https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/ts/dist/glasseyechart.js'
             }
         ],
-        // [
-        //     'link',
-        //     {
-        //         href: 'https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/css/docs.css',
-        //         rel: 'stylesheet'
-        //     }
-        // ],
+        [
+            'link',
+            {
+                href: 'https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/css/docs.css',
+                rel: 'stylesheet'
+            }
+        ],
     ],
     themeConfig: {
         nav: [
