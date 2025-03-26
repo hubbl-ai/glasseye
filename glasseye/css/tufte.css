@@ -133,7 +133,7 @@ hr {
 ul {padding-left: 7%;}
 ol {padding-left: 7%;}
 
-.sidenote, .marginnote { float: right;
+.marginnote { float: right;
                           clear: right;
                           margin-right: -60%;
                           width: 50%;
@@ -145,8 +145,6 @@ ol {padding-left: 7%;}
                           position: relative; }
 
 .marginnote a {font-size: 1.0rem;
-                color: #777;  }
-.sidenote a {font-size: 1.0rem;
                 color: #777;  }
 
 li .marginnote  { float: right;
@@ -171,9 +169,9 @@ li .marginnote  { float: right;
     margin:0 8px 0 -15px;
 }
 
-@media screen and (max-width: 600px) { .sidenote, .marginnote { width: 25%;
+@media screen and (max-width: 600px) { .marginnote { width: 25%;
                                                                 margin-right: -35%; }}
-@media screen and (max-width: 400px) { .sidenote, .marginnote { display:none; }}
+@media screen and (max-width: 400px) {  .marginnote { display:none; }}
 
 a.url { text-decoration: none;
         word-break: break-all;
