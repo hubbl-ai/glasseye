@@ -16,7 +16,11 @@ sup.sidenote-number {
     font-size: 0.8rem;
     line-height: 1.6;
     vertical-align: baseline;
-    position: relative; }
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
 
 .marginnote a {font-size: 1.0rem;
 color: #777;  }
