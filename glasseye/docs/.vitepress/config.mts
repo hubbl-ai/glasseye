@@ -68,7 +68,6 @@ export default defineConfig({
                 collapsed: false,
                 items: [
                     { text: 'Implementation', link: '/custom/implement' },
-                    { text: 'Using at runtime', link: '/custom/usage' }
                 ]
             },
             { text: 'Pandoc-Plot', link: '/pandoc-plot' }
