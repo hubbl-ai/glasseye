@@ -6,7 +6,7 @@ require, in addition to these chart types, a bespoke special
 purpose chart. Consider this gorgeous graphic produced by the
 talented Nadieh Bremer for UNESCO.
 
-![Intangible cultural heritage](https://www.visualcinnamon.com/img/portfolio/2018/intangible-cultural-heritage/intangible_cultural_heritage_detail_2.png)
+![Intangible cultural heritage](/images/VisualCinnamon.png)
 
 Such projects have a number of things in common with the chart
 types in glasseye.
