@@ -56,9 +56,9 @@ Chart-specific arguments (as well as the data required by each chart
 type) are described in the writeups for each chart.
 
 <script>
-  console.log("Glasseye :", Glasseye)
-  setTimeout(
-     Glasseye.piechart(
+ setTimeout(() => {
+  Promise.resolve().then(() => 
+  Glasseye.piechart(
     '#piechart_0',
     [
       {'label': 'Apples', 'value': 10},
@@ -72,6 +72,6 @@ type) are described in the writeups for each chart.
       '#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF',
       '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'
     ], 0
-  ), 5000);
- ;
+  ));
+}, 1000);
 </script>

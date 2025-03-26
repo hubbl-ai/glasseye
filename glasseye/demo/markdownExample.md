@@ -199,7 +199,7 @@ You'll just need to put the json describing your sets between `<venn>` tags as i
 ]
 }
 '
-  size='{"width":500,"height":500}'
+  size='{"width":300,"height":300}'
   colors='deep'
 ></venn>
 
@@ -300,7 +300,7 @@ thought of as a sort of bi-directional dendogram.
   ]
 }
 '
-  size='{"width":500,"height":500}'
+  size='{"width":300,"height":300}'
   colors='deep'
 ></skey>
 
@@ -315,7 +315,7 @@ A bar chart as it appears in the margin.
     {"label":"Oranges", "value":"9"}
 ]
 '
-  size='{"width":500,"height":500}'
+  size='{"width":300,"height":300}'
   colors='deep'
 ></barchart>
 </sidenote>
@@ -431,7 +431,7 @@ A pie created from inline json.
 { "label": "Category E", "value": 20 }
 ]
 '
-  size='{"width":500,"height":500}'
+  size='{"width":350,"height":350}'
   colors='deep'
 ></piechart>
 </sidenote>
@@ -467,7 +467,7 @@ A donut created from inline json.
 { "label": "Category E", "value": 20 }
 ]
 '
- size='{"width":500,"height":500}'
+ size='{"width":350,"height":350}'
   colors='["#FF6700","#004E98"]'
   donut = '1'
 >
@@ -510,7 +510,7 @@ data='[
             { "x": 2, "y": 3, "value": 80 },
             { "x": 3, "y": 3, "value": 90 }
         ]'
-  size='{"width":500,"height":500}'
+  size='{"width":400,"height":400}'
   colors='deep'
   >
 </heatmap>
@@ -569,7 +569,7 @@ Similarly the line chart can be either created from a csv file (as long as it ha
             { "x": 5, "y": 30 },
             { "x": 6, "y": 35 }
   ]'
-  size='{"width":600,"height":600}'
+  size='{"width":400,"height":400}'
   colors='["#FF6700","#004E98"]'
   curved='0'
   >
@@ -591,7 +591,7 @@ Using sample data from line chart above
             { "x": 5, "y": 30 },
             { "x": 6, "y": 35 }
         ]'
-  size='{"width":600,"height":600}'
+   size='{"width":400,"height":400}'
   colors='deep'
   curved='1'
   >
@@ -711,7 +711,7 @@ data='[
   { "category": "G", "value": 92 },
   { "category": "H", "value": 95 }
 ]'
-  size='{"width":1000,"height":500}'
+  size='{"width":500,"height":500}'
   colors='deep'
 >
 </dotplot>
@@ -846,7 +846,7 @@ data='[
 
 <linechart
  file='{"path":"data/xy.csv","format":"csv"}'
-  size='{"width":800,"height":800}'
+  size='{"width":400,"height":400}'
   colors='["#FF0000","#008000"]'
   curved='1'
 >
