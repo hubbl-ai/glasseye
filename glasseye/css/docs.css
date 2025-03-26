@@ -1,13 +1,9 @@
-sup.sidenote-number { 
-    font-size: 0.9rem;
-     }
-
 .marginnote code { 
     font-size: 0.9rem;
   }
 
 
-.sidenote, .marginnote { float: right;
+.marginnote { float: right;
     clear: right;
     margin-right: -60%;
     width: 50%;
@@ -24,8 +20,7 @@ sup.sidenote-number {
 
 .marginnote a {font-size: 1.0rem;
 color: #777;  }
-.sidenote a {font-size: 1.0rem;
-color: #777;  }
+
 
 li .marginnote  { float: right;
     clear: right;
