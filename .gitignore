@@ -16,7 +16,6 @@ build/
 develop-eggs/
 downloads/
 demo/plots
-docs/.vitepress/cache/
 cache
 eggs/
 .eggs/
