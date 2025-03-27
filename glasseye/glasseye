@@ -239,7 +239,7 @@ In dev mode, the script must be run in the same folder as the script.
     opts, args = getopt(
         sys.argv[1:],
         'c:D:f:o:pt:v',
-        ('chart', 'dir', 'filter', 'output', 'plot', 'title', 'verbose','port')
+        ('chart', 'dir', 'filter', 'output', 'plot', 'title', 'verbose', 'port')
     )
 
     for k, v in opts:
@@ -439,7 +439,7 @@ In dev mode, the script must be run in the same folder as the script.
     with open(output_file, 'w') as ofp:
         ofp.write(doc)
 
-    copy_and_run_tmp_server(output_file,root_dir,server_dir_path,port)
+    copy_and_run_tmp_server(output_file, root_dir, server_dir_path, port)
 
 
 def start_http_server(directory, port=default_port):
@@ -462,7 +462,7 @@ def start_http_server(directory, port=default_port):
         except KeyboardInterrupt:
             logger.info("\nServer stopped.")
 
-def copy_and_run_tmp_server(output_file, output_dir, server_dir_path,port):
+def copy_and_run_tmp_server(output_file, output_dir, server_dir_path, port):
     if not os.path.isdir(output_dir):
         raise ValueError(f"Source directory does not exist: {output_dir}")
 
@@ -488,7 +488,6 @@ def copy_and_run_tmp_server(output_file, output_dir, server_dir_path,port):
 
     os.rename(old_filepath, new_filepath)
     start_http_server(server_dir_path,port)
-
 
 if __name__ == '__main__':
     main()

@@ -1,7 +1,7 @@
 Here's my attempt to make this:
 
 <skey
-  size='{"width":500,"height":225}'
+  size='{"width":600,"height":225}'
   data='{
     "nodes": [
         { "name": "Solar", "width": 100, "index": 0 },
