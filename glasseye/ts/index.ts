@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Tue Mar 18 17:40:41 CAT 2025
+// Generated Thu Mar 27 16:20:43 CAT 2025
 
 
 /// base.ts
@@ -171,16 +171,15 @@ export async function barchart(
   size: Size = defaultArgumentObject.size,
   file?: DataFile,
   colors: string[] = defaultArgumentObject.colors,
+  horizontal = 0 // 0 = Vertical, 1 = Horizontal
 ) {
   const { width, height } = size;
-  const margin:Margin = defaultMargin;
+  const margin: Margin = defaultMargin;
 
-
-  if(file?.path)
-    {
-      data = await loadData(file?.path, file?.format);
-    }
-    const processed_data:DataLabeled[] = data as DataLabeled[];
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
+  const processed_data: DataLabeled[] = data as DataLabeled[];
 
   const svg = d3
     .select(div)
@@ -193,58 +192,52 @@ export async function barchart(
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
-  const x = d3
-    .scaleBand()
-    .domain(processed_data.map((d: any) => d.label))
-    .range([0, chartWidth])
-    .padding(0.2);
 
-  const y = d3
-    .scaleLinear()
-    .domain([0, d3.max(processed_data, (d: any) => d.value as number)!])
-    .range([chartHeight, 0]);
+  const xHorizontal = d3.scaleLinear().domain([0, d3.max(processed_data, (d) => d.value)!]).range([0, chartWidth]);
+
+  const xVertical = d3.scaleBand().domain(processed_data.map((d) => d.label)).range([0, chartWidth]).padding(0.2);
+
+  const yHorizontal =  d3.scaleBand().domain(processed_data.map((d) => d.label)).range([0, chartHeight]).padding(0.2);
+
+  const yVertical = d3.scaleLinear().domain([0, d3.max(processed_data, (d) => d.value)!]).range([chartHeight, 0]);
 
   // Draw X axis
-  svg
-    .append("g")
-    .attr("transform", `translate(0, ${chartHeight})`)
-    .call(d3.axisBottom(x));
+  svg.append("g")
+    .attr("transform", horizontal ? `translate(0,0)` : `translate(0, ${chartHeight})`)
+    .call(horizontal ? d3.axisTop(xHorizontal) : d3.axisBottom(xVertical));
 
   // Draw Y axis
-  svg.append("g").call(d3.axisLeft(y));
+  svg.append("g").call(horizontal ? d3.axisLeft(yHorizontal) : d3.axisLeft(yVertical));
 
   const tooltip = d3
-  .select("body")
-  .append("div")
-  .style("position", "absolute")
-  .style("padding", "6px")
-  .style("background", "#333")
-  .style("color", "#fff")
-  .style("border-radius", "4px")
-  .style("font-size", "12px")
-  .style("display", "none");
+    .select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("padding", "6px")
+    .style("background", "#333")
+    .style("color", "#fff")
+    .style("border-radius", "4px")
+    .style("font-size", "12px")
+    .style("display", "none");
 
   // Draw bars
-  svg
-    .selectAll(".bar")
+  svg.selectAll(".bar")
     .data(processed_data)
     .enter()
     .append("rect")
     .attr("class", "bar")
-    .attr("x", (d: any) => x(d.label)!)
-    .attr("y", (d: any) => y(d.value))
-    .attr("width", x.bandwidth())
-    .attr("height", (d: any) => chartHeight - y(d.value))
+    .attr(horizontal ? "y" : "x", (d) => horizontal ? yHorizontal(d.label)! : xVertical(d.label)!)
+    .attr(horizontal ? "x" : "y", (d) => horizontal ? xHorizontal(d.value) : yVertical(d.value))
+    .attr(horizontal ? "height" : "width", horizontal ? yHorizontal.bandwidth() : xVertical.bandwidth())
+    .attr(horizontal ? "width" : "height", (d) => horizontal ? xHorizontal(d.value) : chartHeight - yVertical(d.value))
     .attr("fill", colors[0])
-    .on("mouseover", function (event, d:any) {
+    .on("mouseover", function (event, d: any) {
       d3.select(this).transition().duration(200).style("opacity", 0.7);
-
       tooltip
-      .style("display", "block")
-      .style("left", `${event.pageX}px`)
-      .style("top", `${event.pageY}px`)
-      .text(d.label);
-
+        .style("display", "block")
+        .style("left", `${event.pageX}px`)
+        .style("top", `${event.pageY}px`)
+        .text(d.label);
     })
     .on("mouseout", function () {
       d3.select(this).transition().duration(200).style("opacity", 1);

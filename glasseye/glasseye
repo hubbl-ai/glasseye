@@ -366,10 +366,10 @@ In dev mode, the script must be run in the same folder as the script.
     # Standard charts
 
     standard_charts = {
-        'linechart':{'curved':1},
+        'linechart':{'curved':0},
         'piechart':{'donut':0},
         'skey':None,
-        'barchart':None,
+        'barchart': {'horizontal':0},
         'tree':{'vertical':0},
         'venn':None,
         'gantt':None,

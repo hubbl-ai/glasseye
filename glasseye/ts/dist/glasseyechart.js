@@ -541,6 +541,10 @@ var Glasseye = (function (exports) {
       return axis;
     }
 
+    function axisTop(scale) {
+      return axis(top, scale);
+    }
+
     function axisBottom(scale) {
       return axis(bottom, scale);
     }
@@ -9904,7 +9908,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Tue Mar 18 17:40:41 CAT 2025
+    // Generated Thu Mar 27 16:20:43 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -9987,7 +9991,8 @@ var Glasseye = (function (exports) {
     }
     /// barchart.ts
     function barchart() {
-        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors) {
+        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors, horizontal = 0 // 0 = Vertical, 1 = Horizontal
+        ) {
             const { width, height } = size;
             const margin = defaultMargin;
             if (file === null || file === void 0 ? void 0 : file.path) {
@@ -10002,20 +10007,16 @@ var Glasseye = (function (exports) {
                 .attr("transform", `translate(${margin.left}, ${margin.top})`);
             const chartWidth = width - margin.left - margin.right;
             const chartHeight = height - margin.top - margin.bottom;
-            const x = band()
-                .domain(processed_data.map((d) => d.label))
-                .range([0, chartWidth])
-                .padding(0.2);
-            const y = linear()
-                .domain([0, max$3(processed_data, (d) => d.value)])
-                .range([chartHeight, 0]);
+            const xHorizontal = linear().domain([0, max$3(processed_data, (d) => d.value)]).range([0, chartWidth]);
+            const xVertical = band().domain(processed_data.map((d) => d.label)).range([0, chartWidth]).padding(0.2);
+            const yHorizontal = band().domain(processed_data.map((d) => d.label)).range([0, chartHeight]).padding(0.2);
+            const yVertical = linear().domain([0, max$3(processed_data, (d) => d.value)]).range([chartHeight, 0]);
             // Draw X axis
-            svg
-                .append("g")
-                .attr("transform", `translate(0, ${chartHeight})`)
-                .call(axisBottom(x));
+            svg.append("g")
+                .attr("transform", horizontal ? `translate(0,0)` : `translate(0, ${chartHeight})`)
+                .call(horizontal ? axisTop(xHorizontal) : axisBottom(xVertical));
             // Draw Y axis
-            svg.append("g").call(axisLeft(y));
+            svg.append("g").call(horizontal ? axisLeft(yHorizontal) : axisLeft(yVertical));
             const tooltip = select("body")
                 .append("div")
                 .style("position", "absolute")
@@ -10026,16 +10027,15 @@ var Glasseye = (function (exports) {
                 .style("font-size", "12px")
                 .style("display", "none");
             // Draw bars
-            svg
-                .selectAll(".bar")
+            svg.selectAll(".bar")
                 .data(processed_data)
                 .enter()
                 .append("rect")
                 .attr("class", "bar")
-                .attr("x", (d) => x(d.label))
-                .attr("y", (d) => y(d.value))
-                .attr("width", x.bandwidth())
-                .attr("height", (d) => chartHeight - y(d.value))
+                .attr(horizontal ? "y" : "x", (d) => horizontal ? yHorizontal(d.label) : xVertical(d.label))
+                .attr(horizontal ? "x" : "y", (d) => horizontal ? xHorizontal(d.value) : yVertical(d.value))
+                .attr(horizontal ? "height" : "width", horizontal ? yHorizontal.bandwidth() : xVertical.bandwidth())
+                .attr(horizontal ? "width" : "height", (d) => horizontal ? xHorizontal(d.value) : chartHeight - yVertical(d.value))
                 .attr("fill", colors[0])
                 .on("mouseover", function (event, d) {
                 select(this).transition().duration(200).style("opacity", 0.7);
