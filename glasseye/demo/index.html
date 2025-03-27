@@ -26,60 +26,18 @@ is an example.</p>
 long as it has columns with heading x and y) or from in line json. Here
 is an example.</p>
 <p><span id="linechart_1"></span><br/></p>
-<!-- 
-### A line chart FROM .CSV
-
-
-<linechart
- file='{"path":"data/xy.csv","format":"csv"}'
-  size='{"width":800,"height":800}'
-  colors='["#FF0000","#008000"]'
-  curved='0'
->
-</linechart>
-
-
-
-### A simplot chart FROM .TSV
-
-
-<linechart
- file='{"path":"data/xy.tsv","format":"tsv"}'
-  size='{"width":400,"height":400}'
-  colors='["#FFFF00","#008000"]'
-  curved='1'
->
-</linechart>
-
-
-
-
-
-### A line chart FROM .json
-
-
-<linechart
- file='{"path":"data/xy.json"}'
-  size='{"width":400,"height":400}'
-  colors='["#FFFF00","#008000"]'
-  curved='0'
->
-</linechart>
-
-
-
-### A line chart FROM .hsv
-
-
-<linechart
- file='{"path":"data/xy.hsv"}'
-  size='{"width":400,"height":400}'
-  colors='["#FF0000","#008000"]'
-  curved='1'
->
-</linechart> -->
-<h3 id="a-bar-chart">A Bar chart</h3>
+<h3 id="a-line-chart-from-.csv">A line chart FROM .CSV</h3>
+<p><span id="linechart_2"></span><br/></p>
+<h3 id="a-simplot-chart-from-.tsv">A simplot chart FROM .TSV</h3>
+<p><span id="linechart_3"></span><br/></p>
+<h3 id="a-line-chart-from-.json">A line chart FROM .json</h3>
+<p><span id="linechart_4"></span><br/></p>
+<h3 id="a-line-chart-from-.hsv">A line chart FROM .hsv</h3>
+<p><span id="linechart_5"></span><br/></p>
+<h3 id="a-vertical-bar-chart">A Vertical Bar chart</h3>
 <p><span id="barchart_0"></span><br/></p>
+<h3 id="a-horizontal-bar-chart">A Horizontal Bar chart</h3>
+<p><span id="barchart_1"></span><br/></p>
 <h3 id="a-pie-chart">A Pie chart</h3>
 <p><span id="piechart_0"></span><br/></p>
 <h3 id="a-donut-chart">A Donut chart</h3>
@@ -122,11 +80,16 @@ Seaborn Pallette</h3>
         <script type="text/javascript">
             Glasseye.linechart('#linechart_0',[{'x': 1, 'y': 10}, {'x': 2, 'y': 20}, {'x': 3, 'y': 15}, {'x': 4, 'y': 25}, {'x': 5, 'y': 30}, {'x': 6, 'y': 35}],{'width': 600, 'height': 600},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],0);
             Glasseye.linechart('#linechart_1',[{'x': 1, 'y': 10}, {'x': 2, 'y': 20}, {'x': 3, 'y': 15}, {'x': 4, 'y': 25}, {'x': 5, 'y': 30}, {'x': 6, 'y': 35}],{'width': 600, 'height': 600},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],1);
+            Glasseye.linechart('#linechart_2',[],{'width': 800, 'height': 800},{'path': 'data/xy.csv', 'format': 'csv'},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],0);
+            Glasseye.linechart('#linechart_3',[],{'width': 400, 'height': 400},{'path': 'data/xy.tsv', 'format': 'tsv'},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],1);
+            Glasseye.linechart('#linechart_4',[],{'width': 400, 'height': 400},{'path': 'data/xy.json'},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],0);
+            Glasseye.linechart('#linechart_5',[],{'width': 400, 'height': 400},{'path': 'data/xy.hsv'},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],1);
             Glasseye.piechart('#piechart_0',[{'label': 'Apples', 'value': 10}, {'label': 'Bananas', 'value': 20}, {'label': 'Cherries', 'value': 15}, {'label': 'Grapes', 'value': 25}],{'width': 500, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],0);
             Glasseye.piechart('#piechart_1',[{'label': 'Apples', 'value': 10}, {'label': 'Bananas', 'value': 20}, {'label': 'Cherries', 'value': 15}, {'label': 'Grapes', 'value': 25}],{'width': 500, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],1);
             Glasseye.piechart('#piechart_2',[{'label': 'Apples', 'value': 10}, {'label': 'Bananas', 'value': 20}, {'label': 'Cherries', 'value': 15}, {'label': 'Grapes', 'value': 25}],{'width': 500, 'height': 500},{},['#A5C9EF', '#F8B588', '#91E0A3', '#FAA3A0', '#D1BEFB'],1);
             Glasseye.skey('#skey_0',{'nodes': [{'name': 'Source A'}, {'name': 'Source B'}, {'name': 'Destination X'}, {'name': 'Destination Y'}], 'links': [{'source': 0, 'target': 2, 'value': 10}, {'source': 1, 'target': 2, 'value': 5}, {'source': 1, 'target': 3, 'value': 15}]},{'width': 500, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0']);
-            Glasseye.barchart('#barchart_0',[{'label': 'Apples', 'value': 10}, {'label': 'Bananas', 'value': 20}, {'label': 'Cherries', 'value': 15}, {'label': 'Grapes', 'value': 25}],{'width': 500, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0']);
+            Glasseye.barchart('#barchart_0',[{'label': 'Apples', 'value': 10}, {'label': 'Bananas', 'value': 20}, {'label': 'Cherries', 'value': 15}, {'label': 'Grapes', 'value': 25}],{'width': 500, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],0);
+            Glasseye.barchart('#barchart_1',[{'label': 'Apples', 'value': 10}, {'label': 'Bananas', 'value': 20}, {'label': 'Cherries', 'value': 15}, {'label': 'Grapes', 'value': 25}],{'width': 500, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],1);
             Glasseye.tree('#tree_0',{'name': 'Root', 'children': [{'name': 'Child 1', 'children': [{'name': 'Grandchild 1'}, {'name': 'Grandchild 2'}]}, {'name': 'Child 2', 'children': [{'name': 'Grandchild 3'}]}]},{'width': 500, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],1);
             Glasseye.tree('#tree_1',{'name': 'Root', 'children': [{'name': 'Child 1', 'children': [{'name': 'Grandchild 1'}, {'name': 'Grandchild 2'}]}, {'name': 'Child 2', 'children': [{'name': 'Grandchild 3'}]}]},{'width': 500, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],0);
             Glasseye.venn('#venn_0',{'children': [{'name': 'A', 'size': 10}, {'name': 'B', 'size': 20}, {'name': 'C', 'size': 30}]},{'width': 500, 'height': 500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0']);

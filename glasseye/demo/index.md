@@ -96,7 +96,7 @@ data='[
 </linechart>
 
 
-### A Bar chart
+### A Vertical Bar chart
 
 
 
@@ -109,10 +109,29 @@ data='[
 ]'
   size='{"width":500,"height":500}'
   colors='["#FF6700","#008000"]'
+  horizontal='0'
 >
 </barchart>
 
 
+
+
+### A Horizontal Bar chart
+
+
+
+<barchart
+data='[
+  { "label": "Apples", "value": 10 },
+  { "label": "Bananas", "value": 20 },
+  { "label": "Cherries", "value": 15 },
+  { "label": "Grapes", "value": 25 }
+]'
+  size='{"width":500,"height":500}'
+  colors='["#FF6700","#008000"]'
+  horizontal='1'
+>
+</barchart>
 
 
 ### A Pie chart
