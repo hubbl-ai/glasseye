@@ -42,7 +42,7 @@ data='[
 >
 </linechart>
 
-<!-- 
+
 ### A line chart FROM .CSV
 
 
@@ -93,7 +93,7 @@ data='[
   colors='["#FF0000","#008000"]'
   curved='1'
 >
-</linechart> -->
+</linechart>
 
 
 ### A Bar chart

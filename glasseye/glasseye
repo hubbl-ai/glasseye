@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 import logging
 import sys, os, re, pypandoc as py
+import http.server
+import socketserver
+import shutil
+import webbrowser
+import threading
 import json
 from bs4 import BeautifulSoup
 import seaborn
@@ -64,6 +69,8 @@ mode = 'prod'
 module_name = 'Glasseye'
 src_dir = '.'
 logger = None
+default_port = 7300
+server_dir_path = '/tmp/glasseye'
 
 # Function to wrap with tags
 def wrap(to_wrap, wrap_in):
@@ -209,6 +216,8 @@ def main():
     title = None
     input_file = None
     output_file = None
+    root_dir = '.'
+    port = default_port
     verbosity = logging.WARNING
     errors = 0
     usage = '''Usage: glasseye args input_file
@@ -221,6 +230,7 @@ where args arg one of:
 -p|--plot	       # Short cut for adding the pandoc-plot filter
 -t|--title	       # Title for generated HTML document
 -v|--verbose           # Increase debugging output. May be repeated
+--port           # the port to use in the url. defaults to 7300
 
 
 In dev mode, the script must be run in the same folder as the script.
@@ -229,7 +239,7 @@ In dev mode, the script must be run in the same folder as the script.
     opts, args = getopt(
         sys.argv[1:],
         'c:D:f:o:pt:v',
-        ('chart', 'dir', 'filter', 'output', 'plot', 'title', 'verbose')
+        ('chart', 'dir', 'filter', 'output', 'plot', 'title', 'verbose','port')
     )
 
     for k, v in opts:
@@ -238,6 +248,7 @@ In dev mode, the script must be run in the same folder as the script.
         elif k in ['-D', '--dir']:
             mode = 'dev'
             src_dir = os.path.abspath(v)
+            root_dir = os.path.abspath(src_dir)
         elif k in ['-f', '--filter']:
             filters.append(v)
         elif k in ['-o', '--output']:
@@ -248,10 +259,13 @@ In dev mode, the script must be run in the same folder as the script.
             title = v
         elif k in ['-v', '--verbose']:
             verbosity -= 10
+        elif k in ['--port']:
+            port = v
         elif k in ['-?', '-h', '--help']:
             errors += 1
     
 
+    
     logging.basicConfig(level=verbosity)
 
     logger = logging.getLogger()
@@ -325,6 +339,7 @@ In dev mode, the script must be run in the same folder as the script.
         a[1]['class'] = "marginnote"
         a[1].insert(0, str(a[0]+1) + ". ")
         tag = soup.new_tag("sup")
+        tag['class'] = "sidenote-number"
         tag.string = str(a[0]+1)
         a[1].insert_before(tag)
 
@@ -423,6 +438,57 @@ In dev mode, the script must be run in the same folder as the script.
 
     with open(output_file, 'w') as ofp:
         ofp.write(doc)
+
+    copy_and_run_tmp_server(output_file,root_dir,server_dir_path,port)
+
+
+def start_http_server(directory, port=default_port):
+    if not os.path.isdir(directory):
+        raise ValueError(f"Invalid directory: {directory}")
+
+    os.chdir(directory)
+    handler = http.server.SimpleHTTPRequestHandler
+    url = f"http://localhost:{port}"
+
+    with socketserver.TCPServer(("", port), handler) as httpd:
+        def open_browser():
+            webbrowser.open(url)
+
+        threading.Thread(target=open_browser, daemon=True).start()
+
+        try:
+            logger.info(f"Serving {directory} at {url}")
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            logger.info("\nServer stopped.")
+
+def copy_and_run_tmp_server(output_file, output_dir, server_dir_path,port):
+    if not os.path.isdir(output_dir):
+        raise ValueError(f"Source directory does not exist: {output_dir}")
+
+    # Ensure destination exists, otherwise create it
+    if os.path.exists(server_dir_path):
+        shutil.rmtree(server_dir_path)  
+    os.makedirs(server_dir_path)  
+
+    for item in os.listdir(output_dir):
+        src_path = os.path.join(output_dir, item)
+        dest_path = os.path.join(server_dir_path, item)
+
+        if os.path.isdir(src_path):
+            shutil.copytree(src_path, dest_path)  
+        else:
+            shutil.copy2(src_path, dest_path)
+    
+    # rename the generated .html file to index.html
+    extension = os.path.splitext(output_file)[-1] 
+    new_filename = "index" + extension  
+    old_filepath = os.path.join(server_dir_path, output_file)
+    new_filepath = os.path.join(server_dir_path, new_filename)
+
+    os.rename(old_filepath, new_filepath)
+    start_http_server(server_dir_path,port)
+
 
 if __name__ == '__main__':
     main()
