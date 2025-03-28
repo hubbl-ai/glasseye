@@ -10819,7 +10819,7 @@ var Glasseye = (function (exports) {
             const svg = select(div)
                 .attr("width", width)
                 .attr("height", height)
-                .attr("viewBox", [0, 0, width * 2, height * 2])
+                .attr("viewBox", [0, 0, width / 2, height / 2])
                 .attr("style", "max-width: 100%; height: auto;");
             // Add a line for each link, and a circle for each node.
             const link = svg.append("g")
