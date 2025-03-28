@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 import logging
-import sys, os, re, pypandoc as py
+import sys, os, re
 import http.server
 import socketserver
 import shutil
 import webbrowser
 import threading
 import json
+import seaborn as sns
+import pypandoc as py
 from bs4 import BeautifulSoup
-import seaborn
 from getopt import *
-from tempfile import NamedTemporaryFile
+from tempfile import NamedTemporaryFile, TemporaryDirectory
 
 fonts = [
     'http://fonts.googleapis.com/css?family=Raleway',
@@ -70,7 +71,6 @@ module_name = 'Glasseye'
 src_dir = '.'
 logger = None
 default_port = 7300
-server_dir_path = '/tmp/glasseye'
 
 # Function to wrap with tags
 def wrap(to_wrap, wrap_in):
@@ -78,7 +78,7 @@ def wrap(to_wrap, wrap_in):
     wrap_in.append(contents)
 
 def resolve_color_palette(colors, n_colors, desat):
-    palette = seaborn.color_palette(
+    palette = sns.color_palette(
         palette=colors, desat=desat, n_colors=n_colors)
 
     if palette:
@@ -217,29 +217,32 @@ def main():
     input_file = None
     output_file = None
     root_dir = '.'
+
+    server_mode = False
     port = default_port
+
     verbosity = logging.WARNING
     errors = 0
     usage = '''Usage: glasseye args input_file
 where args arg one of:
--c|--chart      file   # Add a custom chart to glasseye
--D|--dev               # Run this script in development mode
--f|--filter	filter # Add a filter to be passed to pandoc
--h|--help              # Print this message
--o|--output	file   # File to which to store HTML document
--p|--plot	       # Short cut for adding the pandoc-plot filter
--t|--title	       # Title for generated HTML document
--v|--verbose           # Increase debugging output. May be repeated
---port           # the port to use in the url. defaults to 7300
-
+-c|--chart  file   # Add a custom chart to glasseye
+-D|--dev           # Run this script in development mode
+-f|--filter filter # Add a filter to be passed to pandoc
+-h|--help          # Print this message
+-o|--output file   # File to which to store HTML document
+-p|--plot          # Short cut for adding the pandoc-plot filter
+-s|--server        # Run glasseye in server mode
+-t|--title         # Title for generated HTML document
+-v|--verbose       # Increase debugging output. May be repeated
+--port             # the port to use in the url. defaults to 7300
 
 In dev mode, the script must be run in the same folder as the script.
 '''
 
     opts, args = getopt(
         sys.argv[1:],
-        'c:D:f:o:pt:v',
-        ('chart', 'dir', 'filter', 'output', 'plot', 'title', 'verbose', 'port')
+        'c:D:f:o:pst:v',
+        ('chart', 'dir', 'filter', 'output', 'plot', 'server', 'title', 'verbose', 'port')
     )
 
     for k, v in opts:
@@ -255,6 +258,8 @@ In dev mode, the script must be run in the same folder as the script.
             output_file = v
         elif k in ['-p', '--plot']:
             filters.append('pandoc-plot')
+        elif k in ['-s', '--server']:
+            server_mode = True
         elif k in ['-t', '--title']:
             title = v
         elif k in ['-v', '--verbose']:
@@ -263,8 +268,8 @@ In dev mode, the script must be run in the same folder as the script.
             port = v
         elif k in ['-?', '-h', '--help']:
             errors += 1
-    
-
+        else:
+            sys.stderr.write(f'invalid option {k}\n')
     
     logging.basicConfig(level=verbosity)
 
@@ -439,8 +444,12 @@ In dev mode, the script must be run in the same folder as the script.
     with open(output_file, 'w') as ofp:
         ofp.write(doc)
 
-    copy_and_run_tmp_server(output_file, root_dir, server_dir_path, port)
+    if server_mode:
+        with TemporaryDirectory(prefix='glasseye') as server_dir_name:
+            copy_data(output_file, output_dir or ".", server_dir_name)
+            start_http_server(server_dir_name, port)
 
+        # Once the server exits, the temp directory is automatically deleted.
 
 def start_http_server(directory, port=default_port):
     if not os.path.isdir(directory):
@@ -460,34 +469,25 @@ def start_http_server(directory, port=default_port):
             logger.info(f"Serving {directory} at {url}")
             httpd.serve_forever()
         except KeyboardInterrupt:
-            logger.info("\nServer stopped.")
+            logger.info("\nServer terminated.")
 
-def copy_and_run_tmp_server(output_file, output_dir, server_dir_path, port):
+def copy_data(output_file, output_dir, server_dir_path):
     if not os.path.isdir(output_dir):
         raise ValueError(f"Source directory does not exist: {output_dir}")
 
-    # Ensure destination exists, otherwise create it
-    if os.path.exists(server_dir_path):
-        shutil.rmtree(server_dir_path)  
-    os.makedirs(server_dir_path)  
-
-    for item in os.listdir(output_dir):
-        src_path = os.path.join(output_dir, item)
-        dest_path = os.path.join(server_dir_path, item)
-
-        if os.path.isdir(src_path):
-            shutil.copytree(src_path, dest_path)  
-        else:
-            shutil.copy2(src_path, dest_path)
+    shutil.copytree(output_dir, server_dir_path,
+        dirs_exist_ok=True,
+        ignore=shutil.ignore_patterns('.?*')
+    )
     
     # rename the generated .html file to index.html
+
     extension = os.path.splitext(output_file)[-1] 
     new_filename = "index" + extension  
     old_filepath = os.path.join(server_dir_path, output_file)
     new_filepath = os.path.join(server_dir_path, new_filename)
 
     os.rename(old_filepath, new_filepath)
-    start_http_server(server_dir_path,port)
 
 if __name__ == '__main__':
     main()
