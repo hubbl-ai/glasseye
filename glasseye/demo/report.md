@@ -1,432 +1,78 @@
-## A Linechart Typescript Demo
+Building blocks:
 
-### A line chart
-
-Similarly the line chart can be either created from a csv file (as long as it has columns with heading x and y) or from in line json. Here is an example.
-
-
-<linechart
-data='[
-  { "x": 1, "y": 10 }, 
-  { "x": 2, "y": 20 },
-  { "x": 3, "y": 15 },
-  { "x": 4, "y": 25 },
-  { "x": 5, "y": 30 },
-  { "x": 6, "y": 35 }
-  ]'
-  size='{"width":600,"height":600}'
-  colors='["#FF6700","#004E98"]'
-  curved='0'
->
-</linechart>
-
-
-
-### A simplot chart
-
-Similarly the line chart can be either created from a csv file (as long as it has columns with heading x and y) or from in line json. Here is an example.
-
-
-<linechart
-data='[
-  { "x": 1, "y": 10 }, 
-  { "x": 2, "y": 20 },
-  { "x": 3, "y": 15 },
-  { "x": 4, "y": 25 },
-  { "x": 5, "y": 30 },
-  { "x": 6, "y": 35 }
-  ]'
-  size='{"width":600,"height":600}'
-  colors='["#004E98","#008000"]'
-  curved='1'
->
-</linechart>
-
-
-### A line chart FROM .CSV
-
-
-<linechart
- file='{"path":"data/xy.csv","format":"csv"}'
-  size='{"width":800,"height":800}'
-  colors='["#FF0000","#008000"]'
-  curved='0'
->
-</linechart>
-
-
-
-### A simplot chart FROM .TSV
-
-
-<linechart
- file='{"path":"data/xy.tsv","format":"tsv"}'
-  size='{"width":400,"height":400}'
-  colors='["#FFFF00","#008000"]'
-  curved='1'
->
-</linechart>
-
-
-
-
-
-### A line chart FROM .json
-
-
-<linechart
- file='{"path":"data/xy.json"}'
-  size='{"width":400,"height":400}'
-  colors='["#FFFF00","#008000"]'
-  curved='0'
->
-</linechart>
-
-
-
-### A line chart FROM .hsv
-
-
-<linechart
- file='{"path":"data/xy.hsv"}'
-  size='{"width":400,"height":400}'
-  colors='["#FF0000","#008000"]'
-  curved='1'
->
-</linechart>
-
-
-### A Vertical Bar chart
-
-
-
-<barchart
-data='[
-  { "label": "Apples", "value": 10 },
-  { "label": "Bananas", "value": 20 },
-  { "label": "Cherries", "value": 15 },
-  { "label": "Grapes", "value": 25 }
-]'
-  size='{"width":500,"height":500}'
-  colors='["#FF6700","#008000"]'
-  horizontal='0'
->
-</barchart>
-
-
-
-
-### A Horizontal Bar chart
-
-
-
-<barchart
-data='[
-  { "label": "Apples", "value": 10 },
-  { "label": "Bananas", "value": 20 },
-  { "label": "Cherries", "value": 15 },
-  { "label": "Grapes", "value": 25 }
-]'
-  size='{"width":500,"height":500}'
-  colors='["#FF6700","#008000"]'
-  horizontal='1'
->
-</barchart>
-
-
-### A Pie chart
-
-
-<piechart
-data='[
-  { "label": "Apples", "value": 10 },
-  { "label": "Bananas", "value": 20 },
-  { "label": "Cherries", "value": 15 },
-  { "label": "Grapes", "value": 25 }
-]'
-  size='{"width":500,"height":500}'
-  colors='["#FF6700","#004E98"]'
->
-</piechart>
-
-
-
-
-
-### A Donut chart
-
-
-<piechart
-data='[
-  { "label": "Apples", "value": 10 },
-  { "label": "Bananas", "value": 20 },
-  { "label": "Cherries", "value": 15 },
-  { "label": "Grapes", "value": 25 }
-]'
-  size='{"width":500,"height":500}'
-  colors='["#FF6700","#004E98"]'
-  donut = '1'
->
-</piechart>
-
-
-
-
-
-### A Sankey
 
 
 <skey
-data='{
-  "nodes": [
-    { "name": "Source A" },
-    { "name": "Source B" },
-    { "name": "Destination X" },
-    { "name": "Destination Y" }
-  ],
-  "links": [
-    { "source": 0, "target": 2, "value": 10 },
-    { "source": 1, "target": 2, "value": 5 },
-    { "source": 1, "target": 3, "value": 15 }
-  ]
+  size='{"width":600,"height":225}'
+  data='{
+    "nodes": [
+        { "name": "Solar", "width": 100, "index": 0 },
+        { "name": "Wind", "width": 120, "index": 1 },
+        { "name": "Hydro", "width": 80, "index": 2 },
+        { "name": "Nuclear", "width": 90, "index": 3 },
+        { "name": "Coal", "width": 200, "index": 4 },
+        { "name": "Natural gas", "width": 210, "index": 5 },
+        { "name": "Oil", "width": 250, "index": 6 },
+        { "name": "Electricity", "width": 720, "index": 7 },
+        { "name": "Heat", "width": 80, "index": 8 },
+        { "name": "Fuel", "width": 250, "index": 9 },
+        { "name": "Residential", "width": 210, "index": 10 },
+        { "name": "Commercial", "width": 180, "index": 11 },
+        { "name": "Industrial", "width": 280, "index": 12 },
+        { "name": "Transportation", "width": 200, "index": 13 },
+        { "name": "Energy services", "width": 710, "index": 14 },
+        { "name": "Losses", "width": 160, "index": 15 }
+    ],
+    "links": [
+        { "source": 0, "target": 7, "value": 100 },
+        { "source": 1, "target": 7, "value": 120 },
+        { "source": 2, "target": 7, "value": 80 },
+        { "source": 3, "target": 7, "value": 90 },
+        { "source": 4, "target": 7, "value": 200 },
+        { "source": 5, "target": 7, "value": 130 },
+        { "source": 5, "target": 8, "value": 80 },
+        { "source": 6, "target": 9, "value": 250 },
+        { "source": 7, "target": 10, "value": 170 },
+        { "source": 7, "target": 11, "value": 160 },
+        { "source": 7, "target": 12, "value": 230 },
+        { "source": 8, "target": 10, "value": 40 },
+        { "source": 8, "target": 11, "value": 20 },
+        { "source": 8, "target": 12, "value": 20 },
+        { "source": 9, "target": 12, "value": 50 },
+        { "source": 9, "target": 13, "value": 200 },
+        { "source": 10, "target": 14, "value": 180 },
+        { "source": 10, "target": 15, "value": 30 },
+        { "source": 11, "target": 14, "value": 150 },
+        { "source": 11, "target": 15, "value": 30 },
+        { "source": 12, "target": 14, "value": 230 },
+        { "source": 12, "target": 15, "value": 50 },
+        { "source": 13, "target": 14, "value": 150 },
+        { "source": 13, "target": 15, "value": 50 }
+    ]
 }'
-  size='{"width":500,"height":500}'
-  colors='["#FFFF00","#FF0000"]'
-  n_colors='10'
-  desat='1'
-  
+    n_colors=24
 >
 </skey>
 
-
-
-
-
-### A Donut chart using Seaborn Pallette
-
-
-<piechart
-data='[
-  { "label": "Apples", "value": 10 },
-  { "label": "Bananas", "value": 20 },
-  { "label": "Cherries", "value": 15 },
-  { "label": "Grapes", "value": 25 }
-]'
-  size='{"width":500,"height":500}'
-  colors='deep'
-  n_colors='5'
-  desat='0.9'
-  donut = '1'
->
-</piechart>
-
-
-
-
-### A gantt chart using Seaborn Pallette
-
-
-<gantt
-data='[
-  { "task": "Planning", "start": "2024-03-01", "end": "2024-03-05" },
-  { "task": "Design", "start": "2024-03-06", "end": "2024-03-12" },
-  { "task": "Development", "start": "2024-03-13", "end": "2024-03-25" },
-  { "task": "Testing", "start": "2024-03-26", "end": "2024-03-30" },
-  { "task": "Deployment", "start": "2024-03-31", "end": "2024-04-02" }
-]'
-  size='{"width":1000,"height":500}'
-  colors='deep'
->
-</gantt>
-
-
-
-
-### A dotplot chart 
-
-
-<dotplot
-data='[
-    { "category": "A", "value": 10 },
-  { "category": "B", "value": 20 },
-  { "category": "C", "value": 30 }
-]'
-  size='{"width":1000,"height":500}'
-  colors='deep'
->
-</dotplot>
-
-
-
-
-### A scatterplot chart 
-
-
-<scatterplot
-data='[
-     { "x": 10, "y": 20 },
-  { "x": 30, "y": 40 },
-  { "x": 50, "y": 60 }
-]'
-  size='{"width":500,"height":500}'
-  colors='deep'
->
-</scatterplot>
-
-
-
-### A boxplot chart 
-
-
-<boxplot
-data='[
-   { "category": "A", "value": 10 },
-  { "category": "A", "value": 15 },
-  { "category": "A", "value": 20 },
-  { "category": "B", "value": 30 },
-  { "category": "B", "value": 35 },
-  { "category": "B", "value": 40 }
-]'
-  size='{"width":500,"height":500}'
-  colors='deep'
->
-</boxplot>
-
-
-
-
-### A heatmap chart 
-
-
-<heatmap
-data='[
-  { "x": "A", "y": "1", "value": 5 },
-  { "x": "A", "y": "2", "value": 10 },
-  { "x": "B", "y": "1", "value": 15 },
-  { "x": "B", "y": "2", "value": 20 }
-]'
-  size='{"width":500,"height":500}'
-  colors='deep'
->
-</heatmap>
-
-
-
-
-### A treemap chart 
-
-
-<treemap
-data='{
-  "name": "root",
-  "children": [
-    { "name": "A", "value": 10 },
-    { "name": "B", "value": 20 },
-    { "name": "C", "value": 30 },
-    { "name": "D", "value": 40 }
-  ]
-}
-'
-  size='{"width":500,"height":500}'
-  colors='deep'
->
-</treemap>
-
-
-
-
-### A Vertical tree diagram 
-
-
-<tree
-data='{
-  "name": "Root",
-  "children": [
-    { "name": "Child 1", "children": [{ "name": "Grandchild 1" }, { "name": "Grandchild 2" }] },
-    { "name": "Child 2", "children": [{ "name": "Grandchild 3" }] }
-  ]
-}
-'
-  size='{"width":500,"height":500}'
-  colors='deep'
-  vertical="1"
->
-</tree>
-
-
-
-
-
-
-### A Horizontal tree diagram 
-
-
-<tree
-data='{
-  "name": "Root",
-  "children": [
-    { "name": "Child 1", "children": [{ "name": "Grandchild 1" }, { "name": "Grandchild 2" }] },
-    { "name": "Child 2", "children": [{ "name": "Grandchild 3" }] }
-  ]
-}
-'
-  size='{"width":500,"height":500}'
-  colors='deep'
->
-</tree>
-
-
-### A venn diagram 
-
-
-<venn
-data='
-{
-  "children": [
-    { "name": "A", "size": 10 },
-    { "name": "B", "size": 20 },
-    { "name": "C", "size": 30 }
-  ]
-}
-'
-  size='{"width":500,"height":500}'
-  colors='deep'
->
-</venn>
-
-
 ```{.matplotlib}
+import pandas as pd
+from scipy.stats import truncnorm
 import seaborn as sns
-df = sns.load_dataset("penguins")
-sns.pairplot(df, hue="species")
-```
 
+n_companies = 500
 
-
-### A force diagram 
-
-
-<force
-data='
-{
-  "nodes": [
-    { "id": "A", "group": 1 },
-    { "id": "B", "group": 2 },
-    { "id": "C", "group": 1 },
-    { "id": "D", "group": 2 }
-  ],
-  "links": [
-    { "source": "A", "target": "B" },
-    { "source": "A", "target": "C" },
-    { "source": "B", "target": "D" },
-    { "source": "C", "target": "D" }
-  ]
+data = {
+    'margin': truncnorm.rvs(-3, 3, scale=0.05, size=n_companies),
+    'growth': truncnorm.rvs(-3, 3, scale=1.0/3.0, size=n_companies),
+    'volatility': truncnorm.rvs(-3, 3, loc=0.5, scale=0.5/3.0, size=n_companies),
 }
-'
-  size='{"width":500,"height":500}'
-  colors='deep'
->
-</force>
+
+df = pd.DataFrame(data)
+
+df['accept'] = (df.margin / 0.15 + df.growth + (1.0 - df.volatility)) > 1
+
+sns.pairplot(df, hue='accept')
+```
 
 <force
    data='{
@@ -766,44 +412,61 @@ data='
     {"source": "Mme.Hucheloup", "target": "Enjolras", "value": 1}
   ]
 }'
-  size='{"width":1000,"height":1000}'
+  size='{"width":500,"height":500}'
   colors='pastel'
 >
 </force>
 
-### A bollinger band diagram 
 
+```{.matplotlib}
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from scipy.stats import truncnorm
+import seaborn as sns
 
-<bollinger
-data='[
-  { "date": "2024-03-01", "close": 100, "upper": 105, "lower": 95, "movingAvg": 100 },
-  { "date": "2024-03-02", "close": 102, "upper": 107, "lower": 97, "movingAvg": 101 },
-  { "date": "2024-03-03", "close": 104, "upper": 109, "lower": 99, "movingAvg": 102 },
-  { "date": "2024-03-04", "close": 101, "upper": 106, "lower": 96, "movingAvg": 100.5 },
-  { "date": "2024-03-05", "close": 98, "upper": 103, "lower": 93, "movingAvg": 98.5 },
-  { "date": "2024-03-06", "close": 96, "upper": 101, "lower": 91, "movingAvg": 96.5 },
-  { "date": "2024-03-07", "close": 99, "upper": 104, "lower": 94, "movingAvg": 98 },
-  { "date": "2024-03-08", "close": 103, "upper": 108, "lower": 98, "movingAvg": 101 }
-]'
-  size='{"width":500,"height":500}'
-  colors='deep'
->
-</bollinger>
-
-
-
-### A chord diagram 
-
-
-<chord
-data='[
-  [0, 5, 10, 2],
-  [5, 0, 3, 7],
-  [10, 3, 0, 6],
-  [2, 7, 6, 0]
+factors = [
+    'Injury rate',
+    'Organic sales growth',
+    'Same-store growth %',
+    'Greenfield growth %',
+    'Aftermarket sales',
+    'Subscription sales growth',
+    '# suppliers',
+    '# employees in R&D',
+    '# products launched this year',
+    '# sites closed',
+    'Cash conversion rate by Region',
+    'Male-female board composition',
+    '10 largest shareholders % vote',
+    '# mentions of “Competitive advantage”',
+    '# mentions of “Restructuring”',
+    '# mentions of “Distressed”',
+    '# mentions of “Low activity”',
+    '# mentions of “Short-term cost actions”',
+    'Word count of competition section in annual report',
+    'Historic market share by year %',
+    'Target market share %',
+    'Forecast market revenue growth %',
+    'X% of orders placed for delivery within 24 hours',
 ]
-'
-  size='{"width":500,"height":500}'
-  colors='deep'
->
-</chord>
+
+Z = pd.DataFrame(truncnorm.rvs(-3, 3, scale=1.0 / 3.0, size=(len(factors), len(factors))))
+
+Z = pd.DataFrame(np.triu(Z.values) + np.triu(Z.values, 1).T,
+    index=factors,
+    columns=factors
+)
+
+x = range(Z.shape[0])
+
+np.fill_diagonal(Z.values, 1.0)
+
+fig, ax = plt.subplots(figsize=(8, 8))
+im = ax.imshow(Z)
+
+ax.set_xticks(x, labels=Z.index,
+              rotation=45, ha="right", rotation_mode="anchor")
+ax.set_yticks(x, labels=Z.index)
+fig.tight_layout()
+```
