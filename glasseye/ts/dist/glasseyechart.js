@@ -10812,7 +10812,7 @@ var Glasseye = (function (exports) {
             // Create a simulation with several forces.
             const simulation$1 = simulation(nodes)
                 .force("link", link$2(links).id((d) => d.id))
-                .force("charge", manyBody())
+                .force("charge", manyBody().strength(-100))
                 .force("center", center(width / 2, height / 2))
                 .on("tick", ticked);
             // Create the SVG container.
@@ -10820,7 +10820,8 @@ var Glasseye = (function (exports) {
                 .attr("width", width)
                 .attr("height", height)
                 .attr("viewBox", [0, 0, width / 2, height / 2])
-                .attr("style", "max-width: 100%; height: auto;");
+                .attr("style", "max-width: 100%; height: auto;")
+                .attr("preserveAspectRatio", "xMidYMid meet");
             // Add a line for each link, and a circle for each node.
             const link = svg.append("g")
                 .attr("stroke", "#999")

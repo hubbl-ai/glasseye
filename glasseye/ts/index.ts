@@ -1238,8 +1238,8 @@ export async function force(
 
   // Create a simulation with several forces.
   const simulation = d3.forceSimulation(nodes)
-      .force("link", d3.forceLink(links).id((d:any) => d.id))
-      .force("charge", d3.forceManyBody())
+      .force("link", d3.forceLink(links).id((d:any) => d.id).distance(50))
+      .force("charge", d3.forceManyBody().strength(-100))
       .force("center", d3.forceCenter(width / 2, height / 2))
       .on("tick", ticked);
 
@@ -1249,7 +1249,9 @@ export async function force(
       .attr("width", width)
       .attr("height", height)
       .attr("viewBox", [0, 0, width/2, height/2])
-      .attr("style", "max-width: 100%; height: auto;");
+      .attr("style", "max-width: 100%; height: auto;")
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      ;
 
   // Add a line for each link, and a circle for each node.
   const link = svg.append("g")

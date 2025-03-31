@@ -16,6 +16,7 @@ build/
 develop-eggs/
 downloads/
 demo/plots
+plots
 cache
 eggs/
 .eggs/
