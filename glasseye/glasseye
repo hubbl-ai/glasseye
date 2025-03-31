@@ -241,7 +241,7 @@ In dev mode, the script must be run in the same folder as the script.
     opts, args = getopt(
         sys.argv[1:],
         'c:D:f:o:pst:v',
-        ('chart', 'dir', 'filter', 'output', 'plot', 'server', 'title', 'verbose', 'port')
+        ('chart', 'dir', 'filter', 'output', 'plot', 'server', 'title:', 'verbose', 'port=')
     )
 
     for k, v in opts:
@@ -264,7 +264,7 @@ In dev mode, the script must be run in the same folder as the script.
         elif k in ['-v', '--verbose']:
             verbosity -= 10
         elif k in ['--port']:
-            port = v
+            port = int(v)
         elif k in ['-?', '-h', '--help']:
             errors += 1
         else:

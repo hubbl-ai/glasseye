@@ -248,8 +248,14 @@ data='[
 <dotplot
 data='[
     { "category": "A", "value": 10 },
-  { "category": "B", "value": 20 },
-  { "category": "C", "value": 30 }
+    { "category": "A", "value": 12 },
+    { "category": "A", "value": 16 },
+    { "category": "B", "value": 20 },
+    { "category": "B", "value": 24 },
+    { "category": "B", "value": 28 },
+    { "category": "C", "value": 12 },
+    { "category": "C", "value": 15 },
+    { "category": "C", "value": 21 }
 ]'
   size='{"width":1000,"height":500}'
   colors='deep'
