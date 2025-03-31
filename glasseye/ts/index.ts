@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Mon Mar 31 05:36:32 PM EDT 2025
+// Generated Mon Mar 31 05:55:50 PM EDT 2025
 
 
 /// base.ts
@@ -346,6 +346,8 @@ export function skey(
   colors: string[]= defaultArgumentObject.colors,
 ) {
   const { width, height } = size;
+  const nodeWidth = 20;
+  const nodePadding = 10;
 
   // Set up SVG container
   const svg = d3
@@ -356,8 +358,8 @@ export function skey(
 
   // Define Sankey generator
   const sankeyGenerator = sankey<any, any>()
-    .nodeWidth(20)
-    .nodePadding(10)
+    .nodeWidth(nodeWidth)
+    .nodePadding(nodePadding)
     .extent([
       [0, 0],
       [width, height],
@@ -393,7 +395,9 @@ export function skey(
     .attr("y", (d: any) => d.y0)
     .attr("height", (d: any) => d.y1 - d.y0)
     .attr("width", sankeyGenerator.nodeWidth())
-    .attr("fill", (d: any) => color(d.name));
+    .attr("fill", (d: any) => color(d.name))
+    .attr("stroke", "#666A6D")
+    .attr("stroke-width", 1);
 
   // Add Node Labels
   node
@@ -406,10 +410,11 @@ export function skey(
     .data(graph.nodes)
     .enter()
     .append("text")
-    .attr("x", (d: any) => d.x0 == 0 ? 6 : d.x0 - 6)
+    .attr("x", (d: any) => d.x0 == 0 ? nodeWidth + 6 : d.x0 - 6)
     .attr("y", (d: any) => (d.y0 + d.y1) / 2)
     .attr("dy", "0.35em")
     .attr("text-anchor", (d: any) => d.x0 == 0 ? "start" : "end")
+    .attr("font-size", "smaller")
     .text((d: any) => d.name)
     .attr("fill", "#000");
 

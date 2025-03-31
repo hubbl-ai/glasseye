@@ -9908,7 +9908,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Mon Mar 31 05:36:32 PM EDT 2025
+    // Generated Mon Mar 31 05:55:50 PM EDT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -10120,6 +10120,8 @@ var Glasseye = (function (exports) {
     /// skey.ts
     function skey(div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors) {
         const { width, height } = size;
+        const nodeWidth = 20;
+        const nodePadding = 10;
         // Set up SVG container
         const svg = select(div)
             .append("svg")
@@ -10127,8 +10129,8 @@ var Glasseye = (function (exports) {
             .attr("height", height);
         // Define Sankey generator
         const sankeyGenerator = Sankey()
-            .nodeWidth(20)
-            .nodePadding(10)
+            .nodeWidth(nodeWidth)
+            .nodePadding(nodePadding)
             .extent([
             [0, 0],
             [width, height],
@@ -10160,7 +10162,9 @@ var Glasseye = (function (exports) {
             .attr("y", (d) => d.y0)
             .attr("height", (d) => d.y1 - d.y0)
             .attr("width", sankeyGenerator.nodeWidth())
-            .attr("fill", (d) => color(d.name));
+            .attr("fill", (d) => color(d.name))
+            .attr("stroke", "#666A6D")
+            .attr("stroke-width", 1);
         // Add Node Labels
         node
             .append("title")
@@ -10171,10 +10175,11 @@ var Glasseye = (function (exports) {
             .data(graph.nodes)
             .enter()
             .append("text")
-            .attr("x", (d) => d.x0 == 0 ? 6 : d.x0 - 6)
+            .attr("x", (d) => d.x0 == 0 ? nodeWidth + 6 : d.x0 - 6)
             .attr("y", (d) => (d.y0 + d.y1) / 2)
             .attr("dy", "0.35em")
             .attr("text-anchor", (d) => d.x0 == 0 ? "start" : "end")
+            .attr("font-size", "smaller")
             .text((d) => d.name)
             .attr("fill", "#000");
         return svg.node();
