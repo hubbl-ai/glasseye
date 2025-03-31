@@ -9908,7 +9908,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Mon Mar 31 16:24:07 CAT 2025
+    // Generated Mon Mar 31 05:36:32 PM EDT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -10171,10 +10171,10 @@ var Glasseye = (function (exports) {
             .data(graph.nodes)
             .enter()
             .append("text")
-            .attr("x", (d) => d.x0 - 6)
+            .attr("x", (d) => d.x0 == 0 ? 6 : d.x0 - 6)
             .attr("y", (d) => (d.y0 + d.y1) / 2)
             .attr("dy", "0.35em")
-            .attr("text-anchor", "end")
+            .attr("text-anchor", (d) => d.x0 == 0 ? "start" : "end")
             .text((d) => d.name)
             .attr("fill", "#000");
         return svg.node();

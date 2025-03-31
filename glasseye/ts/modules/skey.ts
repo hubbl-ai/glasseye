@@ -66,10 +66,10 @@ export function skey(
     .data(graph.nodes)
     .enter()
     .append("text")
-    .attr("x", (d: any) => d.x0 - 6)
+    .attr("x", (d: any) => d.x0 == 0 ? 6 : d.x0 - 6)
     .attr("y", (d: any) => (d.y0 + d.y1) / 2)
     .attr("dy", "0.35em")
-    .attr("text-anchor", "end")
+    .attr("text-anchor", (d: any) => d.x0 == 0 ? "start" : "end")
     .text((d: any) => d.name)
     .attr("fill", "#000");
 
