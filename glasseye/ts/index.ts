@@ -1227,11 +1227,39 @@ export async function force(
 
 
   const { width, height } = size;
+<<<<<<< HEAD
   const svg = d3
     .select(div)
     .append("svg")
     .attr("width", width)
     .attr("height", height);
+=======
+  
+  // Specify the color scale.
+  const color = d3.scaleOrdinal(colors);
+
+  // The force simulation mutates links and nodes, so create a copy
+  // so that re-evaluating this cell produces the same result.
+  const links = data.links.map((d:any) => ({...d}));
+  const nodes = data.nodes.map((d:any) => ({...d}));
+
+  // Create a simulation with several forces.
+  const simulation = d3.forceSimulation(nodes)
+      .force("link", d3.forceLink(links).id((d:any) => d.id).distance(50))
+      .force("charge", d3.forceManyBody().strength(-100))
+      .force("center", d3.forceCenter(width / 2, height / 2))
+      .on("tick", ticked);
+
+  // Create the SVG container.
+  const svg = d3
+      .select(div)
+      .attr("width", width)
+      .attr("height", height)
+      .attr("viewBox", [0, 0, width/2, height/2])
+      .attr("style", "max-width: 100%; height: auto;")
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      ;
+>>>>>>> 1d5e243dff0de808b10cccc822ac0a7c10f91355
 
   const simulation = d3
     .forceSimulation<Node>(data.nodes)
