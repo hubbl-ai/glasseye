@@ -4,7 +4,7 @@ export async function force(
   size: Size = defaultArgumentObject.size,
   file?: DataFile,
   colors: string[] = defaultArgumentObject.colors
-): Promise<void> {
+) {
   
   if (file?.path) {
     data = await loadData(file?.path, file?.format);
