@@ -16,7 +16,9 @@ export async function force(
     .select(div)
     .append("svg")
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height)
+    .attr("viewBox", [0, 0, width, height])
+    .attr("style", "max-width: 100%; height: auto;");
 
   const simulation = d3
     .forceSimulation<Node>(data.nodes)

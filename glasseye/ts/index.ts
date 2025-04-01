@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Mon Mar 31 05:55:50 PM EDT 2025
+// Generated Tue Apr  1 09:07:27 AM EDT 2025
 
 
 /// base.ts
@@ -1236,7 +1236,9 @@ export async function force(
     .select(div)
     .append("svg")
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height)
+    .attr("viewBox", [0, 0, width, height])
+    .attr("style", "max-width: 100%; height: auto;");
 
   const simulation = d3
     .forceSimulation<Node>(data.nodes)
