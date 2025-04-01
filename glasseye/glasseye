@@ -216,10 +216,8 @@ def main():
     title = None
     input_file = None
     output_file = None
-
     server_mode = False
     port = default_port
-
     verbosity = logging.WARNING
     errors = 0
     usage = '''Usage: glasseye args input_file
