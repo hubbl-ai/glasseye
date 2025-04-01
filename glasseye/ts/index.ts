@@ -1,9 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-<<<<<<< HEAD
-// Generated Tue Apr  1 09:07:27 AM EDT 2025
-=======
-// Generated Tue Apr  1 00:56:25 CAT 2025
->>>>>>> 5f3b950d2284cbc78004b92507e530a233dd5157
+// Generated Tue Apr  1 10:01:50 AM EDT 2025
 
 
 /// base.ts
@@ -94,78 +90,6 @@ interface Link {
   source: string;
   target: string;
 }
-/// linechart.ts
-
-
-
-export async function linechart(
-  div: string = defaultArgumentObject.div,
-  data: any = defaultArgumentObject.data,
-  size: Size = defaultArgumentObject.size,
-  file: DataFile | null = null,
-  colors: string[],
-  curved = 0
-) {
-  const { width, height } = size;
-  const margin:Margin = defaultMargin;
-
-  if(file?.path)
-  {
-    data = await loadData(file?.path, file?.format);
-  }
-  const processed_data:DataPoint[] = data as DataPoint[];
-
-  // Select the container div and clear any existing SVG
-  const container = d3.select(div);
-  container.selectAll("*").remove();
-
-  const svg = container
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-  // Define X and Y scales
-  const xScale = d3
-    .scaleLinear()
-    .domain([
-      d3.min(processed_data, (d: DataPoint) => d.x) ?? 0,
-      d3.max(processed_data, (d: DataPoint) => d.x) ?? 0,
-    ])
-    .range([margin.left, width - margin.right]);
-
-  const yScale = d3
-    .scaleLinear()
-    .domain([0, d3.max(processed_data, (d: DataPoint) => d.y) ?? 0])
-    .range([height - margin.bottom, margin.top]);
-
-  // Create the line generator
-  const line = d3
-    .line<DataPoint>()
-    .x((d) => xScale(d.x))
-    .y((d) => yScale(d.y))
-    .curve(curved ? d3.curveMonotoneX : d3.curveLinear);
-
-  // Append the line path
-  svg
-    .append("path")
-    .datum(processed_data)
-    .attr("fill", "none")
-    .attr("stroke", colors[0])
-    .attr("stroke-width", 2)
-    .attr("d", line);
-
-  // Append X axis
-  svg
-    .append("g")
-    .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(xScale).ticks(6));
-
-  // Append Y axis
-  svg
-    .append("g")
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(yScale));
-}
 /// barchart.ts
 
 
@@ -245,424 +169,6 @@ export async function barchart(
     })
     .on("mouseout", function () {
       d3.select(this).transition().duration(200).style("opacity", 1);
-      tooltip.style("display", "none");
-    });
-}
-/// piechart.ts
-
-
-export async function piechart(
-  div: string = defaultArgumentObject.div,
-  data: any = defaultArgumentObject.data,
-  size: Size = defaultArgumentObject.size,
-  file?: DataFile,
-  colors: string[]= defaultArgumentObject.colors,
-  donut?: 0
-) {
-  const { width, height } = size;
-  const radius = Math.min(width, height) / 2;
-
-  if(file?.path)
-    {
-      data = await loadData(file?.path, file?.format);
-    }
-    const processed_data:DataLabeled[] = data as DataLabeled[];
-
-    if (colors.length < 10)
-    {
-      colors.push(...defaultArgumentObject.colors);
-    }
-
-  const svg = d3
-    .select(div)
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .append("g")
-    .attr("transform", `translate(${width / 2}, ${height / 2})`);
-
-  const color = d3
-    .scaleOrdinal<string>()
-    .domain(processed_data.map((d:any) => d.label))
-    .range(colors);
-    // .range(d3.schemeTableau10);
-
-  const pie = d3.pie<DataLabeled>().value((d) => d.value);
-
-  const arc: any = d3
-    .arc<d3.PieArcDatum<DataLabeled>>()
-    .innerRadius(donut ? radius * 0.5 :0)
-    .outerRadius(radius);
-
-    const tooltip = d3
-    .select("body")
-    .append("div")
-    .style("position", "absolute")
-    .style("padding", "6px")
-    .style("background", "#333")
-    .style("color", "#fff")
-    .style("border-radius", "4px")
-    .style("font-size", "12px")
-    .style("display", "none");
-
-  const arcs = svg
-    .selectAll("arc")
-    .data(pie(processed_data))
-    .enter()
-    .append("g")
-    .attr("class", "arc")
-    .on("mouseover", function (event, d:any) {
-      d3.select(this).transition().duration(200).style("opacity", 0.7);
-
-      tooltip
-      .style("display", "block")
-      .style("left", `${event.pageX}px`)
-      .style("top", `${event.pageY}px`)
-      .text(d.data.label);
-
-    })
-    .on("mouseout", function () {
-      d3.select(this).transition().duration(200).style("opacity", 1);
-      tooltip.style("display", "none");
-    });
-    
-
-  arcs
-    .append("path")
-    .attr("d", arc)
-    .attr("fill", (d: any) => color(d.data.label));
-
-  arcs
-    .append("text")
-    .attr("transform", (d) => `translate(${arc.centroid(d)})`)
-    .attr("text-anchor", "middle")
-    .style("font-size", "16px")
-    .style("fill", "#FFFFFF")
-    .text((d: any) => d.data.label);
-}
-/// skey.ts
-
-export function skey(
-  div: string = defaultArgumentObject.div,
-  data: any = defaultArgumentObject.data,
-  size: Size = defaultArgumentObject.size,
-  file?: DataFile,
-  colors: string[]= defaultArgumentObject.colors,
-) {
-  const { width, height } = size;
-  const nodeWidth = 20;
-  const nodePadding = 10;
-
-  // Set up SVG container
-  const svg = d3
-    .select(div)
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-  // Define Sankey generator
-  const sankeyGenerator = sankey<any, any>()
-    .nodeWidth(nodeWidth)
-    .nodePadding(nodePadding)
-    .extent([
-      [0, 0],
-      [width, height],
-    ]);
-
-  // Process the data
-  const graph: SankeyGraph<any, any> = sankeyGenerator(data);
-
-  // Color scale
-  const color = d3.scaleOrdinal<string>().domain(data.nodes.map((d: any) => d.name)).range(colors);
-
-  // Draw Links
-  svg
-    .append("g")
-    .selectAll("path")
-    .data(graph.links)
-    .enter()
-    .append("path")
-    .attr("d", sankeyLinkHorizontal())
-    .attr("stroke", (d: any) => color(d.source.name) || "#999")
-    .attr("stroke-width", (d: any) => Math.max(1, d.width))
-    .attr("fill", "none")
-    .attr("opacity", 0.7);
-
-  // Draw Nodes
-  const node = svg
-    .append("g")
-    .selectAll("rect")
-    .data(graph.nodes)
-    .enter()
-    .append("rect")
-    .attr("x", (d: any) => d.x0)
-    .attr("y", (d: any) => d.y0)
-    .attr("height", (d: any) => d.y1 - d.y0)
-    .attr("width", sankeyGenerator.nodeWidth())
-    .attr("fill", (d: any) => color(d.name))
-    .attr("stroke", "#666A6D")
-    .attr("stroke-width", 1);
-
-  // Add Node Labels
-  node
-    .append("title")
-    .text((d: any) => `${d.name}\n${d.value}`);
-
-  svg
-    .append("g")
-    .selectAll("text")
-    .data(graph.nodes)
-    .enter()
-    .append("text")
-    .attr("x", (d: any) => d.x0 == 0 ? nodeWidth + 6 : d.x0 - 6)
-    .attr("y", (d: any) => (d.y0 + d.y1) / 2)
-    .attr("dy", "0.35em")
-    .attr("text-anchor", (d: any) => d.x0 == 0 ? "start" : "end")
-    .attr("font-size", "smaller")
-    .text((d: any) => d.name)
-    .attr("fill", "#000");
-
-  return svg.node();
-}
-/// gantt.ts
-
-export async function gantt(
-  div: string = defaultArgumentObject.div,
-  data: any = defaultArgumentObject.data,
-  size: Size = defaultArgumentObject.size,
-  file?: DataFile,
-  colors: string[]= defaultArgumentObject.colors,
-) {
-  if (file?.path) {
-    data = await loadData(file?.path, file?.format);
-  }
-
-  const svg = d3
-    .select(div)
-    .append("svg")
-    .attr("width", size.width)
-    .attr("height", size.height);
-
-  
-  const margin = defaultMargin;
-  const width = size.width - margin.left - margin.right;
-  const height = size.height - margin.top - margin.bottom;
-
-  const x = d3
-    .scaleTime()
-    .domain([
-      d3.min(data, (d: any) => new Date(d.start)) as Date,
-      d3.max(data, (d: any) => new Date(d.end)) as Date,
-    ])
-    .range([0, width]);
-
-  const y = d3
-    .scaleBand()
-    .domain(data.map((d: any) => d.task))
-    .range([0, height])
-    .padding(0.2);
-
-  const g = svg
-    .append("g")
-    .attr("transform", `translate(${margin.left},${margin.top})`);
-
-  g.append("g").call(d3.axisLeft(y));
-
-  g.append("g")
-    .attr("transform", `translate(0,${height})`)
-    .call(d3.axisBottom(x));
-
-  g.selectAll(".task")
-    .data(data)
-    .enter()
-    .append("rect")
-    .attr("class", "task")
-    .attr("x", (d: any) => x(new Date(d.start)))
-    .attr("y", (d: any) => y(d.task) as number)
-    .attr("width", (d: any) => x(new Date(d.end)) - x(new Date(d.start)))
-    .attr("height", y.bandwidth())
-    .attr("fill", (d, i) => colors[i % colors.length]);
-}
-
-/// dotplot.ts
-
-export async function dotplot(
-  div: string = defaultArgumentObject.div,
-  data: any = defaultArgumentObject.data,
-  size: Size = defaultArgumentObject.size,
-  file?: DataFile,
-  colors: string[] = defaultArgumentObject.colors
-) {
- 
-  if (file?.path) {
-    data = await loadData(file?.path, file?.format);
-  }
-
-  const { width, height } = size;
-  const margin = defaultMargin;
-  const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
-  const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
-
-  // Remove previous SVG if exists
-  d3.select(div).select("svg").remove();
-
-  // Create the SVG container
-  const svg = d3
-    .select(div)
-    .append("svg")
-    .attr("width", svgWidth)
-    .attr("height", svgHeight)
-    .append("g")
-    .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
-
-  // Define scales
-  const xScale = d3
-    .scaleBand()
-    .domain(data.map((d: any) => d.category))
-    .range([0, width])
-    .padding(0.5);
-
-  const yScale = d3
-    .scaleLinear()
-    .domain([0, d3.max(data, (d: any) => Number(d.value)) as number])
-    .nice()
-    .range([height, 0]);
-
-  const tooltip = d3
-    .select("body")
-    .append("div")
-    .style("position", "absolute")
-    .style("padding", "6px")
-    .style("background", "#333")
-    .style("color", "#fff")
-    .style("border-radius", "4px")
-    .style("font-size", "12px")
-    .style("display", "none");
-
-  // Define dots
-  svg
-    .selectAll("circle")
-    .data(data)
-    .enter()
-    .append("circle")
-    .attr("cx", (d: any) => xScale(d.category)! + xScale.bandwidth() / 2)
-    .attr("cy", (d: any) => yScale(d.value))
-    .attr("r", 5)
-    .attr("fill", (d, i) => colors[i % colors.length])
-    .on("mouseover", function (event, d:any) {
-      d3.select(this).transition().duration(200).style("opacity", 0.7);
-      d3.select(this).transition().duration(200).attr("r", 7);
-
-      tooltip
-      .style("display", "block")
-      .style("left", `${event.pageX}px`)
-      .style("top", `${event.pageY}px`)
-      .text(`${d.category}-${d.value}`);
-
-    })
-    .on("mouseout", function () {
-      d3.select(this).transition().duration(200).style("opacity", 1);
-      d3.select(this).transition().duration(200).attr("r", 5);
-      tooltip.style("display", "none");
-    });
-
-  // Add X Axis
-  svg
-    .append("g")
-    .attr("transform", `translate(0,${height})`)
-    .call(d3.axisBottom(xScale));
-
-  // Add Y Axis
-  svg.append("g").call(d3.axisLeft(yScale));
-}
-/// scatterplot.ts
-
-export async function scatterplot(
-  div: string = defaultArgumentObject.div,
-  data: any = defaultArgumentObject.data,
-  size: Size = defaultArgumentObject.size,
-  file?: DataFile,
-  colors: string[] = defaultArgumentObject.colors
-) {
- 
-  if (file?.path) {
-    data = await loadData(file?.path, file?.format);
-  }
-
-  const { width, height } = size;
-  const margin = defaultMargin;
-  const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
-  const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
-
-  // Remove previous SVG if exists
-  d3.select(div).select("svg").remove();
-
-  // Create the SVG container
-  const svg = d3
-    .select(div)
-    .append("svg")
-    .attr("width", svgWidth)
-    .attr("height", svgHeight)
-    .append("g")
-    .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
-
-  // Define scales
-  const xScale = d3
-    .scaleLinear()
-    .domain([0, d3.max(data, (d: any) => +d.x) || 0])
-    .range([0, width]);
-
-  const yScale = d3
-    .scaleLinear()
-    .domain([0, d3.max(data, (d: any) => +d.y) || 0])
-    .range([height, 0]);
-
-
-  const tooltip = d3
-  .select("body")
-  .append("div")
-  .style("position", "absolute")
-  .style("padding", "6px")
-  .style("background", "#333")
-  .style("color", "#fff")
-  .style("border-radius", "4px")
-  .style("font-size", "12px")
-  .style("display", "none");
-
-  // Add X Axis
-  svg
-    .append("g")
-    .attr("transform", `translate(0,${height})`)
-    .call(d3.axisBottom(xScale));
-
-  // Add Y Axis
-  svg.append("g").call(d3.axisLeft(yScale));
-
-  // Add dots
-  svg
-    .append("g")
-    .selectAll("dot")
-    .data(data)
-    .enter()
-    .append("circle")
-    .attr("cx", (d: any) => xScale(+d.x))
-    .attr("cy", (d: any) => yScale(+d.y))
-    .attr("r", 5)
-    .style("fill", (d, i) => colors[i % colors.length])
-    .on("mouseover", function (event, d:any) {
-      d3.select(this).transition().duration(200).style("opacity", 0.7);
-      d3.select(this).transition().duration(200).attr("r", 7);
-
-      tooltip
-      .style("display", "block")
-      .style("left", `${event.pageX}px`)
-      .style("top", `${event.pageY}px`)
-      .text(`${d.x}-${d.y}`);
-
-    })
-    .on("mouseout", function () {
-      d3.select(this).transition().duration(200).style("opacity", 1);
-      d3.select(this).transition().duration(200).attr("r", 5);
       tooltip.style("display", "none");
     });
 }
@@ -796,6 +302,304 @@ export async function boxplot(
   // Add Y Axis
   svg.append("g").call(d3.axisLeft(yScale));
 }
+/// chord.ts
+
+export async function chord(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
+
+  const { width, height } = size;
+
+  const innerRadius = Math.min(width, height) * 0.4;
+  const outerRadius = innerRadius + 20;
+
+  const color = d3.scaleOrdinal(colors || d3.schemeCategory10);
+
+  const chord = d3.chord().padAngle(0.05).sortSubgroups(d3.descending);
+  const arc = d3.arc().innerRadius(innerRadius).outerRadius(outerRadius);
+  const ribbon = d3.ribbon().radius(innerRadius);
+
+  const chords = chord(data);
+
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", `translate(${width / 2},${height / 2})`);
+
+  // Draw arcs
+  const group = svg
+    .append("g")
+    .selectAll("g")
+    .data(chords.groups)
+    .enter()
+    .append("g");
+
+  group
+    .append("path")
+    .attr("d", arc as any)
+    .style("fill", (_, i) => color(i.toString()))
+    .style("stroke", "#000");
+
+  group
+    .append("text")
+    .attr("dy", ".35em")
+    .attr("x", (d) => (outerRadius + 5) * Math.cos((d.startAngle + d.endAngle) / 2 - Math.PI / 2))
+    .attr("y", (d) => (outerRadius + 5) * Math.sin((d.startAngle + d.endAngle) / 2 - Math.PI / 2))
+    .attr("text-anchor", (d) => ((d.startAngle + d.endAngle) / 2 > Math.PI ? "end" : "start"))
+    .text((d, i) => `Group ${i}`)
+    .style("font-size", "12px")
+    .style("fill", "#000");
+
+  group
+    .append("title")
+    .text((d, i) => `Group ${i}: ${d.value}`);
+
+  // Draw ribbons
+  svg
+    .append("g")
+    .selectAll("path")
+    .data(chords)
+    .enter()
+    .append("path")
+    .attr("d", ribbon as any)
+    .style("fill", (d) => color(d.source.index.toString()))
+    .style("stroke", "#000");
+}
+
+/// dotplot.ts
+
+export async function dotplot(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+ 
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
+
+  const { width, height } = size;
+  const margin = defaultMargin;
+  const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
+  const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
+
+  // Remove previous SVG if exists
+  d3.select(div).select("svg").remove();
+
+  // Create the SVG container
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
+    .append("g")
+    .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
+
+  // Define scales
+  const xScale = d3
+    .scaleBand()
+    .domain(data.map((d: any) => d.category))
+    .range([0, width])
+    .padding(0.5);
+
+  const yScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, (d: any) => Number(d.value)) as number])
+    .nice()
+    .range([height, 0]);
+
+  const tooltip = d3
+    .select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("padding", "6px")
+    .style("background", "#333")
+    .style("color", "#fff")
+    .style("border-radius", "4px")
+    .style("font-size", "12px")
+    .style("display", "none");
+
+  // Define dots
+  svg
+    .selectAll("circle")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("cx", (d: any) => xScale(d.category)! + xScale.bandwidth() / 2)
+    .attr("cy", (d: any) => yScale(d.value))
+    .attr("r", 5)
+    .attr("fill", (d, i) => colors[i % colors.length])
+    .on("mouseover", function (event, d:any) {
+      d3.select(this).transition().duration(200).style("opacity", 0.7);
+      d3.select(this).transition().duration(200).attr("r", 7);
+
+      tooltip
+      .style("display", "block")
+      .style("left", `${event.pageX}px`)
+      .style("top", `${event.pageY}px`)
+      .text(`${d.category}-${d.value}`);
+
+    })
+    .on("mouseout", function () {
+      d3.select(this).transition().duration(200).style("opacity", 1);
+      d3.select(this).transition().duration(200).attr("r", 5);
+      tooltip.style("display", "none");
+    });
+
+  // Add X Axis
+  svg
+    .append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(xScale));
+
+  // Add Y Axis
+  svg.append("g").call(d3.axisLeft(yScale));
+}
+/// force.ts
+
+export async function force(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+  
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
+
+
+  const { width, height } = size;
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .attr("viewBox", [0, 0, width, height])
+    .attr("style", "max-width: 100%; height: auto;");
+
+  const simulation = d3
+    .forceSimulation<Node>(data.nodes)
+    .force("link", d3.forceLink<Node, Link>(data.links).id((d:any) => d.id).distance(100))
+    .force("charge", d3.forceManyBody().strength(-300))
+    .force("center", d3.forceCenter(width / 2, height / 2));
+
+  const link = svg
+    .selectAll("line")
+    .data(data.links)
+    .enter()
+    .append("line")
+    .attr("stroke", "#999")
+    .attr("stroke-opacity", 0.6);
+
+  const node = svg
+    .selectAll("circle")
+    .data(data.nodes)
+    .enter()
+    .append("circle")
+    .attr("r", 10)
+    .attr("fill", (d:any, i) => colors[d.group % colors.length])
+    .call(
+      d3.drag<any, any>()
+        .on("start", (event, d) => {
+          if (!event.active) simulation.alphaTarget(0.3).restart();
+          d.fx = d.x;
+          d.fy = d.y;
+        })
+        .on("drag", (event, d) => {
+          d.fx = event.x;
+          d.fy = event.y;
+        })
+        .on("end", (event, d) => {
+          if (!event.active) simulation.alphaTarget(0);
+          d.fx = null;
+          d.fy = null;
+        })
+    );
+
+  simulation.on("tick", () => {
+    link
+      .attr("x1", (d:any) => (d.source as Node).x!)
+      .attr("y1", (d:any) => (d.source as Node).y!)
+      .attr("x2", (d:any) => (d.target as Node).x!)
+      .attr("y2", (d:any) => (d.target as Node).y!);
+
+    node.attr("cx", (d:any) => d.x!).attr("cy", (d:any) => d.y!);
+  });
+}
+/// gantt.ts
+
+export async function gantt(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[]= defaultArgumentObject.colors,
+) {
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
+
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", size.width)
+    .attr("height", size.height);
+
+  
+  const margin = defaultMargin;
+  const width = size.width - margin.left - margin.right;
+  const height = size.height - margin.top - margin.bottom;
+
+  const x = d3
+    .scaleTime()
+    .domain([
+      d3.min(data, (d: any) => new Date(d.start)) as Date,
+      d3.max(data, (d: any) => new Date(d.end)) as Date,
+    ])
+    .range([0, width]);
+
+  const y = d3
+    .scaleBand()
+    .domain(data.map((d: any) => d.task))
+    .range([0, height])
+    .padding(0.2);
+
+  const g = svg
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  g.append("g").call(d3.axisLeft(y));
+
+  g.append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(x));
+
+  g.selectAll(".task")
+    .data(data)
+    .enter()
+    .append("rect")
+    .attr("class", "task")
+    .attr("x", (d: any) => x(new Date(d.start)))
+    .attr("y", (d: any) => y(d.task) as number)
+    .attr("width", (d: any) => x(new Date(d.end)) - x(new Date(d.start)))
+    .attr("height", y.bandwidth())
+    .attr("fill", (d, i) => colors[i % colors.length]);
+}
+
 /// heatmap.ts
 
 export async function heatmap(
@@ -913,15 +717,180 @@ export async function heatmap(
 
     svg.call(zoom as unknown as (selection: d3.Selection<SVGSVGElement, unknown, HTMLElement, any>) => void);
 }
-/// treemap.ts
+/// linechart.ts
 
-export async function treemap(
+
+
+export async function linechart(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file: DataFile | null = null,
+  colors: string[],
+  curved = 0
+) {
+  const { width, height } = size;
+  const margin:Margin = defaultMargin;
+
+  if(file?.path)
+  {
+    data = await loadData(file?.path, file?.format);
+  }
+  const processed_data:DataPoint[] = data as DataPoint[];
+
+  // Select the container div and clear any existing SVG
+  const container = d3.select(div);
+  container.selectAll("*").remove();
+
+  const svg = container
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  // Define X and Y scales
+  const xScale = d3
+    .scaleLinear()
+    .domain([
+      d3.min(processed_data, (d: DataPoint) => d.x) ?? 0,
+      d3.max(processed_data, (d: DataPoint) => d.x) ?? 0,
+    ])
+    .range([margin.left, width - margin.right]);
+
+  const yScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(processed_data, (d: DataPoint) => d.y) ?? 0])
+    .range([height - margin.bottom, margin.top]);
+
+  // Create the line generator
+  const line = d3
+    .line<DataPoint>()
+    .x((d) => xScale(d.x))
+    .y((d) => yScale(d.y))
+    .curve(curved ? d3.curveMonotoneX : d3.curveLinear);
+
+  // Append the line path
+  svg
+    .append("path")
+    .datum(processed_data)
+    .attr("fill", "none")
+    .attr("stroke", colors[0])
+    .attr("stroke-width", 2)
+    .attr("d", line);
+
+  // Append X axis
+  svg
+    .append("g")
+    .attr("transform", `translate(0,${height - margin.bottom})`)
+    .call(d3.axisBottom(xScale).ticks(6));
+
+  // Append Y axis
+  svg
+    .append("g")
+    .attr("transform", `translate(${margin.left},0)`)
+    .call(d3.axisLeft(yScale));
+}
+/// piechart.ts
+
+
+export async function piechart(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[]= defaultArgumentObject.colors,
+  donut?: 0
+) {
+  const { width, height } = size;
+  const radius = Math.min(width, height) / 2;
+
+  if(file?.path)
+    {
+      data = await loadData(file?.path, file?.format);
+    }
+    const processed_data:DataLabeled[] = data as DataLabeled[];
+
+    if (colors.length < 10)
+    {
+      colors.push(...defaultArgumentObject.colors);
+    }
+
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", `translate(${width / 2}, ${height / 2})`);
+
+  const color = d3
+    .scaleOrdinal<string>()
+    .domain(processed_data.map((d:any) => d.label))
+    .range(colors);
+    // .range(d3.schemeTableau10);
+
+  const pie = d3.pie<DataLabeled>().value((d) => d.value);
+
+  const arc: any = d3
+    .arc<d3.PieArcDatum<DataLabeled>>()
+    .innerRadius(donut ? radius * 0.5 :0)
+    .outerRadius(radius);
+
+    const tooltip = d3
+    .select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("padding", "6px")
+    .style("background", "#333")
+    .style("color", "#fff")
+    .style("border-radius", "4px")
+    .style("font-size", "12px")
+    .style("display", "none");
+
+  const arcs = svg
+    .selectAll("arc")
+    .data(pie(processed_data))
+    .enter()
+    .append("g")
+    .attr("class", "arc")
+    .on("mouseover", function (event, d:any) {
+      d3.select(this).transition().duration(200).style("opacity", 0.7);
+
+      tooltip
+      .style("display", "block")
+      .style("left", `${event.pageX}px`)
+      .style("top", `${event.pageY}px`)
+      .text(d.data.label);
+
+    })
+    .on("mouseout", function () {
+      d3.select(this).transition().duration(200).style("opacity", 1);
+      tooltip.style("display", "none");
+    });
+    
+
+  arcs
+    .append("path")
+    .attr("d", arc)
+    .attr("fill", (d: any) => color(d.data.label));
+
+  arcs
+    .append("text")
+    .attr("transform", (d) => `translate(${arc.centroid(d)})`)
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px")
+    .style("fill", "#FFFFFF")
+    .text((d: any) => d.data.label);
+}
+/// scatterplot.ts
+
+export async function scatterplot(
   div: string = defaultArgumentObject.div,
   data: any = defaultArgumentObject.data,
   size: Size = defaultArgumentObject.size,
   file?: DataFile,
   colors: string[] = defaultArgumentObject.colors
 ) {
+ 
   if (file?.path) {
     data = await loadData(file?.path, file?.format);
   }
@@ -930,58 +899,163 @@ export async function treemap(
   const margin = defaultMargin;
   const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
   const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
- // Remove previous SVG if exists
- d3.select(div).select("svg").remove();
 
- // Create hierarchical data structure
- const root = d3.hierarchy(data).sum((d: any) => d.value);
+  // Remove previous SVG if exists
+  d3.select(div).select("svg").remove();
 
- // Apply the treemap layout BEFORE accessing `leaves()`
- const treemapRoot = d3.treemap<any>().size([width, height]).padding(2)(root);
+  // Create the SVG container
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
+    .append("g")
+    .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
 
- // Now leaves() returns `HierarchyRectangularNode<T>`, which has `x0, y0, x1, y1`
- const leaves = treemapRoot.leaves();
+  // Define scales
+  const xScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, (d: any) => +d.x) || 0])
+    .range([0, width]);
 
- // Define color scale
- const colorScale = d3.scaleOrdinal<string>().domain(leaves.map(d => d.data.name)).range(colors);
+  const yScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(data, (d: any) => +d.y) || 0])
+    .range([height, 0]);
 
- // Create SVG
- const svg = d3
-   .select(div)
-   .append("svg")
-   .attr("width", svgWidth)
-   .attr("height", svgHeight)
-   .append("g")
-   .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
 
- // Add rectangles
- svg
-   .selectAll("rect")
-   .data(leaves)
-   .enter()
-   .append("rect")
-   .attr("x", (d) => d.x0)
-   .attr("y", (d) => d.y0)
-   .attr("width", (d) => d.x1 - d.x0)
-   .attr("height", (d) => d.y1 - d.y0)
-   .style("fill", (d) => colorScale(d.data.name))
-   .style("stroke", "#FFFFFF");
+  const tooltip = d3
+  .select("body")
+  .append("div")
+  .style("position", "absolute")
+  .style("padding", "6px")
+  .style("background", "#333")
+  .style("color", "#fff")
+  .style("border-radius", "4px")
+  .style("font-size", "12px")
+  .style("display", "none");
 
- // Add labels
- svg
-   .selectAll("text")
-   .data(leaves)
-   .enter()
-   .append("text")
-   .attr("x", (d) => d.x0 + (d.x1 - d.x0) / 2) // Center horizontally
-   .attr("y", (d) => d.y0 + (d.y1 - d.y0) / 2) // Center vertically
-   .attr("text-anchor", "middle") // Align text in the center
-   .attr("dominant-baseline", "middle") // Align text vertically
-   .attr("font-size", "16px")
-   .attr("fill", "#FFFFFF")
-   .text((d) => d.data.name);
+  // Add X Axis
+  svg
+    .append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(xScale));
+
+  // Add Y Axis
+  svg.append("g").call(d3.axisLeft(yScale));
+
+  // Add dots
+  svg
+    .append("g")
+    .selectAll("dot")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("cx", (d: any) => xScale(+d.x))
+    .attr("cy", (d: any) => yScale(+d.y))
+    .attr("r", 5)
+    .style("fill", (d, i) => colors[i % colors.length])
+    .on("mouseover", function (event, d:any) {
+      d3.select(this).transition().duration(200).style("opacity", 0.7);
+      d3.select(this).transition().duration(200).attr("r", 7);
+
+      tooltip
+      .style("display", "block")
+      .style("left", `${event.pageX}px`)
+      .style("top", `${event.pageY}px`)
+      .text(`${d.x}-${d.y}`);
+
+    })
+    .on("mouseout", function () {
+      d3.select(this).transition().duration(200).style("opacity", 1);
+      d3.select(this).transition().duration(200).attr("r", 5);
+      tooltip.style("display", "none");
+    });
 }
+/// skey.ts
 
+export function skey(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[]= defaultArgumentObject.colors,
+) {
+  const { width, height } = size;
+  const nodeWidth = 20;
+  const nodePadding = 10;
+
+  // Set up SVG container
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  // Define Sankey generator
+  const sankeyGenerator = sankey<any, any>()
+    .nodeWidth(nodeWidth)
+    .nodePadding(nodePadding)
+    .extent([
+      [0, 0],
+      [width, height],
+    ]);
+
+  // Process the data
+  const graph: SankeyGraph<any, any> = sankeyGenerator(data);
+
+  // Color scale
+  const color = d3.scaleOrdinal<string>().domain(data.nodes.map((d: any) => d.name)).range(colors);
+
+  // Draw Links
+  svg
+    .append("g")
+    .selectAll("path")
+    .data(graph.links)
+    .enter()
+    .append("path")
+    .attr("d", sankeyLinkHorizontal())
+    .attr("stroke", (d: any) => color(d.source.name) || "#999")
+    .attr("stroke-width", (d: any) => Math.max(1, d.width))
+    .attr("fill", "none")
+    .attr("opacity", 0.7);
+
+  // Draw Nodes
+  const node = svg
+    .append("g")
+    .selectAll("rect")
+    .data(graph.nodes)
+    .enter()
+    .append("rect")
+    .attr("x", (d: any) => d.x0)
+    .attr("y", (d: any) => d.y0)
+    .attr("height", (d: any) => d.y1 - d.y0)
+    .attr("width", sankeyGenerator.nodeWidth())
+    .attr("fill", (d: any) => color(d.name))
+    .attr("stroke", "#666A6D")
+    .attr("stroke-width", 1);
+
+  // Add Node Labels
+  node
+    .append("title")
+    .text((d: any) => `${d.name}\n${d.value}`);
+
+  svg
+    .append("g")
+    .selectAll("text")
+    .data(graph.nodes)
+    .enter()
+    .append("text")
+    .attr("x", (d: any) => d.x0 == 0 ? nodeWidth + 6 : d.x0 - 6)
+    .attr("y", (d: any) => (d.y0 + d.y1) / 2)
+    .attr("dy", "0.35em")
+    .attr("text-anchor", (d: any) => d.x0 == 0 ? "start" : "end")
+    .attr("font-size", "smaller")
+    .text((d: any) => d.name)
+    .attr("fill", "#000");
+
+  return svg.node();
+}
 /// tree.ts
 
 export async function tree(
@@ -1126,6 +1200,75 @@ export async function tree(
     .style("fill", colors[0])
     .text((d) => d.data.name);
 }
+/// treemap.ts
+
+export async function treemap(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
+
+  const { width, height } = size;
+  const margin = defaultMargin;
+  const svgWidth = width + (margin?.left || 0) + (margin?.right || 0);
+  const svgHeight = height + (margin?.top || 0) + (margin?.bottom || 0);
+ // Remove previous SVG if exists
+ d3.select(div).select("svg").remove();
+
+ // Create hierarchical data structure
+ const root = d3.hierarchy(data).sum((d: any) => d.value);
+
+ // Apply the treemap layout BEFORE accessing `leaves()`
+ const treemapRoot = d3.treemap<any>().size([width, height]).padding(2)(root);
+
+ // Now leaves() returns `HierarchyRectangularNode<T>`, which has `x0, y0, x1, y1`
+ const leaves = treemapRoot.leaves();
+
+ // Define color scale
+ const colorScale = d3.scaleOrdinal<string>().domain(leaves.map(d => d.data.name)).range(colors);
+
+ // Create SVG
+ const svg = d3
+   .select(div)
+   .append("svg")
+   .attr("width", svgWidth)
+   .attr("height", svgHeight)
+   .append("g")
+   .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
+
+ // Add rectangles
+ svg
+   .selectAll("rect")
+   .data(leaves)
+   .enter()
+   .append("rect")
+   .attr("x", (d) => d.x0)
+   .attr("y", (d) => d.y0)
+   .attr("width", (d) => d.x1 - d.x0)
+   .attr("height", (d) => d.y1 - d.y0)
+   .style("fill", (d) => colorScale(d.data.name))
+   .style("stroke", "#FFFFFF");
+
+ // Add labels
+ svg
+   .selectAll("text")
+   .data(leaves)
+   .enter()
+   .append("text")
+   .attr("x", (d) => d.x0 + (d.x1 - d.x0) / 2) // Center horizontally
+   .attr("y", (d) => d.y0 + (d.y1 - d.y0) / 2) // Center vertically
+   .attr("text-anchor", "middle") // Align text in the center
+   .attr("dominant-baseline", "middle") // Align text vertically
+   .attr("font-size", "16px")
+   .attr("fill", "#FFFFFF")
+   .text((d) => d.data.name);
+}
+
 /// venn.ts
 
 export async function venn(
@@ -1219,150 +1362,4 @@ export async function venn(
     .style("fill", colors[0])
     .style("font-size", "14px")
     .text((d:any) => d.data.name);
-}
-/// force.ts
-
-export async function force(
-  div: string = defaultArgumentObject.div,
-  data: any = defaultArgumentObject.data,
-  size: Size = defaultArgumentObject.size,
-  file?: DataFile,
-  colors: string[] = defaultArgumentObject.colors
-) {
-  
-  if (file?.path) {
-    data = await loadData(file?.path, file?.format);
-  }
-
-
-  const { width, height } = size;
-  const svg = d3
-    .select(div)
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .attr("viewBox", [0, 0, width, height])
-    .attr("style", "max-width: 100%; height: auto;");
-
-  const simulation = d3
-    .forceSimulation<Node>(data.nodes)
-    .force("link", d3.forceLink<Node, Link>(data.links).id((d:any) => d.id).distance(100))
-    .force("charge", d3.forceManyBody().strength(-300))
-    .force("center", d3.forceCenter(width / 2, height / 2));
-
-  const link = svg
-    .selectAll("line")
-    .data(data.links)
-    .enter()
-    .append("line")
-    .attr("stroke", "#999")
-    .attr("stroke-opacity", 0.6);
-
-  const node = svg
-    .selectAll("circle")
-    .data(data.nodes)
-    .enter()
-    .append("circle")
-    .attr("r", 10)
-    .attr("fill", (d:any, i) => colors[d.group % colors.length])
-    .call(
-      d3.drag<any, any>()
-        .on("start", (event, d) => {
-          if (!event.active) simulation.alphaTarget(0.3).restart();
-          d.fx = d.x;
-          d.fy = d.y;
-        })
-        .on("drag", (event, d) => {
-          d.fx = event.x;
-          d.fy = event.y;
-        })
-        .on("end", (event, d) => {
-          if (!event.active) simulation.alphaTarget(0);
-          d.fx = null;
-          d.fy = null;
-        })
-    );
-
-  simulation.on("tick", () => {
-    link
-      .attr("x1", (d:any) => (d.source as Node).x!)
-      .attr("y1", (d:any) => (d.source as Node).y!)
-      .attr("x2", (d:any) => (d.target as Node).x!)
-      .attr("y2", (d:any) => (d.target as Node).y!);
-
-    node.attr("cx", (d:any) => d.x!).attr("cy", (d:any) => d.y!);
-  });
-}
-/// chord.ts
-
-export async function chord(
-  div: string = defaultArgumentObject.div,
-  data: any = defaultArgumentObject.data,
-  size: Size = defaultArgumentObject.size,
-  file?: DataFile,
-  colors: string[] = defaultArgumentObject.colors
-) {
-  if (file?.path) {
-    data = await loadData(file?.path, file?.format);
-  }
-
-  const { width, height } = size;
-
-  const innerRadius = Math.min(width, height) * 0.4;
-  const outerRadius = innerRadius + 20;
-
-  const color = d3.scaleOrdinal(colors || d3.schemeCategory10);
-
-  const chord = d3.chord().padAngle(0.05).sortSubgroups(d3.descending);
-  const arc = d3.arc().innerRadius(innerRadius).outerRadius(outerRadius);
-  const ribbon = d3.ribbon().radius(innerRadius);
-
-  const chords = chord(data);
-
-  const svg = d3
-    .select(div)
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height)
-    .append("g")
-    .attr("transform", `translate(${width / 2},${height / 2})`);
-
-  // Draw arcs
-  const group = svg
-    .append("g")
-    .selectAll("g")
-    .data(chords.groups)
-    .enter()
-    .append("g");
-
-  group
-    .append("path")
-    .attr("d", arc as any)
-    .style("fill", (_, i) => color(i.toString()))
-    .style("stroke", "#000");
-
-  group
-    .append("text")
-    .attr("dy", ".35em")
-    .attr("x", (d) => (outerRadius + 5) * Math.cos((d.startAngle + d.endAngle) / 2 - Math.PI / 2))
-    .attr("y", (d) => (outerRadius + 5) * Math.sin((d.startAngle + d.endAngle) / 2 - Math.PI / 2))
-    .attr("text-anchor", (d) => ((d.startAngle + d.endAngle) / 2 > Math.PI ? "end" : "start"))
-    .text((d, i) => `Group ${i}`)
-    .style("font-size", "12px")
-    .style("fill", "#000");
-
-  group
-    .append("title")
-    .text((d, i) => `Group ${i}: ${d.value}`);
-
-  // Draw ribbons
-  svg
-    .append("g")
-    .selectAll("path")
-    .data(chords)
-    .enter()
-    .append("path")
-    .attr("d", ribbon as any)
-    .style("fill", (d) => color(d.source.index.toString()))
-    .style("stroke", "#000");
 }

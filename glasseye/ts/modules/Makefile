@@ -6,20 +6,21 @@ TARGET_FILE = ../dist/glasseyechart.js
 
 SOURCE_FILES = \
 	base.ts \
-	linechart.ts \
 	barchart.ts \
-	piechart.ts \
-	skey.ts \
-	gantt.ts \
-	dotplot.ts \
-	scatterplot.ts \
 	boxplot.ts \
-	heatmap.ts \
-	treemap.ts \
-	tree.ts \
-	venn.ts \
-	force.ts \
 	chord.ts \
+	dotplot.ts \
+	force.ts \
+	gantt.ts \
+	heatmap.ts \
+	linechart.ts \
+	piechart.ts \
+	scatterplot.ts \
+	skey.ts \
+	tree.ts \
+	treemap.ts \
+	venn.ts
+	# disjoint.ts \
 
 all: $(TARGET_FILE)
 

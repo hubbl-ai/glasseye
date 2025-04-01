@@ -1,5 +1,6 @@
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript2';
+import terser from '@rollup/plugin-terser';
 
 export default {
   input: './index.ts',
@@ -8,5 +9,9 @@ export default {
     format: 'iife', 
     name: 'Glasseye',
   },
-  plugins: [resolve(), typescript()]
+  plugins: [
+    resolve(),
+    typescript(),
+    terser({ format: { comments: false } })
+  ]
 };
