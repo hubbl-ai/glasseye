@@ -1,4 +1,3 @@
-
 export async function barchart(
   div: string = defaultArgumentObject.div,
   data: any = defaultArgumentObject.data,
@@ -26,7 +25,6 @@ export async function barchart(
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
-
   const xHorizontal = d3.scaleLinear().domain([0, d3.max(processed_data, (d) => d.value)!]).range([0, chartWidth]);
 
   const xVertical = d3.scaleBand().domain(processed_data.map((d) => d.label)).range([0, chartWidth]).padding(0.2);
@@ -37,8 +35,8 @@ export async function barchart(
 
   // Draw X axis
   svg.append("g")
-    .attr("transform", horizontal ? `translate(0,0)` : `translate(0, ${chartHeight})`)
-    .call(horizontal ? d3.axisTop(xHorizontal) : d3.axisBottom(xVertical));
+    .attr("transform", `translate(0, ${chartHeight})`)
+    .call(horizontal ? d3.axisBottom(xHorizontal) : d3.axisBottom(xVertical));
 
   // Draw Y axis
   svg.append("g").call(horizontal ? d3.axisLeft(yHorizontal) : d3.axisLeft(yVertical));
@@ -60,10 +58,34 @@ export async function barchart(
     .enter()
     .append("rect")
     .attr("class", "bar")
-    .attr(horizontal ? "y" : "x", (d) => horizontal ? yHorizontal(d.label)! : xVertical(d.label)!)
-    .attr(horizontal ? "x" : "y", (d) => horizontal ? xHorizontal(d.value) : yVertical(d.value))
-    .attr(horizontal ? "height" : "width", horizontal ? yHorizontal.bandwidth() : xVertical.bandwidth())
-    .attr(horizontal ? "width" : "height", (d) => horizontal ? xHorizontal(d.value) : chartHeight - yVertical(d.value))
+    .attr("x", (d) => {
+      if (horizontal) {
+        return 0;
+      } else {
+        return xVertical(d.label)!;
+      }
+    })
+    .attr("y", (d) => {
+      if (horizontal) {
+        return yHorizontal(d.label)!;
+      } else {
+        return yVertical(d.value);
+      }
+    })
+    .attr("width", (d) => {
+      if (horizontal) {
+        return xHorizontal(d.value);
+      } else {
+        return xVertical.bandwidth();
+      }
+    })
+    .attr("height", (d) => {
+      if (horizontal) {
+        return yHorizontal.bandwidth();
+      } else {
+        return chartHeight - yVertical(d.value);
+      }
+    })
     .attr("fill", colors[0])
     .on("mouseover", function (event, d: any) {
       d3.select(this).transition().duration(200).style("opacity", 0.7);
