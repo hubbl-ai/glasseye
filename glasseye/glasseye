@@ -216,11 +216,8 @@ def main():
     title = None
     input_file = None
     output_file = None
-    root_dir = '.'
-
     server_mode = False
     port = default_port
-
     verbosity = logging.WARNING
     errors = 0
     usage = '''Usage: glasseye args input_file
@@ -250,8 +247,8 @@ In dev mode, the script must be run in the same folder as the script.
             chart_defs = register_chart(v, chart_defs)
         elif k in ['-D', '--dir']:
             mode = 'dev'
+            global src_dir
             src_dir = os.path.abspath(v)
-            root_dir = os.path.abspath(src_dir)
         elif k in ['-f', '--filter']:
             filters.append(v)
         elif k in ['-o', '--output']:
@@ -411,8 +408,8 @@ In dev mode, the script must be run in the same folder as the script.
     stylesheets = base_stylesheets
 
     if mode == 'dev':
-        scripts = scripts + [path.format(dir=src_dir) for path in dev_scripts]
-        stylesheets = stylesheets + [path.format(dir=src_dir) for path in dev_stylesheets]
+        scripts = scripts + [path.format(dir=src_dir) for path in dev_scripts] if not server_mode else scripts + [f"ts/dist/{os.path.basename(path)}" for path in dev_scripts]
+        stylesheets = stylesheets + [path.format(dir=src_dir) for path in dev_stylesheets] if not server_mode else stylesheets + [f"css/{os.path.basename(path)}" for path in dev_stylesheets]
     else:
         scripts = scripts + prod_scripts
         stylesheets = stylesheets + prod_stylesheets
@@ -479,6 +476,19 @@ def copy_data(output_file, output_dir, server_dir_path):
         dirs_exist_ok=True,
         ignore=shutil.ignore_patterns('.?*')
     )
+
+    if mode == 'dev':
+        styles_and_scripts = dev_scripts + dev_stylesheets
+        styles_and_scripts = [path.format(dir=src_dir) for path in styles_and_scripts]
+        for sas in styles_and_scripts:
+            if os.path.isfile(sas):
+                filename = os.path.basename(sas)
+                file_extension = os.path.splitext(filename)[-1]
+                dest_dict = os.path.join(server_dir_path, "css" if file_extension==".css" else "ts/dist")
+                if not os.path.isdir(dest_dict):
+                    os.makedirs(dest_dict, exist_ok=True)
+                shutil.copy2(sas,dest_dict)
+                logger.info(f"Copied : {sas} to {dest_dict}")
     
     # rename the generated .html file to index.html
 
