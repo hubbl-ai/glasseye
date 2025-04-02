@@ -52,6 +52,7 @@ Building blocks:
 }'
     n_colors=24
     useGradient=1
+    nodeAlign='"right"'
 >
 </skey>
 
