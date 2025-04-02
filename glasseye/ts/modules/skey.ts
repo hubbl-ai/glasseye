@@ -1,10 +1,17 @@
-export function skey(
+export  async function skey(
   div: string = defaultArgumentObject.div,
   data: any = defaultArgumentObject.data,
   size: Size = defaultArgumentObject.size,
   file?: DataFile,
   colors: string[]= defaultArgumentObject.colors,
+  nodeAlign = "right", //options are left,right,center,justify
+  useGradient = 0 //options are 0 or 1
 ) {
+
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
+
   const { width, height } = size;
   const nodeWidth = 20;
   const nodePadding = 10;
@@ -14,16 +21,38 @@ export function skey(
     .select(div)
     .append("svg")
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height)
+    .attr("viewBox", [0, 0, width, height])
+    .attr("style", "max-width: 100%; height: auto;");
+    ;
 
   // Define Sankey generator
   const sankeyGenerator = sankey<any, any>()
+    .nodeId(d => d.name)
     .nodeWidth(nodeWidth)
     .nodePadding(nodePadding)
     .extent([
       [0, 0],
       [width, height],
     ]);
+
+  switch (nodeAlign) {
+    case "left":
+      sankeyGenerator.nodeAlign(sankeyLeft);
+      break;
+    case "right":
+        sankeyGenerator.nodeAlign(sankeyRight);
+        break;
+    case "center":
+        sankeyGenerator.nodeAlign(sankeyCenter);
+        break;
+    case "justify":
+        sankeyGenerator.nodeAlign(sankeyJustify);
+        break;
+    default:
+      sankeyGenerator.nodeAlign(sankeyLeft);
+      break;
+  }
 
   // Process the data
   const graph: SankeyGraph<any, any> = sankeyGenerator(data);
@@ -32,17 +61,33 @@ export function skey(
   const color = d3.scaleOrdinal<string>().domain(data.nodes.map((d: any) => d.name)).range(colors);
 
   // Draw Links
-  svg
+  const link = svg
     .append("g")
+    .attr("fill", "none")
+    .attr("opacity", 0.7)
     .selectAll("path")
     .data(graph.links)
     .enter()
     .append("path")
-    .attr("d", sankeyLinkHorizontal())
-    .attr("stroke", (d: any) => color(d.source.name) || "#999")
-    .attr("stroke-width", (d: any) => Math.max(1, d.width))
-    .attr("fill", "none")
-    .attr("opacity", 0.7);
+    .attr("d", sankeyLinkHorizontal());
+
+    if (useGradient) {
+      const gradient = link.append("linearGradient")
+      .attr("id", (d: any) => (d.uid = d3.create("link")).attr("id", "unique-id").attr("id"))
+          .attr("gradientUnits", "userSpaceOnUse")
+          .attr("x1", (d: any) => d.source.x1)
+          .attr("x2", (d: any) => d.target.x0);
+      gradient.append("stop")
+          .attr("offset", "0%")
+          .attr("stop-color", (d: any) => color(d.source.category));
+      gradient.append("stop")
+          .attr("offset", "100%")
+          .attr("stop-color", (d: any) => color(d.target.category));
+    }
+
+
+    link.attr("stroke", useGradient ? (d: any) => d.uid : (d: any) => color(d.source.name) || "#999")
+    .attr("stroke-width", (d: any) => Math.max(1, d.width));
 
   // Draw Nodes
   const node = svg

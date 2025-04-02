@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { sankey, sankeyLinkHorizontal, SankeyGraph } from "d3-sankey";
+import { sankey, sankeyLinkHorizontal, SankeyGraph, sankeyLeft, sankeyRight, sankeyCenter, sankeyJustify } from "d3-sankey";
 import { SimulationNodeDatum } from "d3";
 
 

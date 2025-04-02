@@ -24,33 +24,34 @@ Building blocks:
         { "name": "Losses", "width": 160, "index": 15 }
     ],
     "links": [
-        { "source": 0, "target": 7, "value": 100 },
-        { "source": 1, "target": 7, "value": 120 },
-        { "source": 2, "target": 7, "value": 80 },
-        { "source": 3, "target": 7, "value": 90 },
-        { "source": 4, "target": 7, "value": 200 },
-        { "source": 5, "target": 7, "value": 130 },
-        { "source": 5, "target": 8, "value": 80 },
-        { "source": 6, "target": 9, "value": 250 },
-        { "source": 7, "target": 10, "value": 170 },
-        { "source": 7, "target": 11, "value": 160 },
-        { "source": 7, "target": 12, "value": 230 },
-        { "source": 8, "target": 10, "value": 40 },
-        { "source": 8, "target": 11, "value": 20 },
-        { "source": 8, "target": 12, "value": 20 },
-        { "source": 9, "target": 12, "value": 50 },
-        { "source": 9, "target": 13, "value": 200 },
-        { "source": 10, "target": 14, "value": 180 },
-        { "source": 10, "target": 15, "value": 30 },
-        { "source": 11, "target": 14, "value": 150 },
-        { "source": 11, "target": 15, "value": 30 },
-        { "source": 12, "target": 14, "value": 230 },
-        { "source": 12, "target": 15, "value": 50 },
-        { "source": 13, "target": 14, "value": 150 },
-        { "source": 13, "target": 15, "value": 50 }
+        { "source": "Solar", "target": "Electricity", "value": 100 },
+        { "source": "Wind", "target": "Electricity", "value": 120 },
+        { "source": "Hydro", "target": "Electricity", "value": 80 },
+        { "source": "Nuclear", "target": "Electricity", "value": 90 },
+        { "source": "Coal", "target": "Electricity", "value": 200 },
+        { "source": "Natural gas", "target": "Electricity", "value": 130 },
+        { "source": "Natural gas", "target": "Heat", "value": 80 },
+        { "source": "Oil", "target": "Fuel", "value": 250 },
+        { "source": "Electricity", "target": "Residential", "value": 170 },
+        { "source": "Electricity", "target": "Commercial", "value": 160 },
+        { "source": "Electricity", "target": "Industrial", "value": 230 },
+        { "source": "Heat", "target": "Residential", "value": 40 },
+        { "source": "Heat", "target": "Commercial", "value": 20 },
+        { "source": "Heat", "target": "Industrial", "value": 20 },
+        { "source": "Fuel", "target": "Industrial", "value": 50 },
+        { "source": "Fuel", "target": "Transportation", "value": 200 },
+        { "source": "Residential", "target": "Energy services", "value": 180 },
+        { "source": "Residential", "target": "Losses", "value": 30 },
+        { "source": "Residential", "target": "Energy services", "value": 150 },
+        { "source": "Commercial", "target": "Losses", "value": 30 },
+        { "source": "Industrial", "target": "Energy services", "value": 230 },
+        { "source": "Industrial", "target": "Losses", "value": 50 },
+        { "source": "Transportation", "target": "Energy services", "value": 150 },
+        { "source": "Transportation", "target": "Losses", "value": 50 }
     ]
 }'
     n_colors=24
+    useGradient=1
 >
 </skey>
 
