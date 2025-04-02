@@ -371,7 +371,7 @@ In dev mode, the script must be run in the same folder as the script.
     standard_charts = {
         'linechart':{'curved':0},
         'piechart':{'donut':0},
-        'skey':{'useGradient':0, 'nodeAlign':'left'},
+        'skey':{'useGradient':0},
         'barchart': {'horizontal':0},
         'tree':{'vertical':0},
         'venn':None,
@@ -383,6 +383,7 @@ In dev mode, the script must be run in the same folder as the script.
         'boxplot':None,
         'force':None,
         'chord':None,
+        'disjoint':None,
         }
 
     for s, args in standard_charts.items():

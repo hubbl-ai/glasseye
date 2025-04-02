@@ -52,9 +52,16 @@ Building blocks:
 }'
     n_colors=24
     useGradient=1
-    nodeAlign='"right"'
 >
 </skey>
+
+
+<disjoint
+  file='{"path":"data/graph.json","format":"json"}'
+  size='{"width":1000,"height":1000}'
+  colors='pastel'
+>
+</disjoint>
 
 ```{.matplotlib}
 import pandas as pd

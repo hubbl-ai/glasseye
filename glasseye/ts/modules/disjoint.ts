@@ -15,7 +15,7 @@ export async function disjoint(
     const { width, height } = size;
 
     // Specify the color scale.
-    const color = d3.scaleOrdinal(d3.schemeCategory10);
+    const color = d3.scaleOrdinal(colors);
 
     // Create a simulation with several forces.
     const simulation = d3.forceSimulation(data.nodes)
@@ -25,7 +25,9 @@ export async function disjoint(
         .force("y", d3.forceY());
 
     // Create the SVG container.
-    const svg = d3.create("svg")
+    const svg = d3
+        .select(div)
+        .append("svg")
         .attr("width", width)
         .attr("height", height)
         .attr("viewBox", [-width / 2, -height / 2, width, height])
@@ -38,7 +40,7 @@ export async function disjoint(
         .selectAll("line")
         .data(data.links)
         .join("line")
-        .attr("stroke-width", d => Math.sqrt(d.value));
+        .attr("stroke-width", (d: any) => Math.sqrt(d.value));
 
     const node = svg.append("g")
         .attr("stroke", "#fff")
@@ -47,10 +49,10 @@ export async function disjoint(
         .data(data.nodes)
         .join("circle")
         .attr("r", 5)
-        .attr("fill", d => color(d.group));
+        .attr("fill", (d: any) => color(d.group));
 
     node.append("title")
-        .text(d => d.id);
+        .text((d: any) => d.id);
 
     // Add a drag behavior.
     node.call(d3.drag<any,any>()
@@ -61,32 +63,32 @@ export async function disjoint(
     // Set the position attributes of links and nodes each time the simulation ticks.
     simulation.on("tick", () => {
         link
-            .attr("x1", d => d.source.x)
-            .attr("y1", d => d.source.y)
-            .attr("x2", d => d.target.x)
-            .attr("y2", d => d.target.y);
+            .attr("x1", (d: any) => d.source.x)
+            .attr("y1", (d: any) => d.source.y)
+            .attr("x2", (d: any) => d.target.x)
+            .attr("y2", (d: any) => d.target.y);
 
         node
-            .attr("cx", d => d.x)
-            .attr("cy", d => d.y);
+            .attr("cx", (d: any) => d.x)
+            .attr("cy", (d: any) => d.y);
     });
 
     // Reheat the simulation when drag starts, and fix the subject position.
-    function dragstarted(event) {
+    function dragstarted(event:any) {
         if (!event.active) simulation.alphaTarget(0.3).restart();
         event.subject.fx = event.subject.x;
         event.subject.fy = event.subject.y;
     }
 
     // Update the subject (dragged node) position during drag.
-    function dragged(event) {
+    function dragged(event:any) {
         event.subject.fx = event.x;
         event.subject.fy = event.y;
     }
 
     // Restore the target alpha so the simulation cools after dragging ends.
     // Unfix the subject position now that it’s no longer being dragged.
-    function dragended(event) {
+    function dragended(event:any) {
         if (!event.active) simulation.alphaTarget(0);
         event.subject.fx = null;
         event.subject.fy = null;

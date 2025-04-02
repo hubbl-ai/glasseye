@@ -19,13 +19,13 @@ SOURCE_FILES = \
 	skey.ts \
 	tree.ts \
 	treemap.ts \
-	venn.ts
-	# disjoint.ts \
+	venn.ts \
+	disjoint.ts \
 
 all: $(TARGET_FILE)
 
 clean:
-	rm -f $(GENERATED_FILES)
+	rm -f $(GENERATED_FILES) $(TARGET_FILE)
 
 $(TARGET_FILE): $(GENERATED_FILES)
 	cd .. && npx rollup -c
