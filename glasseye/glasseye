@@ -145,7 +145,6 @@ def add_chart(chart_id, fields, soup, code_parts, module=module_name, function_n
     if not function_name:
         function_name = chart_id
         
-
     for d in enumerate(soup.find_all(chart_id)):
         attrs = d[1].attrs
         args = [f"'#{chart_id}_{str(d[0])}'"]   # Insert the div ID
@@ -182,16 +181,18 @@ def add_chart(chart_id, fields, soup, code_parts, module=module_name, function_n
 
         # Resolve everything but color.
 
-        for field,dv in all_fields.items():
+        for field, dv in all_fields.items():
             try:
                 if field == 'colors':
-                    args.append(str(all_fields['colors']))
+                    value = str(all_fields['colors'])
                 elif field in palette_fields:
                     continue
                 elif field in attrs:
-                    args.append(str(json.loads(attrs[field])))
+                    value = attrs[field]
                 else:
-                    args.append(str(dv))
+                    value = json.dumps(dv)
+
+                args.append(value)
             except:
                 logger.error(f'Error on chart : {chart_id}')
                 raise
