@@ -4,7 +4,8 @@ Building blocks:
   size='{"width":600,"height":225}'
   file='{"path": "data/energy.json", "format": "json"}'
   n_colors=24
-  useGradient=1
+  link_color='"target"'
+  node_align='"right"'
 >
 </skey>
 
@@ -97,5 +98,5 @@ fig.tight_layout()
 <skey
   file='{"path": "data/features.json", "format": "json" }'
   size='{"width": 1000, "height": 1000 }'
-  nodeAlign="'right'"
+  node_align="'right'"
 ></skey>

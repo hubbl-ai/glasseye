@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Wed Apr  2 16:37:40 CAT 2025
+// Generated Thu Apr  3 15:46:29 CAT 2025
 
 
 /// base.ts
@@ -194,6 +194,120 @@ export async function barchart(
       tooltip.style("display", "none");
     });
 }
+/// bollinger.ts
+
+export function bollinger(
+  div: string = "",
+  data: any,
+  size?: any,
+  colors: string[] = []
+) {
+  const width = size.width,
+    height = size.height;
+
+  // Parse data
+  const parsedData = data.map((d: any) => ({
+    date: new Date(d.date),
+    close: d.close,
+    upper: d.upper,
+    lower: d.lower,
+    movingAvg: d.movingAvg,
+  }));
+
+  // Create scales
+  const dateExtent = d3.extent(parsedData, (d: any) => d.date) as [
+    Date | undefined,
+    Date | undefined
+  ];
+  const validDateExtent: [Date, Date] =
+    dateExtent[0] && dateExtent[1]
+      ? [dateExtent[0], dateExtent[1]]
+      : [new Date(), new Date()];
+
+  const x = d3.scaleTime().domain(validDateExtent).range([0, width]);
+
+  const yMin = d3.min(parsedData, (d: any) => Number(d.lower)) ?? 0;
+  const yMax = d3.max(parsedData, (d: any) => Number(d.upper)) ?? 100;
+
+  const y = d3.scaleLinear().domain([yMin, yMax]).range([height, 0]);
+
+  // Line generators
+  const line = d3
+    .line<any>()
+    .x((d: any) => x(d.date))
+    .y((d: any) => y(d.movingAvg));
+
+  const upperBand = d3
+    .line<any>()
+    .x((d: any) => x(d.date))
+    .y((d: any) => y(d.upper));
+
+  const lowerBand = d3
+    .line<any>()
+    .x((d: any) => x(d.date))
+    .y((d: any) => y(d.lower));
+
+  // Create SVG
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g");
+
+  // Draw bands
+  svg
+    .append("path")
+    .datum(parsedData)
+    .attr("fill", "none")
+    .attr("stroke", colors[0] || "#ff0000")
+    .attr("stroke-width", 1.5)
+    .attr("d", upperBand);
+
+  svg
+    .append("path")
+    .datum(parsedData)
+    .attr("fill", "none")
+    .attr("stroke", colors[1] || "#0000ff")
+    .attr("stroke-width", 1.5)
+    .attr("d", lowerBand);
+
+  svg
+    .append("path")
+    .datum(parsedData)
+    .attr("fill", "none")
+    .attr("stroke", colors[2] || "#00ff00")
+    .attr("stroke-width", 2)
+    .attr("d", line);
+
+  const xAxis = d3.axisBottom(x);
+  const yAxis = d3.axisLeft(y);
+
+  svg.append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(xAxis)
+    .append("text")
+    .attr("x", width / 2)
+    .attr("y", 50) // Increase y position for visibility
+    .attr("fill", "black")
+    .attr("font-size", "14px") // Ensure readable font size
+    .attr("font-weight", "bold") // Make it more prominent
+    .attr("text-anchor", "middle")
+    .text("Date");
+
+  svg.append("g")
+    .call(yAxis)
+    .append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("x", -height / 2)
+    .attr("y", -50) // Adjust position for visibility
+    .attr("fill", "red")
+    .attr("font-size", "14px") // Ensure readable font size
+    .attr("font-weight", "bold") // Make it more prominent
+    .attr("text-anchor", "middle")
+    .text("Price");
+}
+
 /// boxplot.ts
 
 export async function boxplot(
@@ -510,7 +624,7 @@ export async function force(
     .append("svg")
     .attr("width", width)
     .attr("height", height)
-    .attr("viewBox", [0, 0, width, height])
+    .attr("viewBox", [0, 0, width/2, height/2])
     .attr("style", "max-width: 100%; height: auto;");
 
   const simulation = d3
@@ -1002,8 +1116,8 @@ export  async function skey(
   size: Size = defaultArgumentObject.size,
   file?: DataFile,
   colors: string[]= defaultArgumentObject.colors,
-  nodeAlign = "right", //options are left,right,center,justify
-  useGradient = 0 //options are 0 or 1
+  node_align = "right", //options are left,right,center,justify
+  link_color = "source-target" //options are 0 or 1
 ) {
 
   if (file?.path) {
@@ -1034,7 +1148,7 @@ export  async function skey(
       [width, height],
     ]);
 
-  switch (nodeAlign) {
+  switch (node_align) {
     case "left":
       sankeyGenerator.nodeAlign(sankeyLeft);
       break;
@@ -1069,9 +1183,15 @@ export  async function skey(
     .append("path")
     .attr("d", sankeyLinkHorizontal());
 
-    if (useGradient) {
+    let counter = 0;
+    function generateUid(prefix = "id") {
+        return `${prefix}-${++counter}`;
+    }
+
+
+    if (link_color == "source-target") {
       const gradient = link.append("linearGradient")
-      .attr("id", (d: any) => (d.uid = d3.create("link")).attr("id", "unique-id").attr("id"))
+      .attr("id", (d: any) => (d.uid = generateUid()))
           .attr("gradientUnits", "userSpaceOnUse")
           .attr("x1", (d: any) => d.source.x1)
           .attr("x2", (d: any) => d.target.x0);
@@ -1084,7 +1204,7 @@ export  async function skey(
     }
 
 
-    link.attr("stroke", useGradient ? (d: any) => d.uid : (d: any) => color(d.source.name) || "#999")
+    link.attr("stroke", link_color == "source-target"? (d: any) => d.uid : (d: any) => color(d.source.name) || "#999")
     .attr("stroke-width", (d: any) => Math.max(1, d.width));
 
   // Draw Nodes

@@ -4,8 +4,8 @@ export  async function skey(
   size: Size = defaultArgumentObject.size,
   file?: DataFile,
   colors: string[]= defaultArgumentObject.colors,
-  nodeAlign = "right", //options are left,right,center,justify
-  useGradient = 0 //options are 0 or 1
+  node_align = "right", //options are left,right,center,justify
+  link_color = "source-target" //options are 0 or 1
 ) {
 
   if (file?.path) {
@@ -36,7 +36,7 @@ export  async function skey(
       [width, height],
     ]);
 
-  switch (nodeAlign) {
+  switch (node_align) {
     case "left":
       sankeyGenerator.nodeAlign(sankeyLeft);
       break;
@@ -71,9 +71,15 @@ export  async function skey(
     .append("path")
     .attr("d", sankeyLinkHorizontal());
 
-    if (useGradient) {
+    let counter = 0;
+    function generateUid(prefix = "id") {
+        return `${prefix}-${++counter}`;
+    }
+
+
+    if (link_color == "source-target") {
       const gradient = link.append("linearGradient")
-      .attr("id", (d: any) => (d.uid = d3.create("link")).attr("id", "unique-id").attr("id"))
+      .attr("id", (d: any) => (d.uid = generateUid()))
           .attr("gradientUnits", "userSpaceOnUse")
           .attr("x1", (d: any) => d.source.x1)
           .attr("x2", (d: any) => d.target.x0);
@@ -86,7 +92,7 @@ export  async function skey(
     }
 
 
-    link.attr("stroke", useGradient ? (d: any) => d.uid : (d: any) => color(d.source.name) || "#999")
+    link.attr("stroke", link_color == "source-target"? (d: any) => d.uid : (d: any) => color(d.source.name) || "#999")
     .attr("stroke-width", (d: any) => Math.max(1, d.width));
 
   // Draw Nodes

@@ -7,6 +7,7 @@ TARGET_FILE = ../dist/glasseyechart.js
 SOURCE_FILES = \
 	base.ts \
 	barchart.ts \
+	bollinger.ts \
 	boxplot.ts \
 	chord.ts \
 	dotplot.ts \
@@ -25,7 +26,7 @@ SOURCE_FILES = \
 all: $(TARGET_FILE)
 
 clean:
-	rm -f $(GENERATED_FILES) $(TARGET_FILE)
+	rm -f $(GENERATED_FILES) $(TARGET_FILE) ../index.ts~
 
 $(TARGET_FILE): $(GENERATED_FILES)
 	cd .. && npx rollup -c
