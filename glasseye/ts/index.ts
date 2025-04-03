@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Thu Apr  3 15:46:29 CAT 2025
+// Generated Thu Apr  3 16:00:35 CAT 2025
 
 
 /// base.ts
@@ -619,12 +619,14 @@ export async function force(
 
 
   const { width, height } = size;
+  const viewScaleFactor = 1.5;
+
   const svg = d3
     .select(div)
     .append("svg")
     .attr("width", width)
     .attr("height", height)
-    .attr("viewBox", [0, 0, width/2, height/2])
+    .attr("viewBox", [0, 0, width/viewScaleFactor, height/viewScaleFactor])
     .attr("style", "max-width: 100%; height: auto;");
 
   const simulation = d3
@@ -1567,6 +1569,7 @@ export async function disjoint(
 
     // Specify the dimensions of the chart.
     const { width, height } = size;
+    const viewScaleFactor = 1.5;
 
     // Specify the color scale.
     const color = d3.scaleOrdinal(colors);
@@ -1584,7 +1587,7 @@ export async function disjoint(
         .append("svg")
         .attr("width", width)
         .attr("height", height)
-        .attr("viewBox", [-width / 2, -height / 2, width, height])
+        .attr("viewBox", [-width / viewScaleFactor, -height / viewScaleFactor, width / viewScaleFactor, height / viewScaleFactor])
         .attr("style", "max-width: 100%; height: auto;");
 
     // Add a line for each link, and a circle for each node.

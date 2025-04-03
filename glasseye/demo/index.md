@@ -185,9 +185,9 @@ data='{
     { "name": "Destination Y" }
   ],
   "links": [
-    { "source": 0, "target": 2, "value": 10 },
-    { "source": 1, "target": 2, "value": 5 },
-    { "source": 1, "target": 3, "value": 15 }
+    { "source": "Source A", "target": "Destination X", "value": 10 },
+    { "source": "Source B", "target": "Destination X", "value": 5 },
+    { "source": "Source B", "target": "Destination Y", "value": 15 }
   ]
 }'
   size='{"width":500,"height":500}'

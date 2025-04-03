@@ -13,6 +13,7 @@ export async function disjoint(
 
     // Specify the dimensions of the chart.
     const { width, height } = size;
+    const viewScaleFactor = 1.5;
 
     // Specify the color scale.
     const color = d3.scaleOrdinal(colors);
@@ -30,7 +31,7 @@ export async function disjoint(
         .append("svg")
         .attr("width", width)
         .attr("height", height)
-        .attr("viewBox", [-width / 2, -height / 2, width, height])
+        .attr("viewBox", [-width / viewScaleFactor, -height / viewScaleFactor, width, height])
         .attr("style", "max-width: 100%; height: auto;");
 
     // Add a line for each link, and a circle for each node.
