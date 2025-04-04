@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Thu Apr  3 16:00:35 CAT 2025
+// Generated Fri Apr  4 14:27:22 CAT 2025
 
 
 /// base.ts
@@ -1587,7 +1587,7 @@ export async function disjoint(
         .append("svg")
         .attr("width", width)
         .attr("height", height)
-        .attr("viewBox", [-width / viewScaleFactor, -height / viewScaleFactor, width / viewScaleFactor, height / viewScaleFactor])
+        .attr("viewBox", [-width / viewScaleFactor, -height / viewScaleFactor, width, height])
         .attr("style", "max-width: 100%; height: auto;");
 
     // Add a line for each link, and a circle for each node.

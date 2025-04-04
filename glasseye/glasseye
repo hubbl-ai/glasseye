@@ -9,6 +9,7 @@ import threading
 import json
 import seaborn as sns
 import pypandoc as py
+import zipfile
 from bs4 import BeautifulSoup
 from getopt import *
 from tempfile import NamedTemporaryFile, TemporaryDirectory
@@ -220,6 +221,7 @@ def main():
     server_mode = False
     port = default_port
     verbosity = logging.WARNING
+    zipped_filename = ""
     errors = 0
     usage = '''Usage: glasseye args input_file
 where args arg one of:
@@ -233,14 +235,15 @@ where args arg one of:
 -t|--title         # Title for generated HTML document
 -v|--verbose       # Increase debugging output. May be repeated
 --port             # the port to use in the url. defaults to 7300
+-z|--zip           # zip the output directory to file
 
 In dev mode, the script must be run in the same folder as the script.
 '''
 
     opts, args = getopt(
         sys.argv[1:],
-        'c:D:f:o:pst:v',
-        ('chart', 'dir', 'filter', 'output', 'plot', 'server', 'title:', 'verbose', 'port=')
+        'c:D:f:o:pst:v:z',
+        ('chart', 'dir', 'filter', 'output', 'plot', 'server', 'title:', 'verbose','zip', 'port=')
     )
 
     for k, v in opts:
@@ -262,6 +265,8 @@ In dev mode, the script must be run in the same folder as the script.
             title = v
         elif k in ['-v', '--verbose']:
             verbosity -= 10
+        elif k in ['-z', '--zip']:
+            zipped_filename = v
         elif k in ['--port']:
             port = int(v)
         elif k in ['-?', '-h', '--help']:
@@ -444,10 +449,15 @@ In dev mode, the script must be run in the same folder as the script.
     with open(output_file, 'w') as ofp:
         ofp.write(doc)
 
-    if server_mode:
+    zipmode = len(zipped_filename.strip())>0
+    # breakpoint()
+    if server_mode or zipmode:
         with TemporaryDirectory(prefix='glasseye') as server_dir_name:
             copy_data(output_file, output_dir or ".", server_dir_name)
-            start_http_server(server_dir_name, port)
+            if server_mode:
+                start_http_server(server_dir_name, port)
+            elif zipmode:
+                zip_directory(server_dir_name,zipped_filename)
 
         # Once the server exits, the temp directory is automatically deleted.
 
@@ -470,6 +480,16 @@ def start_http_server(directory, port=default_port):
             httpd.serve_forever()
         except KeyboardInterrupt:
             logger.info("\nServer terminated.")
+
+
+def zip_directory(folder_path, output_zip):
+    with zipfile.ZipFile(output_zip, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, _, files in os.walk(folder_path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                arcname = os.path.relpath(file_path, start=folder_path)
+                zipf.write(file_path, arcname)
+    logger.info(f"Zipped '{folder_path}' to '{output_zip}'")
 
 def copy_data(output_file, output_dir, server_dir_path):
     if not os.path.isdir(output_dir):
