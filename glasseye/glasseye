@@ -242,10 +242,10 @@ In dev mode, the script must be run in the same folder as the script.
 
     opts, args = getopt(
         sys.argv[1:],
-        'c:D:f:o:pst:v:z',
-        ('chart', 'dir', 'filter', 'output', 'plot', 'server', 'title:', 'verbose','zip', 'port=')
+        'c:D:f:o:z:pst:v',
+        ('chart', 'dir', 'filter', 'output','zip', 'plot', 'server', 'title:', 'verbose', 'port=')
     )
-
+    
     for k, v in opts:
         if k in ['-c', '--chart']:
             chart_defs = register_chart(v, chart_defs)
@@ -450,7 +450,6 @@ In dev mode, the script must be run in the same folder as the script.
         ofp.write(doc)
 
     zipmode = len(zipped_filename.strip())>0
-    # breakpoint()
     if server_mode or zipmode:
         with TemporaryDirectory(prefix='glasseye') as server_dir_name:
             copy_data(output_file, output_dir or ".", server_dir_name)
