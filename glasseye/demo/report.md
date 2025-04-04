@@ -87,7 +87,7 @@ x = range(Z.shape[0])
 np.fill_diagonal(Z.values, 1.0)
 
 fig, ax = plt.subplots(figsize=(8, 8))
-im = ax.imshow(Z)
+im = ax.imshow(Z, cmap=sns.color_palette('pastel'))
 
 ax.set_xticks(x, labels=Z.index,
               rotation=45, ha="right", rotation_mode="anchor")

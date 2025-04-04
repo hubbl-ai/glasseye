@@ -219,6 +219,7 @@ def main():
     input_file = None
     output_file = None
     server_mode = False
+    zip_mode = False
     port = default_port
     verbosity = logging.WARNING
     zipped_filename = ""
@@ -234,16 +235,16 @@ where args arg one of:
 -s|--server        # Run glasseye in server mode
 -t|--title         # Title for generated HTML document
 -v|--verbose       # Increase debugging output. May be repeated
+-z|--zip  file     # zip the output directory to file
 --port             # the port to use in the url. defaults to 7300
--z|--zip           # zip the output directory to file
 
 In dev mode, the script must be run in the same folder as the script.
 '''
 
     opts, args = getopt(
         sys.argv[1:],
-        'c:D:f:o:z:pst:v',
-        ('chart', 'dir', 'filter', 'output','zip', 'plot', 'server', 'title:', 'verbose', 'port=')
+        'c:D:f:o:pst:vz:',
+        ('chart', 'dir', 'filter', 'output', 'plot', 'server', 'title:', 'verbose','zip=', 'port=')
     )
     
     for k, v in opts:
@@ -267,6 +268,7 @@ In dev mode, the script must be run in the same folder as the script.
             verbosity -= 10
         elif k in ['-z', '--zip']:
             zipped_filename = v
+            zip_mode = True
         elif k in ['--port']:
             port = int(v)
         elif k in ['-?', '-h', '--help']:
@@ -449,16 +451,15 @@ In dev mode, the script must be run in the same folder as the script.
     with open(output_file, 'w') as ofp:
         ofp.write(doc)
 
-    zipmode = len(zipped_filename.strip())>0
-    if server_mode or zipmode:
+    if server_mode or zip_mode:
         with TemporaryDirectory(prefix='glasseye') as server_dir_name:
             copy_data(output_file, output_dir or ".", server_dir_name)
             if server_mode:
                 start_http_server(server_dir_name, port)
-            elif zipmode:
+            elif zip_mode:
                 zip_directory(server_dir_name,zipped_filename)
 
-        # Once the server exits, the temp directory is automatically deleted.
+        # Once the server exits or the zipped folder with output, the temp directory is automatically deleted.
 
 def start_http_server(directory, port=default_port):
     if not os.path.isdir(directory):

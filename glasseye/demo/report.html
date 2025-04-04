@@ -21,9 +21,56 @@
 </figure>
 <p><span id="force_0"></span><br/></p>
 <p><span id="disjoint_0"></span><br/></p>
-<figure>
-<img src="plots/pandocplot4295645665349689877.png"/>
-</figure>
+<pre class="matplotlib"><code>import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from scipy.stats import truncnorm
+import seaborn as sns
+
+factors = [
+    'Injury rate',
+    'Organic sales growth',
+    'Same-store growth %',
+    'Greenfield growth %',
+    'Aftermarket sales',
+    'Subscription sales growth',
+    '# suppliers',
+    '# employees in R&amp;D',
+    '# products launched this year',
+    '# sites closed',
+    'Cash conversion rate by Region',
+    'Male-female board composition',
+    '10 largest shareholders % vote',
+    '# mentions of “Competitive advantage”',
+    '# mentions of “Restructuring”',
+    '# mentions of “Distressed”',
+    '# mentions of “Low activity”',
+    '# mentions of “Short-term cost actions”',
+    'Word count of competition section in annual report',
+    'Historic market share by year %',
+    'Target market share %',
+    'Forecast market revenue growth %',
+    'X% of orders placed for delivery within 24 hours',
+]
+
+Z = pd.DataFrame(truncnorm.rvs(-3, 3, scale=1.0 / 3.0, size=(len(factors), len(factors))))
+
+Z = pd.DataFrame(np.triu(Z.values) + np.triu(Z.values, 1).T,
+    index=factors,
+    columns=factors
+)
+
+x = range(Z.shape[0])
+
+np.fill_diagonal(Z.values, 1.0)
+
+fig, ax = plt.subplots(figsize=(8, 8))
+im = ax.imshow(Z, cmap=sns.color_palette('pastel'))
+
+ax.set_xticks(x, labels=Z.index,
+              rotation=45, ha="right", rotation_mode="anchor")
+ax.set_yticks(x, labels=Z.index)
+fig.tight_layout()</code></pre>
 <p><span id="skey_1"></span><br/></p>
 
         </div>
