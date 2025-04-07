@@ -1,5 +1,7 @@
 beautifulsoup4==4.12.3
 certifi==2024.8.30
+colorcet==3.1.0
 glasseye==0.1.17
 pypandoc==1.14
 soupsieve==2.6
+seaborn==0.13.2

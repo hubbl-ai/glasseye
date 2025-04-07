@@ -37,7 +37,8 @@ export default defineConfig({
                 collapsed: false,
                 items: [
                     { text: 'Writing Markdown', link: '/markdown' },
-                    { text: 'Invoking glasseye', link: '/invoking' }
+                    { text: 'Invoking glasseye', link: '/invoking' },
+                    { text: 'Color palettes', link: '/color' }
                 ]
             },
             {

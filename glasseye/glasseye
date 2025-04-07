@@ -7,6 +7,7 @@ import shutil
 import webbrowser
 import threading
 import json
+import colorcet as cc
 import seaborn as sns
 import pypandoc as py
 import zipfile
@@ -79,6 +80,15 @@ def wrap(to_wrap, wrap_in):
     wrap_in.append(contents)
 
 def resolve_color_palette(colors, n_colors, desat):
+    if type(colors) == str and colors.startswith('cc.'):
+        try:
+            cc_palette = colors.split('.')[1]
+        except Exception as exc:
+            logger.fatal(f'invalid colorcet palette "{colors}"')
+
+        colors = getattr(cc, cc_palette)
+        logger.info(f'using colorcet {cc_palette} palette')
+
     palette = sns.color_palette(
         palette=colors, desat=desat, n_colors=n_colors)
 
@@ -164,6 +174,8 @@ def add_chart(chart_id, fields, soup, code_parts, module=module_name, function_n
 
                     if type(value) == list and len(value) == 1 and type(value[0] == str):
                         value = value[0]
+
+                    palette_fields['colors'] = value
                 else:
                     try:
                         palette_fields[field] = json.loads(attrs[field])
@@ -243,7 +255,7 @@ In dev mode, the script must be run in the same folder as the script.
     opts, args = getopt(
         sys.argv[1:],
         'c:D:f:o:z:pst:v',
-        ('chart', 'dir', 'filter', 'output','zip', 'plot', 'server', 'title:', 'verbose', 'port=')
+        ('chart', 'dir', 'filter', 'output','zip=', 'plot', 'server', 'title:', 'verbose', 'port=')
     )
     
     for k, v in opts:

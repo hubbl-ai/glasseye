@@ -24,7 +24,6 @@ export  async function skey(
     .attr("height", height)
     .attr("viewBox", [0, 0, width, height])
     .attr("style", "max-width: 100%; height: auto;");
-    ;
 
   // Define Sankey generator
   const sankeyGenerator = sankey<any, any>()
@@ -58,7 +57,10 @@ export  async function skey(
   const graph: SankeyGraph<any, any> = sankeyGenerator(data);
 
   // Color scale
-  const color = d3.scaleOrdinal<string>().domain(data.nodes.map((d: any) => d.name)).range(colors);
+  const color = d3.scaleOrdinal(
+    data.nodes.map((d: any) => d.name),
+    colors
+  )
 
   // Draw Links
   const link = svg

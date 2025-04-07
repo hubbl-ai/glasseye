@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Fri Apr  4 14:27:22 CAT 2025
+// Generated Mon Apr  7 10:52:06 AM EDT 2025
 
 
 /// base.ts
@@ -7,7 +7,6 @@
 import * as d3 from "d3";
 import { sankey, sankeyLinkHorizontal, SankeyGraph, sankeyLeft, sankeyRight, sankeyCenter, sankeyJustify } from "d3-sankey";
 import { SimulationNodeDatum } from "d3";
-
 
 interface Margin {
   top: number;
@@ -1138,7 +1137,6 @@ export  async function skey(
     .attr("height", height)
     .attr("viewBox", [0, 0, width, height])
     .attr("style", "max-width: 100%; height: auto;");
-    ;
 
   // Define Sankey generator
   const sankeyGenerator = sankey<any, any>()
@@ -1172,7 +1170,12 @@ export  async function skey(
   const graph: SankeyGraph<any, any> = sankeyGenerator(data);
 
   // Color scale
-  const color = d3.scaleOrdinal<string>().domain(data.nodes.map((d: any) => d.name)).range(colors);
+  const color = d3.scaleOrdinal(
+    data.nodes.map((d: any) => d.name),
+    colors
+  )
+
+  console.log(colors[data.nodes.length-1], color(data.nodes[data.nodes.length-1].name))
 
   // Draw Links
   const link = svg

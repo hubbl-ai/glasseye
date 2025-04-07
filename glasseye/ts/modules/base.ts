@@ -2,7 +2,6 @@ import * as d3 from "d3";
 import { sankey, sankeyLinkHorizontal, SankeyGraph, sankeyLeft, sankeyRight, sankeyCenter, sankeyJustify } from "d3-sankey";
 import { SimulationNodeDatum } from "d3";
 
-
 interface Margin {
   top: number;
   bottom: number;
@@ -30,6 +29,8 @@ interface DataFile {
   format: string;
 }
 
+// DataNode is used for Venn diagrams
+
 interface DataNode {
   name?: string;
   size?: number;
@@ -42,6 +43,18 @@ interface ArgumentObject {
   size: Size;
   colors: string[];
   file?: DataFile;
+}
+
+interface Join extends Leaf {
+  height?: number;
+  children?: Join[];
+}
+
+interface Leaf {
+  name?: string;
+  id?: number;
+  size?: number;
+  score?: number;
 }
 
 const defaultMargin: Margin = { top: 20, bottom: 20, left: 20, right: 20 };

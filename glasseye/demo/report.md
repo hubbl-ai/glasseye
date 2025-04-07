@@ -3,7 +3,8 @@ Building blocks:
 <skey
   size='{"width":600,"height":225}'
   file='{"path": "data/energy.json", "format": "json"}'
-  n_colors=24
+  n_colors=16
+  colors='pastel'
   link_color='"target"'
   node_align='"right"'
 >
@@ -49,31 +50,8 @@ import pandas as pd
 from scipy.stats import truncnorm
 import seaborn as sns
 
-factors = [
-    'Injury rate',
-    'Organic sales growth',
-    'Same-store growth %',
-    'Greenfield growth %',
-    'Aftermarket sales',
-    'Subscription sales growth',
-    '# suppliers',
-    '# employees in R&D',
-    '# products launched this year',
-    '# sites closed',
-    'Cash conversion rate by Region',
-    'Male-female board composition',
-    '10 largest shareholders % vote',
-    '# mentions of “Competitive advantage”',
-    '# mentions of “Restructuring”',
-    '# mentions of “Distressed”',
-    '# mentions of “Low activity”',
-    '# mentions of “Short-term cost actions”',
-    'Word count of competition section in annual report',
-    'Historic market share by year %',
-    'Target market share %',
-    'Forecast market revenue growth %',
-    'X% of orders placed for delivery within 24 hours',
-]
+with open('data/factors.txt') as ifp:
+    factors = ifp.readlines()
 
 Z = pd.DataFrame(truncnorm.rvs(-3, 3, scale=1.0 / 3.0, size=(len(factors), len(factors))))
 
@@ -87,7 +65,7 @@ x = range(Z.shape[0])
 np.fill_diagonal(Z.values, 1.0)
 
 fig, ax = plt.subplots(figsize=(8, 8))
-im = ax.imshow(Z)
+im = ax.imshow(Z, cmap='coolwarm')
 
 ax.set_xticks(x, labels=Z.index,
               rotation=45, ha="right", rotation_mode="anchor")
@@ -99,4 +77,6 @@ fig.tight_layout()
   file='{"path": "data/features.json", "format": "json" }'
   size='{"width": 1000, "height": 1000 }'
   node_align="'right'"
+  n_colors=20
+  colors='husl'
 ></skey>
