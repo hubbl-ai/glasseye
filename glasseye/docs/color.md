@@ -71,6 +71,25 @@ Finally, you can define the color palette yourself and provide it as a list of c
 using either standard color names (`["DarkOrange"]`) or standard hexadecimal
 color notation (`['#A1C9F4', '#FFB482', '#8DE5A1']`) or both.
 
+You can use such a technique with any of a large number of Web
+tools to generate a palette from an image, like this palette:
+
+    ["#A82D42", "#66894D", "#B0A669", "#D5C4B4", "#C4B1A3"]
+
+<svg width="275" height="55">
+   <rect x="0" y="0" width="55" height="55" style="fill:#A82D42;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+   <rect x="55" y="0" width="55" height="55" style="fill:#66894D;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+   <rect x="110" y="0" width="55" height="55" style="fill:#B0A669;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+   <rect x="165" y="0" width="55" height="55" style="fill:#D5C4B4;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+   <rect x="220" y="0" width="55" height="55" style="fill:#C4B1A3;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+</svg>
+
+generated from this picture:
+
+![Farming a field](images/100_6253.jpg){width=320}
+
+using the [Coolors app](https://coolors.co/), just to pick an example utility.
+
 <script>
  setTimeout(() => {
   Promise.resolve().then(() => {
