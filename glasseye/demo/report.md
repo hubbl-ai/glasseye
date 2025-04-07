@@ -4,7 +4,7 @@ Building blocks:
   size='{"width":600,"height":225}'
   file='{"path": "data/energy.json", "format": "json"}'
   n_colors=16
-  colors='pastel'
+  colors='husl'
   link_color='"target"'
   node_align='"right"'
 >
