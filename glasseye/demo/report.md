@@ -1,5 +1,77 @@
 Building blocks:
 
+<dendrogram
+data='{
+  "name": "Root",
+  "size": 7,
+  "distance": "0.48",
+  "children": [
+    {
+      "name": "Node A",
+      "size": 2,
+      "distance": "0.57"
+    },
+    {
+      "name": "Node B",
+      "size": 9,
+      "distance": "0.35",
+      "children": [
+        {
+          "name": "Node C",
+          "size": 6,
+          "distance": "0.81"
+        },
+        {
+          "name": "Node D",
+          "size": 1,
+          "distance": "0.19"
+        }
+      ]
+    },
+    {
+      "name": "Node E",
+      "size": 6,
+      "distance": "0.73",
+      "children": [
+        {
+          "name": "Node F",
+          "size": 8,
+          "distance": "0.42"
+        },
+        {
+          "name": "Node G",
+          "size": 3,
+          "distance": "0.66"
+        }
+      ]
+    },
+    {
+      "name": "Node H",
+      "size": 1,
+      "distance": "0.25"
+    },
+    {
+      "name": "Node I",
+      "size": 9,
+      "distance": "0.33",
+      "children": [
+        {
+          "name": "Node J",
+          "size": 7,
+          "distance": "0.90"
+        }
+      ]
+    }
+  ]
+}'
+  size='{"width":500,"height":500}'
+  colors='pastel'
+  n_colors='10'
+  
+>
+</dendrogram>
+
+
 <skey
   size='{"width":600,"height":225}'
   file='{"path": "data/energy.json", "format": "json"}'

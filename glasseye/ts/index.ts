@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Mon Apr  7 10:52:06 AM EDT 2025
+// Generated Tue Apr  8 01:39:23 CAT 2025
 
 
 /// base.ts
@@ -35,6 +35,8 @@ interface DataFile {
   format: string;
 }
 
+// DataNode is used for Venn diagrams
+
 interface DataNode {
   name?: string;
   size?: number;
@@ -47,6 +49,18 @@ interface ArgumentObject {
   size: Size;
   colors: string[];
   file?: DataFile;
+}
+
+interface Join extends Leaf {
+  height?: number;
+  children?: Join[];
+}
+
+interface Leaf {
+  name?: string;
+  id?: number;
+  size?: number;
+  score?: number;
 }
 
 const defaultMargin: Margin = { top: 20, bottom: 20, left: 20, right: 20 };
@@ -1175,8 +1189,6 @@ export  async function skey(
     colors
   )
 
-  console.log(colors[data.nodes.length-1], color(data.nodes[data.nodes.length-1].name))
-
   // Draw Links
   const link = svg
     .append("g")
@@ -1663,4 +1675,74 @@ export async function disjoint(
 
         node.attr("cx", (d:any) => d.x!).attr("cy", (d:any) => d.y!);
     });
+}
+
+/// dendrogram.ts
+
+export async function dendrogram(
+  div: string = defaultArgumentObject.div,
+  data: any = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
+  const margin = defaultMargin;
+  const width = size.width - margin.left - margin.right;
+  const height = size.height - margin.top - margin.bottom;
+
+  d3.select(div).select("svg").remove(); // Clear previous
+
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  const root = d3.hierarchy(data);
+  const treeLayout = d3.tree().size([height, width]);
+  treeLayout(root);
+
+  // Links
+  svg
+    .selectAll("path.link")
+    .data(root.links())
+    .enter()
+    .append("path")
+    .attr("class", "link")
+    .attr("fill", "none")
+    .attr("stroke", (d, i) => colors[i % colors.length])
+    .attr("stroke-width", (d) => d.source.data.size*5)
+    .attr(
+      "d",
+      d3
+        .linkHorizontal<any, any>()
+        .x((d: any) => d.y)
+        .y((d: any) => d.x)
+    );
+
+  // Nodes
+  const node = svg
+    .selectAll("g.node")
+    .data(root.descendants())
+    .enter()
+    .append("g")
+    .attr("class", "node")
+    .attr("transform", (d) => `translate(${d.y},${d.x})`);
+
+  node
+    .append("circle")
+    .attr("r", 0)
+    .attr("fill", (d, i) => colors[i % colors.length]);
+
+  node
+    .append("text")
+    .attr("dy", 3)
+    .attr("x", (d) => (d.children ? -8 : 8))
+    .style("text-anchor", (d) => (d.children ? "end" : "start"))
+    .text((d) => d.data.name);
 }

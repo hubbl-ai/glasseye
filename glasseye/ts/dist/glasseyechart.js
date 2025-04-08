@@ -10032,7 +10032,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Mon Apr  7 10:52:06 AM EDT 2025
+    // Generated Tue Apr  8 01:39:23 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -10890,7 +10890,6 @@ var Glasseye = (function (exports) {
             const graph = sankeyGenerator(data);
             // Color scale
             const color = ordinal(data.nodes.map((d) => d.name), colors);
-            console.log(colors[data.nodes.length - 1], color(data.nodes[data.nodes.length - 1].name));
             // Draw Links
             const link = svg
                 .append("g")
@@ -11286,11 +11285,64 @@ var Glasseye = (function (exports) {
             });
         });
     }
+    /// dendrogram.ts
+    function dendrogram() {
+        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors) {
+            if (file === null || file === void 0 ? void 0 : file.path) {
+                data = yield loadData(file === null || file === void 0 ? void 0 : file.path, file === null || file === void 0 ? void 0 : file.format);
+            }
+            const margin = defaultMargin;
+            const width = size.width - margin.left - margin.right;
+            const height = size.height - margin.top - margin.bottom;
+            select(div).select("svg").remove(); // Clear previous
+            const svg = select(div)
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+            const root = hierarchy(data);
+            const treeLayout = tree$1().size([height, width]);
+            treeLayout(root);
+            // Links
+            svg
+                .selectAll("path.link")
+                .data(root.links())
+                .enter()
+                .append("path")
+                .attr("class", "link")
+                .attr("fill", "none")
+                .attr("stroke", (d, i) => colors[i % colors.length])
+                .attr("stroke-width", (d) => d.source.data.size * 5)
+                .attr("d", linkHorizontal$1()
+                .x((d) => d.y)
+                .y((d) => d.x));
+            // Nodes
+            const node = svg
+                .selectAll("g.node")
+                .data(root.descendants())
+                .enter()
+                .append("g")
+                .attr("class", "node")
+                .attr("transform", (d) => `translate(${d.y},${d.x})`);
+            node
+                .append("circle")
+                .attr("r", 0)
+                .attr("fill", (d, i) => colors[i % colors.length]);
+            node
+                .append("text")
+                .attr("dy", 3)
+                .attr("x", (d) => (d.children ? -8 : 8))
+                .style("text-anchor", (d) => (d.children ? "end" : "start"))
+                .text((d) => d.data.name);
+        });
+    }
 
     exports.barchart = barchart;
     exports.bollinger = bollinger;
     exports.boxplot = boxplot;
     exports.chord = chord;
+    exports.dendrogram = dendrogram;
     exports.disjoint = disjoint;
     exports.dotplot = dotplot;
     exports.force = force;

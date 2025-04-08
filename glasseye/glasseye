@@ -404,6 +404,7 @@ In dev mode, the script must be run in the same folder as the script.
         'chord':None,
         'disjoint':None,
         'bollinger':None,
+        'dendrogram':None,
         }
 
     for s, args in standard_charts.items():

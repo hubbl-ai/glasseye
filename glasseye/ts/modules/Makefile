@@ -22,6 +22,7 @@ SOURCE_FILES = \
 	treemap.ts \
 	venn.ts \
 	disjoint.ts \
+	dendrogram.ts \
 
 all: $(TARGET_FILE)
 
