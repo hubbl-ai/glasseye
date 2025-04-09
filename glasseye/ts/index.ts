@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Tue Apr  8 01:39:23 CAT 2025
+// Generated Wed Apr  9 03:05:56 CAT 2025
 
 
 /// base.ts
@@ -1706,7 +1706,8 @@ export async function dendrogram(
   const root = d3.hierarchy(data);
   const treeLayout = d3.tree().size([height, width]);
   treeLayout(root);
-
+  console.log(root)
+  
   // Links
   svg
     .selectAll("path.link")
@@ -1716,7 +1717,7 @@ export async function dendrogram(
     .attr("class", "link")
     .attr("fill", "none")
     .attr("stroke", (d, i) => colors[i % colors.length])
-    .attr("stroke-width", (d) => d.source.data.size*5)
+    .attr("stroke-width", (d) => d.source.data.size)
     .attr(
       "d",
       d3

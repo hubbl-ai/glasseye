@@ -2,63 +2,60 @@ Building blocks:
 
 <dendrogram
 data='{
-  "name": "Root",
-  "size": 7,
-  "distance": "0.48",
+  "name": "",
+  "distance": 0.48,
+  "size": 27,
   "children": [
     {
       "name": "Node A",
       "size": 2,
-      "distance": "0.57"
+      "distance": 0.57
     },
     {
-      "name": "Node B",
-      "size": 9,
-      "distance": "0.35",
+      "name": "",
+      "distance": 0.35,
+      "size": 7,
       "children": [
         {
           "name": "Node C",
-          "size": 6,
-          "distance": "0.81"
+          "size": 6
         },
         {
           "name": "Node D",
-          "size": 1,
-          "distance": "0.19"
+          "size": 1
         }
       ]
     },
     {
-      "name": "Node E",
-      "size": 6,
-      "distance": "0.73",
+      "name": "",
+      "distance": 0.73,
+      "size": 11,
       "children": [
         {
           "name": "Node F",
           "size": 8,
-          "distance": "0.42"
+          "score": 0.8
         },
         {
           "name": "Node G",
           "size": 3,
-          "distance": "0.66"
+          "score": 0.2
         }
       ]
     },
     {
       "name": "Node H",
       "size": 1,
-      "distance": "0.25"
+      "distance": 0.25
     },
     {
-      "name": "Node I",
-      "size": 9,
-      "distance": "0.33",
+      "name": "",
+      "distance": 0.33,
+      "size": 7,
       "children": [
         {
           "name": "Node J",
-          "size": 7,
-          "distance": "0.90"
+          "size": 7
         }
       ]
     }
@@ -66,8 +63,6 @@ data='{
 }'
   size='{"width":500,"height":500}'
   colors='pastel'
-  n_colors='10'
-  
 >
 </dendrogram>
 
@@ -138,7 +133,7 @@ x = range(Z.shape[0])
 np.fill_diagonal(Z.values, 1.0)
 
 fig, ax = plt.subplots(figsize=(8, 8))
-pastel_cmap = ListedColormap(sns.color_palette("pastel").as_hex())
+pastel_cmap = ListedColormap(sns.color_palette("coolwarm").as_hex())
 im = ax.imshow(Z, cmap=pastel_cmap)
 
 ax.set_xticks(x, labels=Z.index,

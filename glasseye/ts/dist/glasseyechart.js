@@ -10032,7 +10032,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Tue Apr  8 01:39:23 CAT 2025
+    // Generated Wed Apr  9 03:05:56 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -11304,6 +11304,7 @@ var Glasseye = (function (exports) {
             const root = hierarchy(data);
             const treeLayout = tree$1().size([height, width]);
             treeLayout(root);
+            console.log(root);
             // Links
             svg
                 .selectAll("path.link")
@@ -11313,7 +11314,7 @@ var Glasseye = (function (exports) {
                 .attr("class", "link")
                 .attr("fill", "none")
                 .attr("stroke", (d, i) => colors[i % colors.length])
-                .attr("stroke-width", (d) => d.source.data.size * 5)
+                .attr("stroke-width", (d) => d.source.data.size)
                 .attr("d", linkHorizontal$1()
                 .x((d) => d.y)
                 .y((d) => d.x));
