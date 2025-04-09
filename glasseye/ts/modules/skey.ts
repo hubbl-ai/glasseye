@@ -4,8 +4,8 @@ export  async function skey(
   size: Size = defaultArgumentObject.size,
   file?: DataFile,
   colors: string[]= defaultArgumentObject.colors,
+  link_color = "source-target", //options are 0 or 1
   node_align = "right", //options are left,right,center,justify
-  link_color = "source-target" //options are 0 or 1
 ) {
 
   if (file?.path) {
@@ -63,21 +63,20 @@ export  async function skey(
   )
 
   // Draw Links
-  const link = svg
-    .append("g")
-    .attr("fill", "none")
-    .attr("opacity", 0.7)
-    .selectAll("path")
+  const link = svg.append("g")
+      .attr("fill", "none")
+      .attr("stroke-opacity", 0.5)
+    .selectAll()
     .data(graph.links)
-    .enter()
-    .append("path")
-    .attr("d", sankeyLinkHorizontal());
+    .join("g")
+      .style("mix-blend-mode", "multiply");
 
     let counter = 0;
     function generateUid(prefix = "id") {
         return `${prefix}-${++counter}`;
     }
 
+    console.log(graph.links)
 
     if (link_color == "source-target") {
       const gradient = link.append("linearGradient")
@@ -87,14 +86,16 @@ export  async function skey(
           .attr("x2", (d: any) => d.target.x0);
       gradient.append("stop")
           .attr("offset", "0%")
-          .attr("stop-color", (d: any) => color(d.source.category));
+          .attr("stop-color", (d: any) => color(d.source.name));
       gradient.append("stop")
           .attr("offset", "100%")
-          .attr("stop-color", (d: any) => color(d.target.category));
+          .attr("stop-color", (d: any) => color(d.target.name));
     }
 
 
-    link.attr("stroke", link_color == "source-target"? (d: any) => d.uid : (d: any) => color(d.source.name) || "#999")
+    link.append("path")
+    .attr("d", sankeyLinkHorizontal())
+    .attr("stroke", link_color == "source-target"? (d: any) => `url(#${d.uid})` : (d: any) => color(d.source.name) || "#999")
     .attr("stroke-width", (d: any) => Math.max(1, d.width));
 
   // Draw Nodes

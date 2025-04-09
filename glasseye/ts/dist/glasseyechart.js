@@ -10032,7 +10032,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Wed Apr  9 03:05:56 CAT 2025
+    // Generated Wed Apr  9 18:36:25 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -10844,9 +10844,8 @@ var Glasseye = (function (exports) {
     }
     /// skey.ts
     function skey() {
-        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors, node_align = "right", //options are left,right,center,justify
-        link_color = "source-target" //options are 0 or 1
-        ) {
+        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors, link_color = "source-target", //options are 0 or 1
+        node_align = "right") {
             if (file === null || file === void 0 ? void 0 : file.path) {
                 data = yield loadData(file === null || file === void 0 ? void 0 : file.path, file === null || file === void 0 ? void 0 : file.format);
             }
@@ -10891,19 +10890,18 @@ var Glasseye = (function (exports) {
             // Color scale
             const color = ordinal(data.nodes.map((d) => d.name), colors);
             // Draw Links
-            const link = svg
-                .append("g")
+            const link = svg.append("g")
                 .attr("fill", "none")
-                .attr("opacity", 0.7)
-                .selectAll("path")
+                .attr("stroke-opacity", 0.5)
+                .selectAll()
                 .data(graph.links)
-                .enter()
-                .append("path")
-                .attr("d", sankeyLinkHorizontal());
+                .join("g")
+                .style("mix-blend-mode", "multiply");
             let counter = 0;
             function generateUid(prefix = "id") {
                 return `${prefix}-${++counter}`;
             }
+            console.log(graph.links);
             if (link_color == "source-target") {
                 const gradient = link.append("linearGradient")
                     .attr("id", (d) => (d.uid = generateUid()))
@@ -10912,12 +10910,14 @@ var Glasseye = (function (exports) {
                     .attr("x2", (d) => d.target.x0);
                 gradient.append("stop")
                     .attr("offset", "0%")
-                    .attr("stop-color", (d) => color(d.source.category));
+                    .attr("stop-color", (d) => color(d.source.name));
                 gradient.append("stop")
                     .attr("offset", "100%")
-                    .attr("stop-color", (d) => color(d.target.category));
+                    .attr("stop-color", (d) => color(d.target.name));
             }
-            link.attr("stroke", link_color == "source-target" ? (d) => d.uid : (d) => color(d.source.name) || "#999")
+            link.append("path")
+                .attr("d", sankeyLinkHorizontal())
+                .attr("stroke", link_color == "source-target" ? (d) => `url(#${d.uid})` : (d) => color(d.source.name) || "#999")
                 .attr("stroke-width", (d) => Math.max(1, d.width));
             // Draw Nodes
             const node = svg
@@ -11304,7 +11304,8 @@ var Glasseye = (function (exports) {
             const root = hierarchy(data);
             const treeLayout = tree$1().size([height, width]);
             treeLayout(root);
-            console.log(root);
+            // console.log(root)
+            const sizeRatio = height / (2 * root.data.size);
             // Links
             svg
                 .selectAll("path.link")
@@ -11314,7 +11315,7 @@ var Glasseye = (function (exports) {
                 .attr("class", "link")
                 .attr("fill", "none")
                 .attr("stroke", (d, i) => colors[i % colors.length])
-                .attr("stroke-width", (d) => d.source.data.size)
+                .attr("stroke-width", (d) => d.target.data.size * sizeRatio)
                 .attr("d", linkHorizontal$1()
                 .x((d) => d.y)
                 .y((d) => d.x));

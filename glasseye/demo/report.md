@@ -70,9 +70,9 @@ data='{
 <skey
   size='{"width":600,"height":225}'
   file='{"path": "data/energy.json", "format": "json"}'
-  n_colors=16
-  colors='husl'
-  link_color='"target"'
+  n_colors=10
+  colors='pastel'
+  link_color='"source-target"'
   node_align='"right"'
 >
 </skey>

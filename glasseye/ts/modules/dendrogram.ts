@@ -25,8 +25,9 @@ export async function dendrogram(
   const root = d3.hierarchy(data);
   const treeLayout = d3.tree().size([height, width]);
   treeLayout(root);
-  console.log(root)
-  
+  // console.log(root)
+  const sizeRatio = height/(2 * root.data.size)
+
   // Links
   svg
     .selectAll("path.link")
@@ -36,7 +37,7 @@ export async function dendrogram(
     .attr("class", "link")
     .attr("fill", "none")
     .attr("stroke", (d, i) => colors[i % colors.length])
-    .attr("stroke-width", (d) => d.source.data.size)
+    .attr("stroke-width", (d) => d.target.data.size * sizeRatio)
     .attr(
       "d",
       d3
