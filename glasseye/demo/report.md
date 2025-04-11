@@ -3,14 +3,14 @@ Building blocks:
 
 <contour
 data='[
-  [0, 1, 2, 3, 2],
-  [1, 2, 3, 4, 3],
-  [2, 3, 4, 5, 4],
-  [1, 2, 3, 4, 3],
-  [0, 1, 2, 3, 2]
+  [0, 10, 20, 30, 20],
+  [10, 20, 30, 40, 30],
+  [20, 30, 40, 50, 40],
+  [10, 20, 30, 40, 30],
+  [0, 10, 20, 30, 20]
 ]'
   size='{"width":500,"height":500}'
-  colors='pastel'
+  colors='flare'
 >
 </contour>
 
@@ -18,10 +18,12 @@ data='[
 data='{
   "id": 22,
   "distance": 4.09206523,
+  "size": 12.0,
   "children": [
     {
       "id": 20,
       "distance": 3.39675184,
+      "size": 6.0,
       "children": [
         {
           "id": 16,
@@ -92,6 +94,7 @@ data='{
     {
       "id": 21,
       "distance": 3.39675184,
+      "size": 6.0,
       "children": [
         {
           "id": 18,
@@ -163,7 +166,7 @@ data='{
   "size": 12.0,
   "score": 1.0
 }'
-  size='{"width":500,"height":500}'
+  size='{"width":1000,"height":500}'
   colors='pastel'
 >
 </dendrogram>
