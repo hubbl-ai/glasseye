@@ -25,7 +25,18 @@ nodes and links in the chart, e.g. the light blue used for both the
 "Solar" and "Residential" nodes. Here are all of the colors in this
 palette:
 
-<svg width="550" height="55"><rect x="0" y="0" width="55" height="55" style="fill:#a1c9f4;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="55" y="0" width="55" height="55" style="fill:#ffb482;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="110" y="0" width="55" height="55" style="fill:#8de5a1;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="165" y="0" width="55" height="55" style="fill:#ff9f9b;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="220" y="0" width="55" height="55" style="fill:#d0bbff;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="275" y="0" width="55" height="55" style="fill:#debb9b;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="330" y="0" width="55" height="55" style="fill:#fab0e4;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="385" y="0" width="55" height="55" style="fill:#cfcfcf;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="440" y="0" width="55" height="55" style="fill:#fffea3;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="495" y="0" width="55" height="55" style="fill:#b9f2f0;stroke-width:2;stroke:rgb(255,255,255)"></rect></svg>
+<svg width="550" height="55">
+    <rect x="0" y="0" width="55" height="55" style="fill:#a1c9f4;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="55" y="0" width="55" height="55" style="fill:#ffb482;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="110" y="0" width="55" height="55" style="fill:#8de5a1;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="165" y="0" width="55" height="55" style="fill:#ff9f9b;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="220" y="0" width="55" height="55" style="fill:#d0bbff;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="275" y="0" width="55" height="55" style="fill:#debb9b;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="330" y="0" width="55" height="55" style="fill:#fab0e4;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="385" y="0" width="55" height="55" style="fill:#cfcfcf;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="440" y="0" width="55" height="55" style="fill:#fffea3;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="495" y="0" width="55" height="55" style="fill:#b9f2f0;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+</svg>
 
 You may use any of the Seaborn discrete palettes in your charts.
 Each chart makes use of its color palette in a manner particular
@@ -33,7 +44,17 @@ to the chart. It is well worth studying [`color_palette` API documentation](http
 One palette of particular interest is `husl`, which returns "a specified number of evenly spaced hues in the *HUSL* system"
 like the following palette of nine colors:
 
-<svg width="495" height="55"><rect x="0" y="0" width="55" height="55" style="fill:#f77189;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="55" y="0" width="55" height="55" style="fill:#d58c32;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="110" y="0" width="55" height="55" style="fill:#a4a031;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="165" y="0" width="55" height="55" style="fill:#50b131;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="220" y="0" width="55" height="55" style="fill:#34ae91;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="275" y="0" width="55" height="55" style="fill:#37abb5;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="330" y="0" width="55" height="55" style="fill:#3ba3ec;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="385" y="0" width="55" height="55" style="fill:#bb83f4;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="440" y="0" width="55" height="55" style="fill:#f564d4;stroke-width:2;stroke:rgb(255,255,255)"></rect></svg>
+<svg width="495" height="55">
+    <rect x="0" y="0" width="55" height="55" style="fill:#f77189;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="55" y="0" width="55" height="55" style="fill:#d58c32;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="110" y="0" width="55" height="55" style="fill:#a4a031;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="165" y="0" width="55" height="55" style="fill:#50b131;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="220" y="0" width="55" height="55" style="fill:#34ae91;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="275" y="0" width="55" height="55" style="fill:#37abb5;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="330" y="0" width="55" height="55" style="fill:#3ba3ec;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="385" y="0" width="55" height="55" style="fill:#bb83f4;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="440" y="0" width="55" height="55" style="fill:#f564d4;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+</svg>
 
 ### Colorcet
 
@@ -66,7 +87,16 @@ You can also [use categorical Color Brewer palettes](https://seaborn.pydata.org/
 designed using the [Color Brewer tool](https://colorbrewer2.org/),
 in your charts. Here is the Color Brewer `Set2` palette:
 
-<svg width="440" height="55"><rect x="0" y="0" width="55" height="55" style="fill:#66c2a5;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="55" y="0" width="55" height="55" style="fill:#fc8d62;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="110" y="0" width="55" height="55" style="fill:#8da0cb;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="165" y="0" width="55" height="55" style="fill:#e78ac3;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="220" y="0" width="55" height="55" style="fill:#a6d854;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="275" y="0" width="55" height="55" style="fill:#ffd92f;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="330" y="0" width="55" height="55" style="fill:#e5c494;stroke-width:2;stroke:rgb(255,255,255)"></rect><rect x="385" y="0" width="55" height="55" style="fill:#b3b3b3;stroke-width:2;stroke:rgb(255,255,255)"></rect></svg>
+<svg width="440" height="55">
+    <rect x="0" y="0" width="55" height="55" style="fill:#66c2a5;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="55" y="0" width="55" height="55" style="fill:#fc8d62;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="110" y="0" width="55" height="55" style="fill:#8da0cb;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="165" y="0" width="55" height="55" style="fill:#e78ac3;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="220" y="0" width="55" height="55" style="fill:#a6d854;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="275" y="0" width="55" height="55" style="fill:#ffd92f;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="330" y="0" width="55" height="55" style="fill:#e5c494;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+    <rect x="385" y="0" width="55" height="55" style="fill:#b3b3b3;stroke-width:2;stroke:rgb(255,255,255)"></rect>
+</svg>
 
 ### Manual color palettes
 
