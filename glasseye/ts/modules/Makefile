@@ -23,6 +23,7 @@ SOURCE_FILES = \
 	venn.ts \
 	disjoint.ts \
 	dendrogram.ts \
+	contour.ts \
 
 all: $(TARGET_FILE)
 

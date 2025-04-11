@@ -25,7 +25,6 @@ export async function dendrogram(
   const root = d3.hierarchy(data);
   const treeLayout = d3.tree().size([height, width]);
   treeLayout(root);
-  // console.log(root)
   const sizeRatio = height/(2 * root.data.size)
 
   // Links
@@ -53,12 +52,7 @@ export async function dendrogram(
     .enter()
     .append("g")
     .attr("class", "node")
-    .attr("transform", (d) => `translate(${d.y},${d.x})`);
-
-  node
-    .append("circle")
-    .attr("r", 0)
-    .attr("fill", (d, i) => colors[i % colors.length]);
+    .attr("transform", (d: any) => `translate(${d.y},${d.x})`);
 
   node
     .append("text")

@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Wed Apr  9 18:36:25 CAT 2025
+// Generated Fri Apr 11 14:47:08 CAT 2025
 
 
 /// base.ts
@@ -7,6 +7,7 @@
 import * as d3 from "d3";
 import { sankey, sankeyLinkHorizontal, SankeyGraph, sankeyLeft, sankeyRight, sankeyCenter, sankeyJustify } from "d3-sankey";
 import { SimulationNodeDatum } from "d3";
+import { Contours } from "d3-contour";
 
 interface Margin {
   top: number;
@@ -1203,7 +1204,7 @@ export  async function skey(
         return `${prefix}-${++counter}`;
     }
 
-    console.log(graph.links)
+    // console.log(graph.links)
 
     if (link_color == "source-target") {
       const gradient = link.append("linearGradient")
@@ -1707,7 +1708,6 @@ export async function dendrogram(
   const root = d3.hierarchy(data);
   const treeLayout = d3.tree().size([height, width]);
   treeLayout(root);
-  // console.log(root)
   const sizeRatio = height/(2 * root.data.size)
 
   // Links
@@ -1735,12 +1735,7 @@ export async function dendrogram(
     .enter()
     .append("g")
     .attr("class", "node")
-    .attr("transform", (d) => `translate(${d.y},${d.x})`);
-
-  node
-    .append("circle")
-    .attr("r", 0)
-    .attr("fill", (d, i) => colors[i % colors.length]);
+    .attr("transform", (d: any) => `translate(${d.y},${d.x})`);
 
   node
     .append("text")
@@ -1748,4 +1743,60 @@ export async function dendrogram(
     .attr("x", (d) => (d.children ? -8 : 8))
     .style("text-anchor", (d) => (d.children ? "end" : "start"))
     .text((d) => d.data.name);
+}
+
+/// contour.ts
+
+export async function contour(
+  div: string = defaultArgumentObject.div,
+  data: number[][] = defaultArgumentObject.data,
+  size: Size = defaultArgumentObject.size,
+  file?: DataFile,
+  colors: string[] = defaultArgumentObject.colors
+) {
+    if (file?.path) {
+        data = await loadData(file?.path, file?.format);
+      }
+
+  const width = size.width;
+  const height = size.height;
+
+  const n = data.length;
+  const m = data[0].length;
+
+  // Flatten 2D data
+  const values = data.reduce((acc, row) => acc.concat(row), []);
+
+  // Create scales
+  const x = d3.scaleLinear().domain([0, m]).range([0, width]);
+  const y = d3.scaleLinear().domain([0, n]).range([0, height]);
+
+  // Create color scale
+  const thresholds = d3.range(d3.min(values)!, d3.max(values)!, (d3.max(values)! - d3.min(values)!) / colors.length);
+  const color = d3.scaleLinear<string>().domain(thresholds).range(colors).interpolate(d3.interpolateHcl);
+
+  // Clear existing SVG if present
+  d3.select(div).select("svg").remove();
+
+  // Append new SVG
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  // Generate contours
+  const contours = d3.contours()
+    .size([m, n])
+    .thresholds(thresholds)(values);
+
+  // Render contours
+  svg.selectAll("path")
+    .data(contours)
+    .enter()
+    .append("path")
+    .attr("d", d3.geoPath(d3.geoIdentity().scale(width / m)))
+    .attr("fill", (d: any) => color(d.value))
+    .attr("stroke", "#333")
+    .attr("stroke-width", 0.3);
 }

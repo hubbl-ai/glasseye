@@ -33,7 +33,7 @@ var Glasseye = (function (exports) {
         return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
     };
 
-    function ascending$1(a, b) {
+    function ascending$2(a, b) {
       return a == null || b == null ? NaN : a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
     }
 
@@ -54,11 +54,11 @@ var Glasseye = (function (exports) {
       // tell if the comparator is symmetric, and an asymmetric comparator can’t be
       // used to test whether a single value is comparable.
       if (f.length !== 2) {
-        compare1 = ascending$1;
-        compare2 = (d, x) => ascending$1(f(d), x);
+        compare1 = ascending$2;
+        compare2 = (d, x) => ascending$2(f(d), x);
         delta = (d, x) => f(d) - x;
       } else {
-        compare1 = f === ascending$1 || f === descending$1 ? f : zero$1;
+        compare1 = f === ascending$2 || f === descending$1 ? f : zero$1;
         compare2 = f;
         delta = f;
       }
@@ -113,9 +113,21 @@ var Glasseye = (function (exports) {
       }
     }
 
-    const ascendingBisect = bisector(ascending$1);
+    const ascendingBisect = bisector(ascending$2);
     const bisectRight = ascendingBisect.right;
     bisector(number$3).center;
+
+    function count$1(values, valueof) {
+      let count = 0;
+      {
+        for (let value of values) {
+          if (value != null && (value = +value) >= value) {
+            ++count;
+          }
+        }
+      }
+      return count;
+    }
 
     function extent(values, valueof) {
       let min;
@@ -145,6 +157,48 @@ var Glasseye = (function (exports) {
         }
       }
       return [min, max];
+    }
+
+    // https://github.com/python/cpython/blob/a74eea238f5baba15797e2e8b570d153bc8690a7/Modules/mathmodule.c#L1423
+    class Adder {
+      constructor() {
+        this._partials = new Float64Array(32);
+        this._n = 0;
+      }
+      add(x) {
+        const p = this._partials;
+        let i = 0;
+        for (let j = 0; j < this._n && j < 32; j++) {
+          const y = p[j],
+            hi = x + y,
+            lo = Math.abs(x) < Math.abs(y) ? x - (hi - y) : y - (hi - x);
+          if (lo) p[i++] = lo;
+          x = hi;
+        }
+        p[i] = x;
+        this._n = i + 1;
+        return this;
+      }
+      valueOf() {
+        const p = this._partials;
+        let n = this._n, x, y, lo, hi = 0;
+        if (n > 0) {
+          hi = p[--n];
+          while (n > 0) {
+            x = hi;
+            y = p[--n];
+            hi = x + y;
+            lo = y - (hi - x);
+            if (lo) break;
+          }
+          if (n > 0 && ((lo < 0 && p[n - 1] < 0) || (lo > 0 && p[n - 1] > 0))) {
+            y = lo * 2;
+            x = hi + y;
+            if (y == x - hi) hi = x;
+          }
+        }
+        return hi;
+      }
     }
 
     class InternMap extends Map {
@@ -192,12 +246,12 @@ var Glasseye = (function (exports) {
       return value !== null && typeof value === "object" ? value.valueOf() : value;
     }
 
-    function identity$6(x) {
+    function identity$8(x) {
       return x;
     }
 
     function group(values, ...keys) {
-      return nest(values, identity$6, identity$6, keys);
+      return nest(values, identity$8, identity$8, keys);
     }
 
     function nest(values, map, reduce, keys) {
@@ -219,8 +273,8 @@ var Glasseye = (function (exports) {
       })(values, 0);
     }
 
-    function compareDefined(compare = ascending$1) {
-      if (compare === ascending$1) return ascendingDefined;
+    function compareDefined(compare = ascending$2) {
+      if (compare === ascending$2) return ascendingDefined;
       if (typeof compare !== "function") throw new TypeError("compare is not a function");
       return (a, b) => {
         const x = compare(a, b);
@@ -287,6 +341,27 @@ var Glasseye = (function (exports) {
       stop = +stop, start = +start, count = +count;
       const reverse = stop < start, inc = reverse ? tickIncrement(stop, start, count) : tickIncrement(start, stop, count);
       return (reverse ? -1 : 1) * (inc < 0 ? 1 / -inc : inc);
+    }
+
+    function nice$1(start, stop, count) {
+      let prestep;
+      while (true) {
+        const step = tickIncrement(start, stop, count);
+        if (step === prestep || step === 0 || !isFinite(step)) {
+          return [start, stop];
+        } else if (step > 0) {
+          start = Math.floor(start / step) * step;
+          stop = Math.ceil(stop / step) * step;
+        } else if (step < 0) {
+          start = Math.ceil(start * step) / step;
+          stop = Math.floor(stop * step) / step;
+        }
+        prestep = step;
+      }
+    }
+
+    function thresholdSturges(values) {
+      return Math.max(1, Math.ceil(Math.log(count$1(values)) / Math.LN2) + 1);
     }
 
     function max$3(values, valueof) {
@@ -396,6 +471,16 @@ var Glasseye = (function (exports) {
       return value0 + (value1 - value0) * (i - i0);
     }
 
+    function* flatten(arrays) {
+      for (const array of arrays) {
+        yield* array;
+      }
+    }
+
+    function merge(arrays) {
+      return Array.from(flatten(arrays));
+    }
+
     function range$1(start, stop, step) {
       start = +start, stop = +stop, step = (n = arguments.length) < 2 ? (stop = start, start = 0, 1) : n < 3 ? 1 : +step;
 
@@ -410,7 +495,7 @@ var Glasseye = (function (exports) {
       return range;
     }
 
-    function identity$5(x) {
+    function identity$7(x) {
       return x;
     }
 
@@ -418,7 +503,7 @@ var Glasseye = (function (exports) {
         right$1 = 2,
         bottom = 3,
         left$1 = 4,
-        epsilon$4 = 1e-6;
+        epsilon$5 = 1e-6;
 
     function translateX(x) {
       return "translate(" + x + ",0)";
@@ -456,7 +541,7 @@ var Glasseye = (function (exports) {
 
       function axis(context) {
         var values = tickValues == null ? (scale.ticks ? scale.ticks.apply(scale, tickArguments) : scale.domain()) : tickValues,
-            format = tickFormat == null ? (scale.tickFormat ? scale.tickFormat.apply(scale, tickArguments) : identity$5) : tickFormat,
+            format = tickFormat == null ? (scale.tickFormat ? scale.tickFormat.apply(scale, tickArguments) : identity$7) : tickFormat,
             spacing = Math.max(tickSizeInner, 0) + tickPadding,
             range = scale.range(),
             range0 = +range[0] + offset,
@@ -492,11 +577,11 @@ var Glasseye = (function (exports) {
           text = text.transition(context);
 
           tickExit = tickExit.transition(context)
-              .attr("opacity", epsilon$4)
+              .attr("opacity", epsilon$5)
               .attr("transform", function(d) { return isFinite(d = position(d)) ? transform(d + offset) : this.getAttribute("transform"); });
 
           tickEnter
-              .attr("opacity", epsilon$4)
+              .attr("opacity", epsilon$5)
               .attr("transform", function(d) { var p = this.parentNode.__axis; return transform((p && isFinite(p = p(d)) ? p : position(d)) + offset); });
         }
 
@@ -579,7 +664,7 @@ var Glasseye = (function (exports) {
       return axis(left$1, scale);
     }
 
-    var noop = {value: () => {}};
+    var noop$2 = {value: () => {}};
 
     function dispatch() {
       for (var i = 0, n = arguments.length, _ = {}, t; i < n; ++i) {
@@ -654,7 +739,7 @@ var Glasseye = (function (exports) {
     function set$1(type, name, callback) {
       for (var i = 0, n = type.length; i < n; ++i) {
         if (type[i].name === name) {
-          type[i] = noop, type = type.slice(0, i).concat(type.slice(i + 1));
+          type[i] = noop$2, type = type.slice(0, i).concat(type.slice(i + 1));
           break;
         }
       }
@@ -730,7 +815,7 @@ var Glasseye = (function (exports) {
     // selection; we don’t ever want to create a selection backed by a live
     // HTMLCollection or NodeList. However, note that selection.selectAll will use a
     // static NodeList as a group, since it safely derived from querySelectorAll.
-    function array$2(x) {
+    function array$3(x) {
       return x == null ? [] : Array.isArray(x) ? x : Array.from(x);
     }
 
@@ -746,7 +831,7 @@ var Glasseye = (function (exports) {
 
     function arrayAll(select) {
       return function() {
-        return array$2(select.apply(this, arguments));
+        return array$3(select.apply(this, arguments));
       };
     }
 
@@ -850,7 +935,7 @@ var Glasseye = (function (exports) {
       querySelectorAll: function(selector) { return this._parent.querySelectorAll(selector); }
     };
 
-    function constant$9(x) {
+    function constant$a(x) {
       return function() {
         return x;
       };
@@ -937,7 +1022,7 @@ var Glasseye = (function (exports) {
           parents = this._parents,
           groups = this._groups;
 
-      if (typeof value !== "function") value = constant$9(value);
+      if (typeof value !== "function") value = constant$a(value);
 
       for (var m = groups.length, update = new Array(m), enter = new Array(m), exit = new Array(m), j = 0; j < m; ++j) {
         var parent = parents[j],
@@ -1034,7 +1119,7 @@ var Glasseye = (function (exports) {
     }
 
     function selection_sort(compare) {
-      if (!compare) compare = ascending;
+      if (!compare) compare = ascending$1;
 
       function compareNode(a, b) {
         return a && b ? compare(a.__data__, b.__data__) : !a - !b;
@@ -1052,7 +1137,7 @@ var Glasseye = (function (exports) {
       return new Selection$1(sortgroups, this._parents).order();
     }
 
-    function ascending(a, b) {
+    function ascending$1(a, b) {
       return a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
     }
 
@@ -1651,7 +1736,7 @@ var Glasseye = (function (exports) {
       }
     }
 
-    var constant$8 = x => () => x;
+    var constant$9 = x => () => x;
 
     function DragEvent(type, {
       sourceEvent,
@@ -1843,19 +1928,19 @@ var Glasseye = (function (exports) {
       }
 
       drag.filter = function(_) {
-        return arguments.length ? (filter = typeof _ === "function" ? _ : constant$8(!!_), drag) : filter;
+        return arguments.length ? (filter = typeof _ === "function" ? _ : constant$9(!!_), drag) : filter;
       };
 
       drag.container = function(_) {
-        return arguments.length ? (container = typeof _ === "function" ? _ : constant$8(_), drag) : container;
+        return arguments.length ? (container = typeof _ === "function" ? _ : constant$9(_), drag) : container;
       };
 
       drag.subject = function(_) {
-        return arguments.length ? (subject = typeof _ === "function" ? _ : constant$8(_), drag) : subject;
+        return arguments.length ? (subject = typeof _ === "function" ? _ : constant$9(_), drag) : subject;
       };
 
       drag.touchable = function(_) {
-        return arguments.length ? (touchable = typeof _ === "function" ? _ : constant$8(!!_), drag) : touchable;
+        return arguments.length ? (touchable = typeof _ === "function" ? _ : constant$9(!!_), drag) : touchable;
       };
 
       drag.on = function() {
@@ -2276,6 +2361,121 @@ var Glasseye = (function (exports) {
           : m1) * 255;
     }
 
+    const radians$1 = Math.PI / 180;
+    const degrees$2 = 180 / Math.PI;
+
+    // https://observablehq.com/@mbostock/lab-and-rgb
+    const K = 18,
+        Xn = 0.96422,
+        Yn = 1,
+        Zn = 0.82521,
+        t0$1 = 4 / 29,
+        t1$1 = 6 / 29,
+        t2 = 3 * t1$1 * t1$1,
+        t3 = t1$1 * t1$1 * t1$1;
+
+    function labConvert(o) {
+      if (o instanceof Lab) return new Lab(o.l, o.a, o.b, o.opacity);
+      if (o instanceof Hcl) return hcl2lab(o);
+      if (!(o instanceof Rgb)) o = rgbConvert(o);
+      var r = rgb2lrgb(o.r),
+          g = rgb2lrgb(o.g),
+          b = rgb2lrgb(o.b),
+          y = xyz2lab((0.2225045 * r + 0.7168786 * g + 0.0606169 * b) / Yn), x, z;
+      if (r === g && g === b) x = z = y; else {
+        x = xyz2lab((0.4360747 * r + 0.3850649 * g + 0.1430804 * b) / Xn);
+        z = xyz2lab((0.0139322 * r + 0.0971045 * g + 0.7141733 * b) / Zn);
+      }
+      return new Lab(116 * y - 16, 500 * (x - y), 200 * (y - z), o.opacity);
+    }
+
+    function lab(l, a, b, opacity) {
+      return arguments.length === 1 ? labConvert(l) : new Lab(l, a, b, opacity == null ? 1 : opacity);
+    }
+
+    function Lab(l, a, b, opacity) {
+      this.l = +l;
+      this.a = +a;
+      this.b = +b;
+      this.opacity = +opacity;
+    }
+
+    define(Lab, lab, extend(Color, {
+      brighter(k) {
+        return new Lab(this.l + K * (k == null ? 1 : k), this.a, this.b, this.opacity);
+      },
+      darker(k) {
+        return new Lab(this.l - K * (k == null ? 1 : k), this.a, this.b, this.opacity);
+      },
+      rgb() {
+        var y = (this.l + 16) / 116,
+            x = isNaN(this.a) ? y : y + this.a / 500,
+            z = isNaN(this.b) ? y : y - this.b / 200;
+        x = Xn * lab2xyz(x);
+        y = Yn * lab2xyz(y);
+        z = Zn * lab2xyz(z);
+        return new Rgb(
+          lrgb2rgb( 3.1338561 * x - 1.6168667 * y - 0.4906146 * z),
+          lrgb2rgb(-0.9787684 * x + 1.9161415 * y + 0.0334540 * z),
+          lrgb2rgb( 0.0719453 * x - 0.2289914 * y + 1.4052427 * z),
+          this.opacity
+        );
+      }
+    }));
+
+    function xyz2lab(t) {
+      return t > t3 ? Math.pow(t, 1 / 3) : t / t2 + t0$1;
+    }
+
+    function lab2xyz(t) {
+      return t > t1$1 ? t * t * t : t2 * (t - t0$1);
+    }
+
+    function lrgb2rgb(x) {
+      return 255 * (x <= 0.0031308 ? 12.92 * x : 1.055 * Math.pow(x, 1 / 2.4) - 0.055);
+    }
+
+    function rgb2lrgb(x) {
+      return (x /= 255) <= 0.04045 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+    }
+
+    function hclConvert(o) {
+      if (o instanceof Hcl) return new Hcl(o.h, o.c, o.l, o.opacity);
+      if (!(o instanceof Lab)) o = labConvert(o);
+      if (o.a === 0 && o.b === 0) return new Hcl(NaN, 0 < o.l && o.l < 100 ? 0 : NaN, o.l, o.opacity);
+      var h = Math.atan2(o.b, o.a) * degrees$2;
+      return new Hcl(h < 0 ? h + 360 : h, Math.sqrt(o.a * o.a + o.b * o.b), o.l, o.opacity);
+    }
+
+    function hcl$2(h, c, l, opacity) {
+      return arguments.length === 1 ? hclConvert(h) : new Hcl(h, c, l, opacity == null ? 1 : opacity);
+    }
+
+    function Hcl(h, c, l, opacity) {
+      this.h = +h;
+      this.c = +c;
+      this.l = +l;
+      this.opacity = +opacity;
+    }
+
+    function hcl2lab(o) {
+      if (isNaN(o.h)) return new Lab(o.l, 0, 0, o.opacity);
+      var h = o.h * radians$1;
+      return new Lab(o.l, Math.cos(h) * o.c, Math.sin(h) * o.c, o.opacity);
+    }
+
+    define(Hcl, hcl$2, extend(Color, {
+      brighter(k) {
+        return new Hcl(this.h, this.c, this.l + K * (k == null ? 1 : k), this.opacity);
+      },
+      darker(k) {
+        return new Hcl(this.h, this.c, this.l - K * (k == null ? 1 : k), this.opacity);
+      },
+      rgb() {
+        return hcl2lab(this).rgb();
+      }
+    }));
+
     function basis(t1, v0, v1, v2, v3) {
       var t2 = t1 * t1, t3 = t2 * t1;
       return ((1 - 3 * t1 + 3 * t2 - t3) * v0
@@ -2296,7 +2496,7 @@ var Glasseye = (function (exports) {
       };
     }
 
-    var constant$7 = x => () => x;
+    var constant$8 = x => () => x;
 
     function linear$1(a, d) {
       return function(t) {
@@ -2310,15 +2510,20 @@ var Glasseye = (function (exports) {
       };
     }
 
+    function hue(a, b) {
+      var d = b - a;
+      return d ? linear$1(a, d > 180 || d < -180 ? d - 360 * Math.round(d / 360) : d) : constant$8(isNaN(a) ? b : a);
+    }
+
     function gamma(y) {
       return (y = +y) === 1 ? nogamma : function(a, b) {
-        return b - a ? exponential(a, b, y) : constant$7(isNaN(a) ? b : a);
+        return b - a ? exponential(a, b, y) : constant$8(isNaN(a) ? b : a);
       };
     }
 
     function nogamma(a, b) {
       var d = b - a;
-      return d ? linear$1(a, d) : constant$7(isNaN(a) ? b : a);
+      return d ? linear$1(a, d) : constant$8(isNaN(a) ? b : a);
     }
 
     var interpolateRgb = (function rgbGamma(y) {
@@ -2502,7 +2707,7 @@ var Glasseye = (function (exports) {
 
     function interpolate$1(a, b) {
       var t = typeof b, c;
-      return b == null || t === "boolean" ? constant$7(b)
+      return b == null || t === "boolean" ? constant$8(b)
           : (t === "number" ? interpolateNumber
           : t === "string" ? ((c = color(b)) ? (b = c, interpolateRgb) : interpolateString)
           : b instanceof color ? interpolateRgb
@@ -2519,9 +2724,9 @@ var Glasseye = (function (exports) {
       };
     }
 
-    var degrees = 180 / Math.PI;
+    var degrees$1 = 180 / Math.PI;
 
-    var identity$4 = {
+    var identity$6 = {
       translateX: 0,
       translateY: 0,
       rotate: 0,
@@ -2539,8 +2744,8 @@ var Glasseye = (function (exports) {
       return {
         translateX: e,
         translateY: f,
-        rotate: Math.atan2(b, a) * degrees,
-        skewX: Math.atan(skewX) * degrees,
+        rotate: Math.atan2(b, a) * degrees$1,
+        skewX: Math.atan(skewX) * degrees$1,
         scaleX: scaleX,
         scaleY: scaleY
       };
@@ -2551,14 +2756,14 @@ var Glasseye = (function (exports) {
     /* eslint-disable no-undef */
     function parseCss(value) {
       const m = new (typeof DOMMatrix === "function" ? DOMMatrix : WebKitCSSMatrix)(value + "");
-      return m.isIdentity ? identity$4 : decompose(m.a, m.b, m.c, m.d, m.e, m.f);
+      return m.isIdentity ? identity$6 : decompose(m.a, m.b, m.c, m.d, m.e, m.f);
     }
 
     function parseSvg(value) {
-      if (value == null) return identity$4;
+      if (value == null) return identity$6;
       if (!svgNode) svgNode = document.createElementNS("http://www.w3.org/2000/svg", "g");
       svgNode.setAttribute("transform", value);
-      if (!(value = svgNode.transform.baseVal.consolidate())) return identity$4;
+      if (!(value = svgNode.transform.baseVal.consolidate())) return identity$6;
       value = value.matrix;
       return decompose(value.a, value.b, value.c, value.d, value.e, value.f);
     }
@@ -2695,6 +2900,24 @@ var Glasseye = (function (exports) {
 
       return zoom;
     })(Math.SQRT2, 2, 4);
+
+    function hcl(hue) {
+      return function(start, end) {
+        var h = hue((start = hcl$2(start)).h, (end = hcl$2(end)).h),
+            c = nogamma(start.c, end.c),
+            l = nogamma(start.l, end.l),
+            opacity = nogamma(start.opacity, end.opacity);
+        return function(t) {
+          start.h = h(t);
+          start.c = c(t);
+          start.l = l(t);
+          start.opacity = opacity(t);
+          return start + "";
+        };
+      }
+    }
+
+    var hcl$1 = hcl(hue);
 
     var frame = 0, // is an animation frame pending?
         timeout$1 = 0, // is a timeout pending?
@@ -3684,14 +3907,14 @@ var Glasseye = (function (exports) {
     selection.prototype.interrupt = selection_interrupt;
     selection.prototype.transition = selection_transition;
 
-    var abs$1 = Math.abs;
-    var cos$1 = Math.cos;
-    var sin$1 = Math.sin;
-    var pi$3 = Math.PI;
-    var halfPi$1 = pi$3 / 2;
-    var tau$3 = pi$3 * 2;
+    var abs$2 = Math.abs;
+    var cos$2 = Math.cos;
+    var sin$2 = Math.sin;
+    var pi$4 = Math.PI;
+    var halfPi$1 = pi$4 / 2;
+    var tau$4 = pi$4 * 2;
     var max$2 = Math.max;
-    var epsilon$3 = 1e-12;
+    var epsilon$4 = 1e-12;
 
     function range(i, j) {
       return Array.from({length: j - i}, (_, k) => i + k);
@@ -3732,8 +3955,8 @@ var Glasseye = (function (exports) {
           for (let j = 0; j < n; ++j) x += matrix[i * n + j] + directed * matrix[j * n + i];
           k += groupSums[i] = x;
         }
-        k = max$2(0, tau$3 - padAngle * n) / k;
-        dx = k ? padAngle : tau$3 / n;
+        k = max$2(0, tau$4 - padAngle * n) / k;
+        dx = k ? padAngle : tau$4 / n;
 
         // Compute the angles for each group and constituent chord.
         {
@@ -3791,22 +4014,22 @@ var Glasseye = (function (exports) {
       return chord;
     }
 
-    const pi$2 = Math.PI,
-        tau$2 = 2 * pi$2,
-        epsilon$2 = 1e-6,
-        tauEpsilon$1 = tau$2 - epsilon$2;
+    const pi$3 = Math.PI,
+        tau$3 = 2 * pi$3,
+        epsilon$3 = 1e-6,
+        tauEpsilon$1 = tau$3 - epsilon$3;
 
-    function append(strings) {
+    function append$1(strings) {
       this._ += strings[0];
       for (let i = 1, n = strings.length; i < n; ++i) {
         this._ += arguments[i] + strings[i];
       }
     }
 
-    function appendRound(digits) {
+    function appendRound$1(digits) {
       let d = Math.floor(digits);
       if (!(d >= 0)) throw new Error(`invalid digits: ${digits}`);
-      if (d > 15) return append;
+      if (d > 15) return append$1;
       const k = 10 ** d;
       return function(strings) {
         this._ += strings[0];
@@ -3821,7 +4044,7 @@ var Glasseye = (function (exports) {
         this._x0 = this._y0 = // start of current subpath
         this._x1 = this._y1 = null; // end of current subpath
         this._ = "";
-        this._append = digits == null ? append : appendRound(digits);
+        this._append = digits == null ? append$1 : appendRound$1(digits);
       }
       moveTo(x, y) {
         this._append`M${this._x0 = this._x1 = +x},${this._y0 = this._y1 = +y}`;
@@ -3861,12 +4084,12 @@ var Glasseye = (function (exports) {
         }
 
         // Or, is (x1,y1) coincident with (x0,y0)? Do nothing.
-        else if (!(l01_2 > epsilon$2));
+        else if (!(l01_2 > epsilon$3));
 
         // Or, are (x0,y0), (x1,y1) and (x2,y2) collinear?
         // Equivalently, is (x1,y1) coincident with (x2,y2)?
         // Or, is the radius zero? Line to (x1,y1).
-        else if (!(Math.abs(y01 * x21 - y21 * x01) > epsilon$2) || !r) {
+        else if (!(Math.abs(y01 * x21 - y21 * x01) > epsilon$3) || !r) {
           this._append`L${this._x1 = x1},${this._y1 = y1}`;
         }
 
@@ -3878,12 +4101,12 @@ var Glasseye = (function (exports) {
               l20_2 = x20 * x20 + y20 * y20,
               l21 = Math.sqrt(l21_2),
               l01 = Math.sqrt(l01_2),
-              l = r * Math.tan((pi$2 - Math.acos((l21_2 + l01_2 - l20_2) / (2 * l21 * l01))) / 2),
+              l = r * Math.tan((pi$3 - Math.acos((l21_2 + l01_2 - l20_2) / (2 * l21 * l01))) / 2),
               t01 = l / l01,
               t21 = l / l21;
 
           // If the start tangent is not coincident with (x0,y0), line to.
-          if (Math.abs(t01 - 1) > epsilon$2) {
+          if (Math.abs(t01 - 1) > epsilon$3) {
             this._append`L${x1 + t01 * x01},${y1 + t01 * y01}`;
           }
 
@@ -3909,7 +4132,7 @@ var Glasseye = (function (exports) {
         }
 
         // Or, is (x0,y0) not coincident with the previous point? Line to (x0,y0).
-        else if (Math.abs(this._x1 - x0) > epsilon$2 || Math.abs(this._y1 - y0) > epsilon$2) {
+        else if (Math.abs(this._x1 - x0) > epsilon$3 || Math.abs(this._y1 - y0) > epsilon$3) {
           this._append`L${x0},${y0}`;
         }
 
@@ -3917,7 +4140,7 @@ var Glasseye = (function (exports) {
         if (!r) return;
 
         // Does the angle go the wrong way? Flip the direction.
-        if (da < 0) da = da % tau$2 + tau$2;
+        if (da < 0) da = da % tau$3 + tau$3;
 
         // Is this a complete circle? Draw two arcs to complete the circle.
         if (da > tauEpsilon$1) {
@@ -3925,8 +4148,8 @@ var Glasseye = (function (exports) {
         }
 
         // Is this arc non-empty? Draw an arc!
-        else if (da > epsilon$2) {
-          this._append`A${r},${r},0,${+(da >= pi$2)},${cw},${this._x1 = x + r * Math.cos(a1)},${this._y1 = y + r * Math.sin(a1)}`;
+        else if (da > epsilon$3) {
+          this._append`A${r},${r},0,${+(da >= pi$3)},${cw},${this._x1 = x + r * Math.cos(a1)},${this._y1 = y + r * Math.sin(a1)}`;
         }
       }
       rect(x, y, w, h) {
@@ -3944,9 +4167,9 @@ var Glasseye = (function (exports) {
     // Allow instanceof d3.path
     path$1.prototype = Path$1.prototype;
 
-    var slice$2 = Array.prototype.slice;
+    var slice$3 = Array.prototype.slice;
 
-    function constant$6(x) {
+    function constant$7(x) {
       return function() {
         return x;
       };
@@ -3991,7 +4214,7 @@ var Glasseye = (function (exports) {
             s = source.apply(this, arguments),
             t = target.apply(this, arguments),
             ap = padAngle.apply(this, arguments) / 2,
-            argv = slice$2.call(arguments),
+            argv = slice$3.call(arguments),
             sr = +sourceRadius.apply(this, (argv[0] = s, argv)),
             sa0 = startAngle.apply(this, argv) - halfPi$1,
             sa1 = endAngle.apply(this, argv) - halfPi$1,
@@ -4001,49 +4224,49 @@ var Glasseye = (function (exports) {
 
         if (!context) context = buffer = path$1();
 
-        if (ap > epsilon$3) {
-          if (abs$1(sa1 - sa0) > ap * 2 + epsilon$3) sa1 > sa0 ? (sa0 += ap, sa1 -= ap) : (sa0 -= ap, sa1 += ap);
+        if (ap > epsilon$4) {
+          if (abs$2(sa1 - sa0) > ap * 2 + epsilon$4) sa1 > sa0 ? (sa0 += ap, sa1 -= ap) : (sa0 -= ap, sa1 += ap);
           else sa0 = sa1 = (sa0 + sa1) / 2;
-          if (abs$1(ta1 - ta0) > ap * 2 + epsilon$3) ta1 > ta0 ? (ta0 += ap, ta1 -= ap) : (ta0 -= ap, ta1 += ap);
+          if (abs$2(ta1 - ta0) > ap * 2 + epsilon$4) ta1 > ta0 ? (ta0 += ap, ta1 -= ap) : (ta0 -= ap, ta1 += ap);
           else ta0 = ta1 = (ta0 + ta1) / 2;
         }
 
-        context.moveTo(sr * cos$1(sa0), sr * sin$1(sa0));
+        context.moveTo(sr * cos$2(sa0), sr * sin$2(sa0));
         context.arc(0, 0, sr, sa0, sa1);
         if (sa0 !== ta0 || sa1 !== ta1) {
           {
-            context.quadraticCurveTo(0, 0, tr * cos$1(ta0), tr * sin$1(ta0));
+            context.quadraticCurveTo(0, 0, tr * cos$2(ta0), tr * sin$2(ta0));
             context.arc(0, 0, tr, ta0, ta1);
           }
         }
-        context.quadraticCurveTo(0, 0, sr * cos$1(sa0), sr * sin$1(sa0));
+        context.quadraticCurveTo(0, 0, sr * cos$2(sa0), sr * sin$2(sa0));
         context.closePath();
 
         if (buffer) return context = null, buffer + "" || null;
       }
 
       ribbon.radius = function(_) {
-        return arguments.length ? (sourceRadius = targetRadius = typeof _ === "function" ? _ : constant$6(+_), ribbon) : sourceRadius;
+        return arguments.length ? (sourceRadius = targetRadius = typeof _ === "function" ? _ : constant$7(+_), ribbon) : sourceRadius;
       };
 
       ribbon.sourceRadius = function(_) {
-        return arguments.length ? (sourceRadius = typeof _ === "function" ? _ : constant$6(+_), ribbon) : sourceRadius;
+        return arguments.length ? (sourceRadius = typeof _ === "function" ? _ : constant$7(+_), ribbon) : sourceRadius;
       };
 
       ribbon.targetRadius = function(_) {
-        return arguments.length ? (targetRadius = typeof _ === "function" ? _ : constant$6(+_), ribbon) : targetRadius;
+        return arguments.length ? (targetRadius = typeof _ === "function" ? _ : constant$7(+_), ribbon) : targetRadius;
       };
 
       ribbon.startAngle = function(_) {
-        return arguments.length ? (startAngle = typeof _ === "function" ? _ : constant$6(+_), ribbon) : startAngle;
+        return arguments.length ? (startAngle = typeof _ === "function" ? _ : constant$7(+_), ribbon) : startAngle;
       };
 
       ribbon.endAngle = function(_) {
-        return arguments.length ? (endAngle = typeof _ === "function" ? _ : constant$6(+_), ribbon) : endAngle;
+        return arguments.length ? (endAngle = typeof _ === "function" ? _ : constant$7(+_), ribbon) : endAngle;
       };
 
       ribbon.padAngle = function(_) {
-        return arguments.length ? (padAngle = typeof _ === "function" ? _ : constant$6(+_), ribbon) : padAngle;
+        return arguments.length ? (padAngle = typeof _ === "function" ? _ : constant$7(+_), ribbon) : padAngle;
       };
 
       ribbon.source = function(_) {
@@ -4063,6 +4286,270 @@ var Glasseye = (function (exports) {
 
     function ribbon$1() {
       return ribbon();
+    }
+
+    var array$2 = Array.prototype;
+
+    var slice$2 = array$2.slice;
+
+    function ascending(a, b) {
+      return a - b;
+    }
+
+    function area(ring) {
+      var i = 0, n = ring.length, area = ring[n - 1][1] * ring[0][0] - ring[n - 1][0] * ring[0][1];
+      while (++i < n) area += ring[i - 1][1] * ring[i][0] - ring[i - 1][0] * ring[i][1];
+      return area;
+    }
+
+    var constant$6 = x => () => x;
+
+    function contains(ring, hole) {
+      var i = -1, n = hole.length, c;
+      while (++i < n) if (c = ringContains(ring, hole[i])) return c;
+      return 0;
+    }
+
+    function ringContains(ring, point) {
+      var x = point[0], y = point[1], contains = -1;
+      for (var i = 0, n = ring.length, j = n - 1; i < n; j = i++) {
+        var pi = ring[i], xi = pi[0], yi = pi[1], pj = ring[j], xj = pj[0], yj = pj[1];
+        if (segmentContains(pi, pj, point)) return 0;
+        if (((yi > y) !== (yj > y)) && ((x < (xj - xi) * (y - yi) / (yj - yi) + xi))) contains = -contains;
+      }
+      return contains;
+    }
+
+    function segmentContains(a, b, c) {
+      var i; return collinear(a, b, c) && within(a[i = +(a[0] === b[0])], c[i], b[i]);
+    }
+
+    function collinear(a, b, c) {
+      return (b[0] - a[0]) * (c[1] - a[1]) === (c[0] - a[0]) * (b[1] - a[1]);
+    }
+
+    function within(p, q, r) {
+      return p <= q && q <= r || r <= q && q <= p;
+    }
+
+    function noop$1() {}
+
+    var cases = [
+      [],
+      [[[1.0, 1.5], [0.5, 1.0]]],
+      [[[1.5, 1.0], [1.0, 1.5]]],
+      [[[1.5, 1.0], [0.5, 1.0]]],
+      [[[1.0, 0.5], [1.5, 1.0]]],
+      [[[1.0, 1.5], [0.5, 1.0]], [[1.0, 0.5], [1.5, 1.0]]],
+      [[[1.0, 0.5], [1.0, 1.5]]],
+      [[[1.0, 0.5], [0.5, 1.0]]],
+      [[[0.5, 1.0], [1.0, 0.5]]],
+      [[[1.0, 1.5], [1.0, 0.5]]],
+      [[[0.5, 1.0], [1.0, 0.5]], [[1.5, 1.0], [1.0, 1.5]]],
+      [[[1.5, 1.0], [1.0, 0.5]]],
+      [[[0.5, 1.0], [1.5, 1.0]]],
+      [[[1.0, 1.5], [1.5, 1.0]]],
+      [[[0.5, 1.0], [1.0, 1.5]]],
+      []
+    ];
+
+    function Contours() {
+      var dx = 1,
+          dy = 1,
+          threshold = thresholdSturges,
+          smooth = smoothLinear;
+
+      function contours(values) {
+        var tz = threshold(values);
+
+        // Convert number of thresholds into uniform thresholds.
+        if (!Array.isArray(tz)) {
+          const e = extent(values, finite);
+          tz = ticks(...nice$1(e[0], e[1], tz), tz);
+          while (tz[tz.length - 1] >= e[1]) tz.pop();
+          while (tz[1] < e[0]) tz.shift();
+        } else {
+          tz = tz.slice().sort(ascending);
+        }
+
+        return tz.map(value => contour(values, value));
+      }
+
+      // Accumulate, smooth contour rings, assign holes to exterior rings.
+      // Based on https://github.com/mbostock/shapefile/blob/v0.6.2/shp/polygon.js
+      function contour(values, value) {
+        const v = value == null ? NaN : +value;
+        if (isNaN(v)) throw new Error(`invalid value: ${value}`);
+
+        var polygons = [],
+            holes = [];
+
+        isorings(values, v, function(ring) {
+          smooth(ring, values, v);
+          if (area(ring) > 0) polygons.push([ring]);
+          else holes.push(ring);
+        });
+
+        holes.forEach(function(hole) {
+          for (var i = 0, n = polygons.length, polygon; i < n; ++i) {
+            if (contains((polygon = polygons[i])[0], hole) !== -1) {
+              polygon.push(hole);
+              return;
+            }
+          }
+        });
+
+        return {
+          type: "MultiPolygon",
+          value: value,
+          coordinates: polygons
+        };
+      }
+
+      // Marching squares with isolines stitched into rings.
+      // Based on https://github.com/topojson/topojson-client/blob/v3.0.0/src/stitch.js
+      function isorings(values, value, callback) {
+        var fragmentByStart = new Array,
+            fragmentByEnd = new Array,
+            x, y, t0, t1, t2, t3;
+
+        // Special case for the first row (y = -1, t2 = t3 = 0).
+        x = y = -1;
+        t1 = above(values[0], value);
+        cases[t1 << 1].forEach(stitch);
+        while (++x < dx - 1) {
+          t0 = t1, t1 = above(values[x + 1], value);
+          cases[t0 | t1 << 1].forEach(stitch);
+        }
+        cases[t1 << 0].forEach(stitch);
+
+        // General case for the intermediate rows.
+        while (++y < dy - 1) {
+          x = -1;
+          t1 = above(values[y * dx + dx], value);
+          t2 = above(values[y * dx], value);
+          cases[t1 << 1 | t2 << 2].forEach(stitch);
+          while (++x < dx - 1) {
+            t0 = t1, t1 = above(values[y * dx + dx + x + 1], value);
+            t3 = t2, t2 = above(values[y * dx + x + 1], value);
+            cases[t0 | t1 << 1 | t2 << 2 | t3 << 3].forEach(stitch);
+          }
+          cases[t1 | t2 << 3].forEach(stitch);
+        }
+
+        // Special case for the last row (y = dy - 1, t0 = t1 = 0).
+        x = -1;
+        t2 = values[y * dx] >= value;
+        cases[t2 << 2].forEach(stitch);
+        while (++x < dx - 1) {
+          t3 = t2, t2 = above(values[y * dx + x + 1], value);
+          cases[t2 << 2 | t3 << 3].forEach(stitch);
+        }
+        cases[t2 << 3].forEach(stitch);
+
+        function stitch(line) {
+          var start = [line[0][0] + x, line[0][1] + y],
+              end = [line[1][0] + x, line[1][1] + y],
+              startIndex = index(start),
+              endIndex = index(end),
+              f, g;
+          if (f = fragmentByEnd[startIndex]) {
+            if (g = fragmentByStart[endIndex]) {
+              delete fragmentByEnd[f.end];
+              delete fragmentByStart[g.start];
+              if (f === g) {
+                f.ring.push(end);
+                callback(f.ring);
+              } else {
+                fragmentByStart[f.start] = fragmentByEnd[g.end] = {start: f.start, end: g.end, ring: f.ring.concat(g.ring)};
+              }
+            } else {
+              delete fragmentByEnd[f.end];
+              f.ring.push(end);
+              fragmentByEnd[f.end = endIndex] = f;
+            }
+          } else if (f = fragmentByStart[endIndex]) {
+            if (g = fragmentByEnd[startIndex]) {
+              delete fragmentByStart[f.start];
+              delete fragmentByEnd[g.end];
+              if (f === g) {
+                f.ring.push(end);
+                callback(f.ring);
+              } else {
+                fragmentByStart[g.start] = fragmentByEnd[f.end] = {start: g.start, end: f.end, ring: g.ring.concat(f.ring)};
+              }
+            } else {
+              delete fragmentByStart[f.start];
+              f.ring.unshift(start);
+              fragmentByStart[f.start = startIndex] = f;
+            }
+          } else {
+            fragmentByStart[startIndex] = fragmentByEnd[endIndex] = {start: startIndex, end: endIndex, ring: [start, end]};
+          }
+        }
+      }
+
+      function index(point) {
+        return point[0] * 2 + point[1] * (dx + 1) * 4;
+      }
+
+      function smoothLinear(ring, values, value) {
+        ring.forEach(function(point) {
+          var x = point[0],
+              y = point[1],
+              xt = x | 0,
+              yt = y | 0,
+              v1 = valid(values[yt * dx + xt]);
+          if (x > 0 && x < dx && xt === x) {
+            point[0] = smooth1(x, valid(values[yt * dx + xt - 1]), v1, value);
+          }
+          if (y > 0 && y < dy && yt === y) {
+            point[1] = smooth1(y, valid(values[(yt - 1) * dx + xt]), v1, value);
+          }
+        });
+      }
+
+      contours.contour = contour;
+
+      contours.size = function(_) {
+        if (!arguments.length) return [dx, dy];
+        var _0 = Math.floor(_[0]), _1 = Math.floor(_[1]);
+        if (!(_0 >= 0 && _1 >= 0)) throw new Error("invalid size");
+        return dx = _0, dy = _1, contours;
+      };
+
+      contours.thresholds = function(_) {
+        return arguments.length ? (threshold = typeof _ === "function" ? _ : Array.isArray(_) ? constant$6(slice$2.call(_)) : constant$6(_), contours) : threshold;
+      };
+
+      contours.smooth = function(_) {
+        return arguments.length ? (smooth = _ ? smoothLinear : noop$1, contours) : smooth === smoothLinear;
+      };
+
+      return contours;
+    }
+
+    // When computing the extent, ignore infinite values (as well as invalid ones).
+    function finite(x) {
+      return isFinite(x) ? x : NaN;
+    }
+
+    // Is the (possibly invalid) x greater than or equal to the (known valid) value?
+    // Treat any invalid value as below negative infinity.
+    function above(x, value) {
+      return x == null ? false : +x >= value;
+    }
+
+    // During smoothing, treat any invalid value as negative infinity.
+    function valid(v) {
+      return v == null || isNaN(v = +v) ? -Infinity : v;
+    }
+
+    function smooth1(x, v0, v1, value) {
+      const a = value - v0;
+      const b = v1 - v0;
+      const d = isFinite(a) || isFinite(b) ? a / b : Math.sign(a) / Math.sign(b);
+      return isNaN(d) ? x : x + d - 0.5;
     }
 
     var EOL = {},
@@ -4734,7 +5221,7 @@ var Glasseye = (function (exports) {
       return (random() - 0.5) * 1e-6;
     }
 
-    function index$2(d) {
+    function index$3(d) {
       return d.index;
     }
 
@@ -4744,8 +5231,8 @@ var Glasseye = (function (exports) {
       return node;
     }
 
-    function link$2(links) {
-      var id = index$2,
+    function link$3(links) {
+      var id = index$3,
           strength = defaultStrength,
           strengths,
           distance = constant$5(30),
@@ -5357,7 +5844,7 @@ var Glasseye = (function (exports) {
       "x": (x) => Math.round(x).toString(16)
     };
 
-    function identity$3(x) {
+    function identity$5(x) {
       return x;
     }
 
@@ -5365,11 +5852,11 @@ var Glasseye = (function (exports) {
         prefixes = ["y","z","a","f","p","n","µ","m","","k","M","G","T","P","E","Z","Y"];
 
     function formatLocale$1(locale) {
-      var group = locale.grouping === undefined || locale.thousands === undefined ? identity$3 : formatGroup(map.call(locale.grouping, Number), locale.thousands + ""),
+      var group = locale.grouping === undefined || locale.thousands === undefined ? identity$5 : formatGroup(map.call(locale.grouping, Number), locale.thousands + ""),
           currencyPrefix = locale.currency === undefined ? "" : locale.currency[0] + "",
           currencySuffix = locale.currency === undefined ? "" : locale.currency[1] + "",
           decimal = locale.decimal === undefined ? "." : locale.decimal + "",
-          numerals = locale.numerals === undefined ? identity$3 : formatNumerals(map.call(locale.numerals, String)),
+          numerals = locale.numerals === undefined ? identity$5 : formatNumerals(map.call(locale.numerals, String)),
           percent = locale.percent === undefined ? "%" : locale.percent + "",
           minus = locale.minus === undefined ? "−" : locale.minus + "",
           nan = locale.nan === undefined ? "NaN" : locale.nan + "";
@@ -5529,6 +6016,994 @@ var Glasseye = (function (exports) {
     function precisionRound(step, max) {
       step = Math.abs(step), max = Math.abs(max) - step;
       return Math.max(0, exponent(max) - exponent(step)) + 1;
+    }
+
+    var epsilon$2 = 1e-6;
+    var pi$2 = Math.PI;
+    var tau$2 = pi$2 * 2;
+
+    var degrees = 180 / pi$2;
+    var radians = pi$2 / 180;
+
+    var abs$1 = Math.abs;
+    var cos$1 = Math.cos;
+    var sin$1 = Math.sin;
+    var sqrt$1 = Math.sqrt;
+
+    function noop() {}
+
+    function streamGeometry(geometry, stream) {
+      if (geometry && streamGeometryType.hasOwnProperty(geometry.type)) {
+        streamGeometryType[geometry.type](geometry, stream);
+      }
+    }
+
+    var streamObjectType = {
+      Feature: function(object, stream) {
+        streamGeometry(object.geometry, stream);
+      },
+      FeatureCollection: function(object, stream) {
+        var features = object.features, i = -1, n = features.length;
+        while (++i < n) streamGeometry(features[i].geometry, stream);
+      }
+    };
+
+    var streamGeometryType = {
+      Sphere: function(object, stream) {
+        stream.sphere();
+      },
+      Point: function(object, stream) {
+        object = object.coordinates;
+        stream.point(object[0], object[1], object[2]);
+      },
+      MultiPoint: function(object, stream) {
+        var coordinates = object.coordinates, i = -1, n = coordinates.length;
+        while (++i < n) object = coordinates[i], stream.point(object[0], object[1], object[2]);
+      },
+      LineString: function(object, stream) {
+        streamLine(object.coordinates, stream, 0);
+      },
+      MultiLineString: function(object, stream) {
+        var coordinates = object.coordinates, i = -1, n = coordinates.length;
+        while (++i < n) streamLine(coordinates[i], stream, 0);
+      },
+      Polygon: function(object, stream) {
+        streamPolygon(object.coordinates, stream);
+      },
+      MultiPolygon: function(object, stream) {
+        var coordinates = object.coordinates, i = -1, n = coordinates.length;
+        while (++i < n) streamPolygon(coordinates[i], stream);
+      },
+      GeometryCollection: function(object, stream) {
+        var geometries = object.geometries, i = -1, n = geometries.length;
+        while (++i < n) streamGeometry(geometries[i], stream);
+      }
+    };
+
+    function streamLine(coordinates, stream, closed) {
+      var i = -1, n = coordinates.length - closed, coordinate;
+      stream.lineStart();
+      while (++i < n) coordinate = coordinates[i], stream.point(coordinate[0], coordinate[1], coordinate[2]);
+      stream.lineEnd();
+    }
+
+    function streamPolygon(coordinates, stream) {
+      var i = -1, n = coordinates.length;
+      stream.polygonStart();
+      while (++i < n) streamLine(coordinates[i], stream, 1);
+      stream.polygonEnd();
+    }
+
+    function geoStream(object, stream) {
+      if (object && streamObjectType.hasOwnProperty(object.type)) {
+        streamObjectType[object.type](object, stream);
+      } else {
+        streamGeometry(object, stream);
+      }
+    }
+
+    function clipBuffer() {
+      var lines = [],
+          line;
+      return {
+        point: function(x, y, m) {
+          line.push([x, y, m]);
+        },
+        lineStart: function() {
+          lines.push(line = []);
+        },
+        lineEnd: noop,
+        rejoin: function() {
+          if (lines.length > 1) lines.push(lines.pop().concat(lines.shift()));
+        },
+        result: function() {
+          var result = lines;
+          lines = [];
+          line = null;
+          return result;
+        }
+      };
+    }
+
+    function pointEqual(a, b) {
+      return abs$1(a[0] - b[0]) < epsilon$2 && abs$1(a[1] - b[1]) < epsilon$2;
+    }
+
+    function Intersection(point, points, other, entry) {
+      this.x = point;
+      this.z = points;
+      this.o = other; // another intersection
+      this.e = entry; // is an entry?
+      this.v = false; // visited
+      this.n = this.p = null; // next & previous
+    }
+
+    // A generalized polygon clipping algorithm: given a polygon that has been cut
+    // into its visible line segments, and rejoins the segments by interpolating
+    // along the clip edge.
+    function clipRejoin(segments, compareIntersection, startInside, interpolate, stream) {
+      var subject = [],
+          clip = [],
+          i,
+          n;
+
+      segments.forEach(function(segment) {
+        if ((n = segment.length - 1) <= 0) return;
+        var n, p0 = segment[0], p1 = segment[n], x;
+
+        if (pointEqual(p0, p1)) {
+          if (!p0[2] && !p1[2]) {
+            stream.lineStart();
+            for (i = 0; i < n; ++i) stream.point((p0 = segment[i])[0], p0[1]);
+            stream.lineEnd();
+            return;
+          }
+          // handle degenerate cases by moving the point
+          p1[0] += 2 * epsilon$2;
+        }
+
+        subject.push(x = new Intersection(p0, segment, null, true));
+        clip.push(x.o = new Intersection(p0, null, x, false));
+        subject.push(x = new Intersection(p1, segment, null, false));
+        clip.push(x.o = new Intersection(p1, null, x, true));
+      });
+
+      if (!subject.length) return;
+
+      clip.sort(compareIntersection);
+      link$2(subject);
+      link$2(clip);
+
+      for (i = 0, n = clip.length; i < n; ++i) {
+        clip[i].e = startInside = !startInside;
+      }
+
+      var start = subject[0],
+          points,
+          point;
+
+      while (1) {
+        // Find first unvisited intersection.
+        var current = start,
+            isSubject = true;
+        while (current.v) if ((current = current.n) === start) return;
+        points = current.z;
+        stream.lineStart();
+        do {
+          current.v = current.o.v = true;
+          if (current.e) {
+            if (isSubject) {
+              for (i = 0, n = points.length; i < n; ++i) stream.point((point = points[i])[0], point[1]);
+            } else {
+              interpolate(current.x, current.n.x, 1, stream);
+            }
+            current = current.n;
+          } else {
+            if (isSubject) {
+              points = current.p.z;
+              for (i = points.length - 1; i >= 0; --i) stream.point((point = points[i])[0], point[1]);
+            } else {
+              interpolate(current.x, current.p.x, -1, stream);
+            }
+            current = current.p;
+          }
+          current = current.o;
+          points = current.z;
+          isSubject = !isSubject;
+        } while (!current.v);
+        stream.lineEnd();
+      }
+    }
+
+    function link$2(array) {
+      if (!(n = array.length)) return;
+      var n,
+          i = 0,
+          a = array[0],
+          b;
+      while (++i < n) {
+        a.n = b = array[i];
+        b.p = a;
+        a = b;
+      }
+      a.n = b = array[0];
+      b.p = a;
+    }
+
+    function clipLine(a, b, x0, y0, x1, y1) {
+      var ax = a[0],
+          ay = a[1],
+          bx = b[0],
+          by = b[1],
+          t0 = 0,
+          t1 = 1,
+          dx = bx - ax,
+          dy = by - ay,
+          r;
+
+      r = x0 - ax;
+      if (!dx && r > 0) return;
+      r /= dx;
+      if (dx < 0) {
+        if (r < t0) return;
+        if (r < t1) t1 = r;
+      } else if (dx > 0) {
+        if (r > t1) return;
+        if (r > t0) t0 = r;
+      }
+
+      r = x1 - ax;
+      if (!dx && r < 0) return;
+      r /= dx;
+      if (dx < 0) {
+        if (r > t1) return;
+        if (r > t0) t0 = r;
+      } else if (dx > 0) {
+        if (r < t0) return;
+        if (r < t1) t1 = r;
+      }
+
+      r = y0 - ay;
+      if (!dy && r > 0) return;
+      r /= dy;
+      if (dy < 0) {
+        if (r < t0) return;
+        if (r < t1) t1 = r;
+      } else if (dy > 0) {
+        if (r > t1) return;
+        if (r > t0) t0 = r;
+      }
+
+      r = y1 - ay;
+      if (!dy && r < 0) return;
+      r /= dy;
+      if (dy < 0) {
+        if (r > t1) return;
+        if (r > t0) t0 = r;
+      } else if (dy > 0) {
+        if (r < t0) return;
+        if (r < t1) t1 = r;
+      }
+
+      if (t0 > 0) a[0] = ax + t0 * dx, a[1] = ay + t0 * dy;
+      if (t1 < 1) b[0] = ax + t1 * dx, b[1] = ay + t1 * dy;
+      return true;
+    }
+
+    var clipMax = 1e9, clipMin = -1e9;
+
+    // TODO Use d3-polygon’s polygonContains here for the ring check?
+    // TODO Eliminate duplicate buffering in clipBuffer and polygon.push?
+
+    function clipRectangle(x0, y0, x1, y1) {
+
+      function visible(x, y) {
+        return x0 <= x && x <= x1 && y0 <= y && y <= y1;
+      }
+
+      function interpolate(from, to, direction, stream) {
+        var a = 0, a1 = 0;
+        if (from == null
+            || (a = corner(from, direction)) !== (a1 = corner(to, direction))
+            || comparePoint(from, to) < 0 ^ direction > 0) {
+          do stream.point(a === 0 || a === 3 ? x0 : x1, a > 1 ? y1 : y0);
+          while ((a = (a + direction + 4) % 4) !== a1);
+        } else {
+          stream.point(to[0], to[1]);
+        }
+      }
+
+      function corner(p, direction) {
+        return abs$1(p[0] - x0) < epsilon$2 ? direction > 0 ? 0 : 3
+            : abs$1(p[0] - x1) < epsilon$2 ? direction > 0 ? 2 : 1
+            : abs$1(p[1] - y0) < epsilon$2 ? direction > 0 ? 1 : 0
+            : direction > 0 ? 3 : 2; // abs(p[1] - y1) < epsilon
+      }
+
+      function compareIntersection(a, b) {
+        return comparePoint(a.x, b.x);
+      }
+
+      function comparePoint(a, b) {
+        var ca = corner(a, 1),
+            cb = corner(b, 1);
+        return ca !== cb ? ca - cb
+            : ca === 0 ? b[1] - a[1]
+            : ca === 1 ? a[0] - b[0]
+            : ca === 2 ? a[1] - b[1]
+            : b[0] - a[0];
+      }
+
+      return function(stream) {
+        var activeStream = stream,
+            bufferStream = clipBuffer(),
+            segments,
+            polygon,
+            ring,
+            x__, y__, v__, // first point
+            x_, y_, v_, // previous point
+            first,
+            clean;
+
+        var clipStream = {
+          point: point,
+          lineStart: lineStart,
+          lineEnd: lineEnd,
+          polygonStart: polygonStart,
+          polygonEnd: polygonEnd
+        };
+
+        function point(x, y) {
+          if (visible(x, y)) activeStream.point(x, y);
+        }
+
+        function polygonInside() {
+          var winding = 0;
+
+          for (var i = 0, n = polygon.length; i < n; ++i) {
+            for (var ring = polygon[i], j = 1, m = ring.length, point = ring[0], a0, a1, b0 = point[0], b1 = point[1]; j < m; ++j) {
+              a0 = b0, a1 = b1, point = ring[j], b0 = point[0], b1 = point[1];
+              if (a1 <= y1) { if (b1 > y1 && (b0 - a0) * (y1 - a1) > (b1 - a1) * (x0 - a0)) ++winding; }
+              else { if (b1 <= y1 && (b0 - a0) * (y1 - a1) < (b1 - a1) * (x0 - a0)) --winding; }
+            }
+          }
+
+          return winding;
+        }
+
+        // Buffer geometry within a polygon and then clip it en masse.
+        function polygonStart() {
+          activeStream = bufferStream, segments = [], polygon = [], clean = true;
+        }
+
+        function polygonEnd() {
+          var startInside = polygonInside(),
+              cleanInside = clean && startInside,
+              visible = (segments = merge(segments)).length;
+          if (cleanInside || visible) {
+            stream.polygonStart();
+            if (cleanInside) {
+              stream.lineStart();
+              interpolate(null, null, 1, stream);
+              stream.lineEnd();
+            }
+            if (visible) {
+              clipRejoin(segments, compareIntersection, startInside, interpolate, stream);
+            }
+            stream.polygonEnd();
+          }
+          activeStream = stream, segments = polygon = ring = null;
+        }
+
+        function lineStart() {
+          clipStream.point = linePoint;
+          if (polygon) polygon.push(ring = []);
+          first = true;
+          v_ = false;
+          x_ = y_ = NaN;
+        }
+
+        // TODO rather than special-case polygons, simply handle them separately.
+        // Ideally, coincident intersection points should be jittered to avoid
+        // clipping issues.
+        function lineEnd() {
+          if (segments) {
+            linePoint(x__, y__);
+            if (v__ && v_) bufferStream.rejoin();
+            segments.push(bufferStream.result());
+          }
+          clipStream.point = point;
+          if (v_) activeStream.lineEnd();
+        }
+
+        function linePoint(x, y) {
+          var v = visible(x, y);
+          if (polygon) ring.push([x, y]);
+          if (first) {
+            x__ = x, y__ = y, v__ = v;
+            first = false;
+            if (v) {
+              activeStream.lineStart();
+              activeStream.point(x, y);
+            }
+          } else {
+            if (v && v_) activeStream.point(x, y);
+            else {
+              var a = [x_ = Math.max(clipMin, Math.min(clipMax, x_)), y_ = Math.max(clipMin, Math.min(clipMax, y_))],
+                  b = [x = Math.max(clipMin, Math.min(clipMax, x)), y = Math.max(clipMin, Math.min(clipMax, y))];
+              if (clipLine(a, b, x0, y0, x1, y1)) {
+                if (!v_) {
+                  activeStream.lineStart();
+                  activeStream.point(a[0], a[1]);
+                }
+                activeStream.point(b[0], b[1]);
+                if (!v) activeStream.lineEnd();
+                clean = false;
+              } else if (v) {
+                activeStream.lineStart();
+                activeStream.point(x, y);
+                clean = false;
+              }
+            }
+          }
+          x_ = x, y_ = y, v_ = v;
+        }
+
+        return clipStream;
+      };
+    }
+
+    var identity$4 = x => x;
+
+    var areaSum = new Adder(),
+        areaRingSum = new Adder(),
+        x00$2,
+        y00$2,
+        x0$3,
+        y0$3;
+
+    var areaStream = {
+      point: noop,
+      lineStart: noop,
+      lineEnd: noop,
+      polygonStart: function() {
+        areaStream.lineStart = areaRingStart;
+        areaStream.lineEnd = areaRingEnd;
+      },
+      polygonEnd: function() {
+        areaStream.lineStart = areaStream.lineEnd = areaStream.point = noop;
+        areaSum.add(abs$1(areaRingSum));
+        areaRingSum = new Adder();
+      },
+      result: function() {
+        var area = areaSum / 2;
+        areaSum = new Adder();
+        return area;
+      }
+    };
+
+    function areaRingStart() {
+      areaStream.point = areaPointFirst;
+    }
+
+    function areaPointFirst(x, y) {
+      areaStream.point = areaPoint;
+      x00$2 = x0$3 = x, y00$2 = y0$3 = y;
+    }
+
+    function areaPoint(x, y) {
+      areaRingSum.add(y0$3 * x - x0$3 * y);
+      x0$3 = x, y0$3 = y;
+    }
+
+    function areaRingEnd() {
+      areaPoint(x00$2, y00$2);
+    }
+
+    var x0$2 = Infinity,
+        y0$2 = x0$2,
+        x1 = -x0$2,
+        y1 = x1;
+
+    var boundsStream = {
+      point: boundsPoint,
+      lineStart: noop,
+      lineEnd: noop,
+      polygonStart: noop,
+      polygonEnd: noop,
+      result: function() {
+        var bounds = [[x0$2, y0$2], [x1, y1]];
+        x1 = y1 = -(y0$2 = x0$2 = Infinity);
+        return bounds;
+      }
+    };
+
+    function boundsPoint(x, y) {
+      if (x < x0$2) x0$2 = x;
+      if (x > x1) x1 = x;
+      if (y < y0$2) y0$2 = y;
+      if (y > y1) y1 = y;
+    }
+
+    // TODO Enforce positive area for exterior, negative area for interior?
+
+    var X0 = 0,
+        Y0 = 0,
+        Z0 = 0,
+        X1 = 0,
+        Y1 = 0,
+        Z1 = 0,
+        X2 = 0,
+        Y2 = 0,
+        Z2 = 0,
+        x00$1,
+        y00$1,
+        x0$1,
+        y0$1;
+
+    var centroidStream = {
+      point: centroidPoint,
+      lineStart: centroidLineStart,
+      lineEnd: centroidLineEnd,
+      polygonStart: function() {
+        centroidStream.lineStart = centroidRingStart;
+        centroidStream.lineEnd = centroidRingEnd;
+      },
+      polygonEnd: function() {
+        centroidStream.point = centroidPoint;
+        centroidStream.lineStart = centroidLineStart;
+        centroidStream.lineEnd = centroidLineEnd;
+      },
+      result: function() {
+        var centroid = Z2 ? [X2 / Z2, Y2 / Z2]
+            : Z1 ? [X1 / Z1, Y1 / Z1]
+            : Z0 ? [X0 / Z0, Y0 / Z0]
+            : [NaN, NaN];
+        X0 = Y0 = Z0 =
+        X1 = Y1 = Z1 =
+        X2 = Y2 = Z2 = 0;
+        return centroid;
+      }
+    };
+
+    function centroidPoint(x, y) {
+      X0 += x;
+      Y0 += y;
+      ++Z0;
+    }
+
+    function centroidLineStart() {
+      centroidStream.point = centroidPointFirstLine;
+    }
+
+    function centroidPointFirstLine(x, y) {
+      centroidStream.point = centroidPointLine;
+      centroidPoint(x0$1 = x, y0$1 = y);
+    }
+
+    function centroidPointLine(x, y) {
+      var dx = x - x0$1, dy = y - y0$1, z = sqrt$1(dx * dx + dy * dy);
+      X1 += z * (x0$1 + x) / 2;
+      Y1 += z * (y0$1 + y) / 2;
+      Z1 += z;
+      centroidPoint(x0$1 = x, y0$1 = y);
+    }
+
+    function centroidLineEnd() {
+      centroidStream.point = centroidPoint;
+    }
+
+    function centroidRingStart() {
+      centroidStream.point = centroidPointFirstRing;
+    }
+
+    function centroidRingEnd() {
+      centroidPointRing(x00$1, y00$1);
+    }
+
+    function centroidPointFirstRing(x, y) {
+      centroidStream.point = centroidPointRing;
+      centroidPoint(x00$1 = x0$1 = x, y00$1 = y0$1 = y);
+    }
+
+    function centroidPointRing(x, y) {
+      var dx = x - x0$1,
+          dy = y - y0$1,
+          z = sqrt$1(dx * dx + dy * dy);
+
+      X1 += z * (x0$1 + x) / 2;
+      Y1 += z * (y0$1 + y) / 2;
+      Z1 += z;
+
+      z = y0$1 * x - x0$1 * y;
+      X2 += z * (x0$1 + x);
+      Y2 += z * (y0$1 + y);
+      Z2 += z * 3;
+      centroidPoint(x0$1 = x, y0$1 = y);
+    }
+
+    function PathContext(context) {
+      this._context = context;
+    }
+
+    PathContext.prototype = {
+      _radius: 4.5,
+      pointRadius: function(_) {
+        return this._radius = _, this;
+      },
+      polygonStart: function() {
+        this._line = 0;
+      },
+      polygonEnd: function() {
+        this._line = NaN;
+      },
+      lineStart: function() {
+        this._point = 0;
+      },
+      lineEnd: function() {
+        if (this._line === 0) this._context.closePath();
+        this._point = NaN;
+      },
+      point: function(x, y) {
+        switch (this._point) {
+          case 0: {
+            this._context.moveTo(x, y);
+            this._point = 1;
+            break;
+          }
+          case 1: {
+            this._context.lineTo(x, y);
+            break;
+          }
+          default: {
+            this._context.moveTo(x + this._radius, y);
+            this._context.arc(x, y, this._radius, 0, tau$2);
+            break;
+          }
+        }
+      },
+      result: noop
+    };
+
+    var lengthSum = new Adder(),
+        lengthRing,
+        x00,
+        y00,
+        x0,
+        y0;
+
+    var lengthStream = {
+      point: noop,
+      lineStart: function() {
+        lengthStream.point = lengthPointFirst;
+      },
+      lineEnd: function() {
+        if (lengthRing) lengthPoint(x00, y00);
+        lengthStream.point = noop;
+      },
+      polygonStart: function() {
+        lengthRing = true;
+      },
+      polygonEnd: function() {
+        lengthRing = null;
+      },
+      result: function() {
+        var length = +lengthSum;
+        lengthSum = new Adder();
+        return length;
+      }
+    };
+
+    function lengthPointFirst(x, y) {
+      lengthStream.point = lengthPoint;
+      x00 = x0 = x, y00 = y0 = y;
+    }
+
+    function lengthPoint(x, y) {
+      x0 -= x, y0 -= y;
+      lengthSum.add(sqrt$1(x0 * x0 + y0 * y0));
+      x0 = x, y0 = y;
+    }
+
+    // Simple caching for constant-radius points.
+    let cacheDigits, cacheAppend, cacheRadius, cacheCircle;
+
+    class PathString {
+      constructor(digits) {
+        this._append = digits == null ? append : appendRound(digits);
+        this._radius = 4.5;
+        this._ = "";
+      }
+      pointRadius(_) {
+        this._radius = +_;
+        return this;
+      }
+      polygonStart() {
+        this._line = 0;
+      }
+      polygonEnd() {
+        this._line = NaN;
+      }
+      lineStart() {
+        this._point = 0;
+      }
+      lineEnd() {
+        if (this._line === 0) this._ += "Z";
+        this._point = NaN;
+      }
+      point(x, y) {
+        switch (this._point) {
+          case 0: {
+            this._append`M${x},${y}`;
+            this._point = 1;
+            break;
+          }
+          case 1: {
+            this._append`L${x},${y}`;
+            break;
+          }
+          default: {
+            this._append`M${x},${y}`;
+            if (this._radius !== cacheRadius || this._append !== cacheAppend) {
+              const r = this._radius;
+              const s = this._;
+              this._ = ""; // stash the old string so we can cache the circle path fragment
+              this._append`m0,${r}a${r},${r} 0 1,1 0,${ -2 * r}a${r},${r} 0 1,1 0,${2 * r}z`;
+              cacheRadius = r;
+              cacheAppend = this._append;
+              cacheCircle = this._;
+              this._ = s;
+            }
+            this._ += cacheCircle;
+            break;
+          }
+        }
+      }
+      result() {
+        const result = this._;
+        this._ = "";
+        return result.length ? result : null;
+      }
+    }
+
+    function append(strings) {
+      let i = 1;
+      this._ += strings[0];
+      for (const j = strings.length; i < j; ++i) {
+        this._ += arguments[i] + strings[i];
+      }
+    }
+
+    function appendRound(digits) {
+      const d = Math.floor(digits);
+      if (!(d >= 0)) throw new RangeError(`invalid digits: ${digits}`);
+      if (d > 15) return append;
+      if (d !== cacheDigits) {
+        const k = 10 ** d;
+        cacheDigits = d;
+        cacheAppend = function append(strings) {
+          let i = 1;
+          this._ += strings[0];
+          for (const j = strings.length; i < j; ++i) {
+            this._ += Math.round(arguments[i] * k) / k + strings[i];
+          }
+        };
+      }
+      return cacheAppend;
+    }
+
+    function index$2(projection, context) {
+      let digits = 3,
+          pointRadius = 4.5,
+          projectionStream,
+          contextStream;
+
+      function path(object) {
+        if (object) {
+          if (typeof pointRadius === "function") contextStream.pointRadius(+pointRadius.apply(this, arguments));
+          geoStream(object, projectionStream(contextStream));
+        }
+        return contextStream.result();
+      }
+
+      path.area = function(object) {
+        geoStream(object, projectionStream(areaStream));
+        return areaStream.result();
+      };
+
+      path.measure = function(object) {
+        geoStream(object, projectionStream(lengthStream));
+        return lengthStream.result();
+      };
+
+      path.bounds = function(object) {
+        geoStream(object, projectionStream(boundsStream));
+        return boundsStream.result();
+      };
+
+      path.centroid = function(object) {
+        geoStream(object, projectionStream(centroidStream));
+        return centroidStream.result();
+      };
+
+      path.projection = function(_) {
+        if (!arguments.length) return projection;
+        projectionStream = _ == null ? (projection = null, identity$4) : (projection = _).stream;
+        return path;
+      };
+
+      path.context = function(_) {
+        if (!arguments.length) return context;
+        contextStream = _ == null ? (context = null, new PathString(digits)) : new PathContext(context = _);
+        if (typeof pointRadius !== "function") contextStream.pointRadius(pointRadius);
+        return path;
+      };
+
+      path.pointRadius = function(_) {
+        if (!arguments.length) return pointRadius;
+        pointRadius = typeof _ === "function" ? _ : (contextStream.pointRadius(+_), +_);
+        return path;
+      };
+
+      path.digits = function(_) {
+        if (!arguments.length) return digits;
+        if (_ == null) digits = null;
+        else {
+          const d = Math.floor(_);
+          if (!(d >= 0)) throw new RangeError(`invalid digits: ${_}`);
+          digits = d;
+        }
+        if (context === null) contextStream = new PathString(digits);
+        return path;
+      };
+
+      return path.projection(projection).digits(digits).context(context);
+    }
+
+    function transformer$2(methods) {
+      return function(stream) {
+        var s = new TransformStream;
+        for (var key in methods) s[key] = methods[key];
+        s.stream = stream;
+        return s;
+      };
+    }
+
+    function TransformStream() {}
+
+    TransformStream.prototype = {
+      constructor: TransformStream,
+      point: function(x, y) { this.stream.point(x, y); },
+      sphere: function() { this.stream.sphere(); },
+      lineStart: function() { this.stream.lineStart(); },
+      lineEnd: function() { this.stream.lineEnd(); },
+      polygonStart: function() { this.stream.polygonStart(); },
+      polygonEnd: function() { this.stream.polygonEnd(); }
+    };
+
+    function fit(projection, fitBounds, object) {
+      var clip = projection.clipExtent && projection.clipExtent();
+      projection.scale(150).translate([0, 0]);
+      if (clip != null) projection.clipExtent(null);
+      geoStream(object, projection.stream(boundsStream));
+      fitBounds(boundsStream.result());
+      if (clip != null) projection.clipExtent(clip);
+      return projection;
+    }
+
+    function fitExtent(projection, extent, object) {
+      return fit(projection, function(b) {
+        var w = extent[1][0] - extent[0][0],
+            h = extent[1][1] - extent[0][1],
+            k = Math.min(w / (b[1][0] - b[0][0]), h / (b[1][1] - b[0][1])),
+            x = +extent[0][0] + (w - k * (b[1][0] + b[0][0])) / 2,
+            y = +extent[0][1] + (h - k * (b[1][1] + b[0][1])) / 2;
+        projection.scale(150 * k).translate([x, y]);
+      }, object);
+    }
+
+    function fitSize(projection, size, object) {
+      return fitExtent(projection, [[0, 0], size], object);
+    }
+
+    function fitWidth(projection, width, object) {
+      return fit(projection, function(b) {
+        var w = +width,
+            k = w / (b[1][0] - b[0][0]),
+            x = (w - k * (b[1][0] + b[0][0])) / 2,
+            y = -k * b[0][1];
+        projection.scale(150 * k).translate([x, y]);
+      }, object);
+    }
+
+    function fitHeight(projection, height, object) {
+      return fit(projection, function(b) {
+        var h = +height,
+            k = h / (b[1][1] - b[0][1]),
+            x = -k * b[0][0],
+            y = (h - k * (b[1][1] + b[0][1])) / 2;
+        projection.scale(150 * k).translate([x, y]);
+      }, object);
+    }
+
+    function identity$3() {
+      var k = 1, tx = 0, ty = 0, sx = 1, sy = 1, // scale, translate and reflect
+          alpha = 0, ca, sa, // angle
+          x0 = null, y0, x1, y1, // clip extent
+          kx = 1, ky = 1,
+          transform = transformer$2({
+            point: function(x, y) {
+              var p = projection([x, y]);
+              this.stream.point(p[0], p[1]);
+            }
+          }),
+          postclip = identity$4,
+          cache,
+          cacheStream;
+
+      function reset() {
+        kx = k * sx;
+        ky = k * sy;
+        cache = cacheStream = null;
+        return projection;
+      }
+
+      function projection (p) {
+        var x = p[0] * kx, y = p[1] * ky;
+        if (alpha) {
+          var t = y * ca - x * sa;
+          x = x * ca + y * sa;
+          y = t;
+        }    
+        return [x + tx, y + ty];
+      }
+      projection.invert = function(p) {
+        var x = p[0] - tx, y = p[1] - ty;
+        if (alpha) {
+          var t = y * ca + x * sa;
+          x = x * ca - y * sa;
+          y = t;
+        }
+        return [x / kx, y / ky];
+      };
+      projection.stream = function(stream) {
+        return cache && cacheStream === stream ? cache : cache = transform(postclip(cacheStream = stream));
+      };
+      projection.postclip = function(_) {
+        return arguments.length ? (postclip = _, x0 = y0 = x1 = y1 = null, reset()) : postclip;
+      };
+      projection.clipExtent = function(_) {
+        return arguments.length ? (postclip = _ == null ? (x0 = y0 = x1 = y1 = null, identity$4) : clipRectangle(x0 = +_[0][0], y0 = +_[0][1], x1 = +_[1][0], y1 = +_[1][1]), reset()) : x0 == null ? null : [[x0, y0], [x1, y1]];
+      };
+      projection.scale = function(_) {
+        return arguments.length ? (k = +_, reset()) : k;
+      };
+      projection.translate = function(_) {
+        return arguments.length ? (tx = +_[0], ty = +_[1], reset()) : [tx, ty];
+      };
+      projection.angle = function(_) {
+        return arguments.length ? (alpha = _ % 360 * radians, sa = sin$1(alpha), ca = cos$1(alpha), reset()) : alpha * degrees;
+      };
+      projection.reflectX = function(_) {
+        return arguments.length ? (sx = _ ? -1 : 1, reset()) : sx < 0;
+      };
+      projection.reflectY = function(_) {
+        return arguments.length ? (sy = _ ? -1 : 1, reset()) : sy < 0;
+      };
+      projection.fitExtent = function(extent, object) {
+        return fitExtent(projection, extent, object);
+      };
+      projection.fitSize = function(size, object) {
+        return fitSize(projection, size, object);
+      };
+      projection.fitWidth = function(width, object) {
+        return fitWidth(projection, width, object);
+      };
+      projection.fitHeight = function(height, object) {
+        return fitHeight(projection, height, object);
+      };
+
+      return projection;
     }
 
     function count(node) {
@@ -10032,7 +11507,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Wed Apr  9 18:36:25 CAT 2025
+    // Generated Fri Apr 11 14:47:08 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -10257,7 +11732,7 @@ var Glasseye = (function (exports) {
             // Compute summary statistics (quartiles, median, min, max)
             const groupedData = group(data, (d) => d.category);
             const summaryData = Array.from(groupedData, ([key, values]) => {
-                const sorted = values.map((d) => +d.value).sort(ascending$1);
+                const sorted = values.map((d) => +d.value).sort(ascending$2);
                 const q1 = quantile(sorted, 0.25);
                 const median = quantile(sorted, 0.5);
                 const q3 = quantile(sorted, 0.75);
@@ -10478,7 +11953,7 @@ var Glasseye = (function (exports) {
                 .attr("viewBox", [0, 0, width / viewScaleFactor, height / viewScaleFactor])
                 .attr("style", "max-width: 100%; height: auto;");
             const simulation$1 = simulation(data.nodes)
-                .force("link", link$2(data.links).id((d) => d.id).distance(100))
+                .force("link", link$3(data.links).id((d) => d.id).distance(100))
                 .force("charge", manyBody().strength(-300))
                 .force("center", center$1(width / 2, height / 2));
             const link = svg
@@ -10901,7 +12376,7 @@ var Glasseye = (function (exports) {
             function generateUid(prefix = "id") {
                 return `${prefix}-${++counter}`;
             }
-            console.log(graph.links);
+            // console.log(graph.links)
             if (link_color == "source-target") {
                 const gradient = link.append("linearGradient")
                     .attr("id", (d) => (d.uid = generateUid()))
@@ -11210,7 +12685,7 @@ var Glasseye = (function (exports) {
             const color = ordinal(colors);
             // Create a simulation with several forces.
             const simulation$1 = simulation(data.nodes)
-                .force("link", link$2(data.links).id(d => d.id))
+                .force("link", link$3(data.links).id(d => d.id))
                 .force("charge", manyBody())
                 .force("x", x$2())
                 .force("y", y$2());
@@ -11304,7 +12779,6 @@ var Glasseye = (function (exports) {
             const root = hierarchy(data);
             const treeLayout = tree$1().size([height, width]);
             treeLayout(root);
-            // console.log(root)
             const sizeRatio = height / (2 * root.data.size);
             // Links
             svg
@@ -11328,10 +12802,6 @@ var Glasseye = (function (exports) {
                 .attr("class", "node")
                 .attr("transform", (d) => `translate(${d.y},${d.x})`);
             node
-                .append("circle")
-                .attr("r", 0)
-                .attr("fill", (d, i) => colors[i % colors.length]);
-            node
                 .append("text")
                 .attr("dy", 3)
                 .attr("x", (d) => (d.children ? -8 : 8))
@@ -11339,11 +12809,52 @@ var Glasseye = (function (exports) {
                 .text((d) => d.data.name);
         });
     }
+    /// contour.ts
+    function contour() {
+        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors) {
+            if (file === null || file === void 0 ? void 0 : file.path) {
+                data = yield loadData(file === null || file === void 0 ? void 0 : file.path, file === null || file === void 0 ? void 0 : file.format);
+            }
+            const width = size.width;
+            const height = size.height;
+            const n = data.length;
+            const m = data[0].length;
+            // Flatten 2D data
+            const values = data.reduce((acc, row) => acc.concat(row), []);
+            // Create scales
+            linear().domain([0, m]).range([0, width]);
+            linear().domain([0, n]).range([0, height]);
+            // Create color scale
+            const thresholds = range$1(min$2(values), max$3(values), (max$3(values) - min$2(values)) / colors.length);
+            const color = linear().domain(thresholds).range(colors).interpolate(hcl$1);
+            // Clear existing SVG if present
+            select(div).select("svg").remove();
+            // Append new SVG
+            const svg = select(div)
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height);
+            // Generate contours
+            const contours = Contours()
+                .size([m, n])
+                .thresholds(thresholds)(values);
+            // Render contours
+            svg.selectAll("path")
+                .data(contours)
+                .enter()
+                .append("path")
+                .attr("d", index$2(identity$3().scale(width / m)))
+                .attr("fill", (d) => color(d.value))
+                .attr("stroke", "#333")
+                .attr("stroke-width", 0.3);
+        });
+    }
 
     exports.barchart = barchart;
     exports.bollinger = bollinger;
     exports.boxplot = boxplot;
     exports.chord = chord;
+    exports.contour = contour;
     exports.dendrogram = dendrogram;
     exports.disjoint = disjoint;
     exports.dotplot = dotplot;

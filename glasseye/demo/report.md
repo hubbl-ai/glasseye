@@ -1,65 +1,167 @@
 Building blocks:
 
+
+<contour
+data='[
+  [0, 1, 2, 3, 2],
+  [1, 2, 3, 4, 3],
+  [2, 3, 4, 5, 4],
+  [1, 2, 3, 4, 3],
+  [0, 1, 2, 3, 2]
+]'
+  size='{"width":500,"height":500}'
+  colors='pastel'
+>
+</contour>
+
 <dendrogram
 data='{
-  "name": "",
-  "distance": 0.48,
-  "size": 27,
+  "id": 22,
+  "distance": 4.09206523,
   "children": [
     {
-      "name": "Node A",
-      "size": 2,
-      "distance": 0.57
-    },
-    {
-      "name": "",
-      "distance": 0.35,
-      "size": 7,
+      "id": 20,
+      "distance": 3.39675184,
       "children": [
         {
-          "name": "Node C",
-          "size": 6
+          "id": 16,
+          "distance": 1.20710678,
+          "children": [
+            {
+              "name": "node C",
+              "size": 1.0,
+              "score": 1.0
+            },
+            {
+              "id": 12,
+              "distance": 1.0,
+              "children": [
+                {
+                  "name": "node A",
+                  "size": 1.0,
+                  "score": 1.0
+                },
+                {
+                  "name": "node B",
+                  "size": 1.0,
+                  "score": 1.0
+                }
+              ],
+              "size": 2.0,
+              "score": 1.0
+            }
+          ],
+          "size": 3.0,
+          "score": 1.0
         },
         {
-          "name": "Node D",
-          "size": 1
+          "id": 17,
+          "distance": 1.20710678,
+          "children": [
+            {
+              "name": "node F",
+              "size": 1.0,
+              "score": 1.0
+            },
+            {
+              "id": 13,
+              "distance": 1.0,
+              "children": [
+                {
+                  "name": "node D",
+                  "size": 1.0,
+                  "score": 1.0
+                },
+                {
+                  "name": "node E",
+                  "size": 1.0,
+                  "score": 1.0
+                }
+              ],
+              "size": 2.0,
+              "score": 1.0
+            }
+          ],
+          "size": 3.0,
+          "score": 1.0
         }
-      ]
+      ],
+      "size": 6.0,
+      "score": 1.0
     },
     {
-      "name": "",
-      "distance": 0.73,
-      "size": 11,
+      "id": 21,
+      "distance": 3.39675184,
       "children": [
         {
-          "name": "Node F",
-          "size": 8,
-          "score": 0.8
+          "id": 18,
+          "distance": 1.20710678,
+          "children": [
+            {
+              "name": "node I",
+              "size": 1.0,
+              "score": 1.0
+            },
+            {
+              "id": 14,
+              "distance": 1.0,
+              "children": [
+                {
+                  "name": "node G",
+                  "size": 1.0,
+                  "score": 1.0
+                },
+                {
+                  "name": "node H",
+                  "size": 1.0,
+                  "score": 1.0
+                }
+              ],
+              "size": 2.0,
+              "score": 1.0
+            }
+          ],
+          "size": 3.0,
+          "score": 1.0
         },
         {
-          "name": "Node G",
-          "size": 3,
-          "score": 0.2
+          "id": 19,
+          "distance": 1.20710678,
+          "children": [
+            {
+              "name": "node L",
+              "size": 1.0,
+              "score": 1.0
+            },
+            {
+              "id": 15,
+              "distance": 1.0,
+              "children": [
+                {
+                  "name": "node J",
+                  "size": 1.0,
+                  "score": 1.0
+                },
+                {
+                  "name": "node K",
+                  "size": 1.0,
+                  "score": 1.0
+                }
+              ],
+              "size": 2.0,
+              "score": 1.0
+            }
+          ],
+          "size": 3.0,
+          "score": 1.0
         }
-      ]
-    },
-    {
-      "name": "Node H",
-      "size": 1,
-      "distance": 0.25
-    },
-    {
-      "name": "",
-      "distance": 0.33,
-      "size": 7,
-      "children": [
-        {
-          "name": "Node J",
-          "size": 7
-        }
-      ]
+      ],
+      "size": 6.0,
+      "score": 1.0
     }
-  ]
+  ],
+  "size": 12.0,
+  "score": 1.0
 }'
   size='{"width":500,"height":500}'
   colors='pastel'
