@@ -3,11 +3,11 @@ Building blocks:
 
 <contour
 data='[
-  [0, 1, 2, 3, 2],
-  [1, 2, 3, 4, 3],
-  [2, 3, 4, 5, 4],
-  [1, 2, 3, 4, 3],
-  [0, 1, 2, 3, 2]
+  [0, 10, 20, 30, 20],
+  [10, 20, 30, 40, 30],
+  [20, 30, 40, 50, 40],
+  [10, 20, 30, 40, 30],
+  [0, 10, 20, 30, 20]
 ]'
   size='{"width":500,"height":500}'
   colors='flare'
@@ -15,161 +15,14 @@ data='[
 </contour>
 
 <dendrogram
-    data='{
-  "id": 22,
-  "distance": 4.09206523,
-  "children": [
-    {
-      "id": 20,
-      "distance": 3.39675184,
-      "children": [
-        {
-          "id": 16,
-          "distance": 1.20710678,
-          "children": [
-            {
-              "name": "node C",
-              "size": 1.0,
-              "score": 1.0
-            },
-            {
-              "id": 12,
-              "distance": 1.0,
-              "children": [
-                {
-                  "name": "node A",
-                  "size": 1.0,
-                  "score": 1.0
-                },
-                {
-                  "name": "node B",
-                  "size": 1.0,
-                  "score": 1.0
-                }
-              ],
-              "size": 2.0,
-              "score": 1.0
-            }
-          ],
-          "size": 3.0,
-          "score": 1.0
-        },
-        {
-          "id": 17,
-          "distance": 1.20710678,
-          "children": [
-            {
-              "name": "node F",
-              "size": 1.0,
-              "score": 1.0
-            },
-            {
-              "id": 13,
-              "distance": 1.0,
-              "children": [
-                {
-                  "name": "node D",
-                  "size": 1.0,
-                  "score": 1.0
-                },
-                {
-                  "name": "node E",
-                  "size": 1.0,
-                  "score": 1.0
-                }
-              ],
-              "size": 2.0,
-              "score": 1.0
-            }
-          ],
-          "size": 3.0,
-          "score": 1.0
-        }
-      ],
-      "size": 6.0,
-      "score": 1.0
-    },
-    {
-      "id": 21,
-      "distance": 3.39675184,
-      "children": [
-        {
-          "id": 18,
-          "distance": 1.20710678,
-          "children": [
-            {
-              "name": "node I",
-              "size": 1.0,
-              "score": 1.0
-            },
-            {
-              "id": 14,
-              "distance": 1.0,
-              "children": [
-                {
-                  "name": "node G",
-                  "size": 1.0,
-                  "score": 1.0
-                },
-                {
-                  "name": "node H",
-                  "size": 1.0,
-                  "score": 1.0
-                }
-              ],
-              "size": 2.0,
-              "score": 1.0
-            }
-          ],
-          "size": 3.0,
-          "score": 1.0
-        },
-        {
-          "id": 19,
-          "distance": 1.20710678,
-          "children": [
-            {
-              "name": "node L",
-              "size": 1.0,
-              "score": 1.0
-            },
-            {
-              "id": 15,
-              "distance": 1.0,
-              "children": [
-                {
-                  "name": "node J",
-                  "size": 1.0,
-                  "score": 1.0
-                },
-                {
-                  "name": "node K",
-                  "size": 1.0,
-                  "score": 1.0
-                }
-              ],
-              "size": 2.0,
-              "score": 1.0
-            }
-          ],
-          "size": 3.0,
-          "score": 1.0
-        }
-      ],
-      "size": 6.0,
-      "score": 1.0
-    }
-  ],
-  "size": 12.0,
-  "score": 1.0
-}'
-    size='{"width":1000,"height":500}'
-  colors='flare'
+  file='{"path": "data/dendro.json", "format": "json"}'
+  size='{"width":1000,"height":500}'
+  colors='pastel'
 >
 </dendrogram>
 
 <dendrogram
-  data='{"path": "data/hcl.json", "format": "json"}'
+  file='{"path": "data/hcl.json", "format": "json"}'
   size='{"width":1500,"height":1500}'
   colors='flare'
 >
