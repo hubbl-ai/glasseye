@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Fri Apr 11 02:52:02 PM EDT 2025
+// Generated Mon Apr 14 15:06:39 CAT 2025
 
 
 /// base.ts
@@ -1695,13 +1695,17 @@ export async function dendrogram(
   const width = size.width - margin.left - margin.right;
   const height = size.height - margin.top - margin.bottom;
 
+  const viewScaleFactor = 0.9;
+
   d3.select(div).select("svg").remove(); // Clear previous
 
   const svg = d3
     .select(div)
     .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", size.width)
+    .attr("height", size.height)
+    .attr("viewBox", [0, 0, width/viewScaleFactor, height/viewScaleFactor])
+    .attr("style", "max-width: 100%; height: auto;")
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
