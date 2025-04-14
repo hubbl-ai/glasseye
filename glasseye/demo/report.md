@@ -25,6 +25,7 @@ data='[
   file='{"path": "data/hcl.json", "format": "json"}'
   size='{"width":1500,"height":1500}'
   colors='flare'
+  view_scale_factor = '0.9'
 >
 </dendrogram>
 

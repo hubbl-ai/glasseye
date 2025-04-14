@@ -11507,7 +11507,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Mon Apr 14 15:06:39 CAT 2025
+    // Generated Mon Apr 14 15:15:29 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -12762,20 +12762,20 @@ var Glasseye = (function (exports) {
     }
     /// dendrogram.ts
     function dendrogram() {
-        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors) {
+        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors, view_scale_factor = 1) {
             if (file === null || file === void 0 ? void 0 : file.path) {
                 data = yield loadData(file === null || file === void 0 ? void 0 : file.path, file === null || file === void 0 ? void 0 : file.format);
             }
             const margin = defaultMargin;
             const width = size.width - margin.left - margin.right;
             const height = size.height - margin.top - margin.bottom;
-            const viewScaleFactor = 0.9;
             select(div).select("svg").remove(); // Clear previous
+            console.log("Dendrogram ", div, view_scale_factor);
             const svg = select(div)
                 .append("svg")
                 .attr("width", size.width)
                 .attr("height", size.height)
-                .attr("viewBox", [0, 0, width / viewScaleFactor, height / viewScaleFactor])
+                .attr("viewBox", [0, 0, width / view_scale_factor, height / view_scale_factor])
                 .attr("style", "max-width: 100%; height: auto;")
                 .append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`);

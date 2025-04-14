@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Mon Apr 14 15:06:39 CAT 2025
+// Generated Mon Apr 14 15:15:29 CAT 2025
 
 
 /// base.ts
@@ -1686,7 +1686,8 @@ export async function dendrogram(
   data: any = defaultArgumentObject.data,
   size: Size = defaultArgumentObject.size,
   file?: DataFile,
-  colors: string[] = defaultArgumentObject.colors
+  colors: string[] = defaultArgumentObject.colors,
+  view_scale_factor = 1
 ) {
   if (file?.path) {
     data = await loadData(file?.path, file?.format);
@@ -1695,16 +1696,15 @@ export async function dendrogram(
   const width = size.width - margin.left - margin.right;
   const height = size.height - margin.top - margin.bottom;
 
-  const viewScaleFactor = 0.9;
-
   d3.select(div).select("svg").remove(); // Clear previous
 
+  console.log("Dendrogram ", div, view_scale_factor)
   const svg = d3
     .select(div)
     .append("svg")
     .attr("width", size.width)
     .attr("height", size.height)
-    .attr("viewBox", [0, 0, width/viewScaleFactor, height/viewScaleFactor])
+    .attr("viewBox", [0, 0, width/view_scale_factor, height/view_scale_factor])
     .attr("style", "max-width: 100%; height: auto;")
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
