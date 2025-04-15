@@ -1,6 +1,4 @@
-import * as d3 from "d3";
-
-export async function area(
+export async function areachart(
   div: string = defaultArgumentObject.div,
   data: any = defaultArgumentObject.data,
   size: Size = defaultArgumentObject.size,
@@ -23,9 +21,18 @@ export async function area(
   const keys = Object.keys(data[0]).filter((k) => k !== "date");
   const stackedData = d3.stack().keys(keys)(data);
 
+  const dateExtent = d3.extent(data, (d: any) => d.date) as [
+    Date | undefined,
+    Date | undefined
+  ];
+  const validDateExtent: [Date, Date] =
+    dateExtent[0] && dateExtent[1]
+      ? [dateExtent[0], dateExtent[1]]
+      : [new Date(), new Date()];
+
   const x = d3
     .scaleTime()
-    .domain(d3.extent(data, (d:any) => d.date) as [Date, Date])
+    .domain(validDateExtent)
     .range([0, width]);
 
   const y = d3
@@ -58,7 +65,7 @@ export async function area(
     .data(stackedData)
     .join("path")
     .attr("fill", ({ key }) => color(key)!)
-    .attr("d", area)
+    .attr("d", (d: d3.Series<any, string>) => area(d as [number, number][])!)
     .on("mousemove", function (event, layer) {
       const [xPos] = d3.pointer(event);
       const xDate = x.invert(xPos);

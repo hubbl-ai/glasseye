@@ -406,7 +406,7 @@ In dev mode, the script must be run in the same folder as the script.
         'bollinger':None,
         'dendrogram': {'view_scale_factor':1},
         'contour':None,
-        'area':None,
+        'areachart':None,
         }
 
     for s, args in standard_charts.items():

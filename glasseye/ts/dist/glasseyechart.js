@@ -786,10 +786,10 @@ var Glasseye = (function (exports) {
           : creatorInherit)(fullname);
     }
 
-    function none() {}
+    function none$2() {}
 
     function selector(selector) {
-      return selector == null ? none : function() {
+      return selector == null ? none$2 : function() {
         return this.querySelector(selector);
       };
     }
@@ -4296,7 +4296,7 @@ var Glasseye = (function (exports) {
       return a - b;
     }
 
-    function area(ring) {
+    function area$1(ring) {
       var i = 0, n = ring.length, area = ring[n - 1][1] * ring[0][0] - ring[n - 1][0] * ring[0][1];
       while (++i < n) area += ring[i - 1][1] * ring[i][0] - ring[i - 1][0] * ring[i][1];
       return area;
@@ -4386,7 +4386,7 @@ var Glasseye = (function (exports) {
 
         isorings(values, v, function(ring) {
           smooth(ring, values, v);
-          if (area(ring) > 0) polygons.push([ring]);
+          if (area$1(ring) > 0) polygons.push([ring]);
           else holes.push(ring);
         });
 
@@ -9466,6 +9466,7 @@ var Glasseye = (function (exports) {
 
     var locale;
     var timeFormat;
+    var timeParse;
 
     defaultLocale({
       dateTime: "%x, %X",
@@ -9481,7 +9482,7 @@ var Glasseye = (function (exports) {
     function defaultLocale(definition) {
       locale = formatLocale(definition);
       timeFormat = locale.format;
-      locale.parse;
+      timeParse = locale.parse;
       locale.utcFormat;
       locale.utcParse;
       return locale;
@@ -10052,6 +10053,112 @@ var Glasseye = (function (exports) {
       return line;
     }
 
+    function area(x0, y0, y1) {
+      var x1 = null,
+          defined = constant$3(true),
+          context = null,
+          curve = curveLinear,
+          output = null,
+          path = withPath(area);
+
+      x0 = typeof x0 === "function" ? x0 : (x0 === undefined) ? x$1 : constant$3(+x0);
+      y0 = typeof y0 === "function" ? y0 : (y0 === undefined) ? constant$3(0) : constant$3(+y0);
+      y1 = typeof y1 === "function" ? y1 : (y1 === undefined) ? y$1 : constant$3(+y1);
+
+      function area(data) {
+        var i,
+            j,
+            k,
+            n = (data = array(data)).length,
+            d,
+            defined0 = false,
+            buffer,
+            x0z = new Array(n),
+            y0z = new Array(n);
+
+        if (context == null) output = curve(buffer = path());
+
+        for (i = 0; i <= n; ++i) {
+          if (!(i < n && defined(d = data[i], i, data)) === defined0) {
+            if (defined0 = !defined0) {
+              j = i;
+              output.areaStart();
+              output.lineStart();
+            } else {
+              output.lineEnd();
+              output.lineStart();
+              for (k = i - 1; k >= j; --k) {
+                output.point(x0z[k], y0z[k]);
+              }
+              output.lineEnd();
+              output.areaEnd();
+            }
+          }
+          if (defined0) {
+            x0z[i] = +x0(d, i, data), y0z[i] = +y0(d, i, data);
+            output.point(x1 ? +x1(d, i, data) : x0z[i], y1 ? +y1(d, i, data) : y0z[i]);
+          }
+        }
+
+        if (buffer) return output = null, buffer + "" || null;
+      }
+
+      function arealine() {
+        return line().defined(defined).curve(curve).context(context);
+      }
+
+      area.x = function(_) {
+        return arguments.length ? (x0 = typeof _ === "function" ? _ : constant$3(+_), x1 = null, area) : x0;
+      };
+
+      area.x0 = function(_) {
+        return arguments.length ? (x0 = typeof _ === "function" ? _ : constant$3(+_), area) : x0;
+      };
+
+      area.x1 = function(_) {
+        return arguments.length ? (x1 = _ == null ? null : typeof _ === "function" ? _ : constant$3(+_), area) : x1;
+      };
+
+      area.y = function(_) {
+        return arguments.length ? (y0 = typeof _ === "function" ? _ : constant$3(+_), y1 = null, area) : y0;
+      };
+
+      area.y0 = function(_) {
+        return arguments.length ? (y0 = typeof _ === "function" ? _ : constant$3(+_), area) : y0;
+      };
+
+      area.y1 = function(_) {
+        return arguments.length ? (y1 = _ == null ? null : typeof _ === "function" ? _ : constant$3(+_), area) : y1;
+      };
+
+      area.lineX0 =
+      area.lineY0 = function() {
+        return arealine().x(x0).y(y0);
+      };
+
+      area.lineY1 = function() {
+        return arealine().x(x0).y(y1);
+      };
+
+      area.lineX1 = function() {
+        return arealine().x(x1).y(y0);
+      };
+
+      area.defined = function(_) {
+        return arguments.length ? (defined = typeof _ === "function" ? _ : constant$3(!!_), area) : defined;
+      };
+
+      area.curve = function(_) {
+        return arguments.length ? (curve = _, context != null && (output = curve(context)), area) : curve;
+      };
+
+      area.context = function(_) {
+        return arguments.length ? (_ == null ? context = output = null : output = curve(context = _), area) : context;
+      };
+
+      return area;
+    }
+
     function descending(a, b) {
       return b < a ? -1 : b > a ? 1 : b >= a ? 0 : NaN;
     }
@@ -10326,6 +10433,76 @@ var Glasseye = (function (exports) {
 
     function monotoneX(context) {
       return new MonotoneX(context);
+    }
+
+    function none$1(series, order) {
+      if (!((n = series.length) > 1)) return;
+      for (var i = 1, j, s0, s1 = series[order[0]], n, m = s1.length; i < n; ++i) {
+        s0 = s1, s1 = series[order[i]];
+        for (j = 0; j < m; ++j) {
+          s1[j][1] += s1[j][0] = isNaN(s0[j][1]) ? s0[j][0] : s0[j][1];
+        }
+      }
+    }
+
+    function none(series) {
+      var n = series.length, o = new Array(n);
+      while (--n >= 0) o[n] = n;
+      return o;
+    }
+
+    function stackValue(d, key) {
+      return d[key];
+    }
+
+    function stackSeries(key) {
+      const series = [];
+      series.key = key;
+      return series;
+    }
+
+    function stack() {
+      var keys = constant$3([]),
+          order = none,
+          offset = none$1,
+          value = stackValue;
+
+      function stack(data) {
+        var sz = Array.from(keys.apply(this, arguments), stackSeries),
+            i, n = sz.length, j = -1,
+            oz;
+
+        for (const d of data) {
+          for (i = 0, ++j; i < n; ++i) {
+            (sz[i][j] = [0, +value(d, sz[i].key, j, data)]).data = d;
+          }
+        }
+
+        for (i = 0, oz = array(order(sz)); i < n; ++i) {
+          sz[oz[i]].index = i;
+        }
+
+        offset(sz, oz);
+        return sz;
+      }
+
+      stack.keys = function(_) {
+        return arguments.length ? (keys = typeof _ === "function" ? _ : constant$3(Array.from(_)), stack) : keys;
+      };
+
+      stack.value = function(_) {
+        return arguments.length ? (value = typeof _ === "function" ? _ : constant$3(+_), stack) : value;
+      };
+
+      stack.order = function(_) {
+        return arguments.length ? (order = _ == null ? none : typeof _ === "function" ? _ : constant$3(Array.from(_)), stack) : order;
+      };
+
+      stack.offset = function(_) {
+        return arguments.length ? (offset = _ == null ? none$1 : _, stack) : offset;
+      };
+
+      return stack;
     }
 
     var constant$2 = x => () => x;
@@ -11507,7 +11684,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Mon Apr 14 16:07:40 CAT 2025
+    // Generated Tue Apr 15 15:30:47 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -12851,7 +13028,107 @@ var Glasseye = (function (exports) {
                 .attr("stroke-width", 0.3);
         });
     }
+    /// area.ts
+    function areachart() {
+        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors) {
+            if (file === null || file === void 0 ? void 0 : file.path) {
+                data = yield loadData(file === null || file === void 0 ? void 0 : file.path, file === null || file === void 0 ? void 0 : file.format);
+            }
+            const margin = defaultMargin;
+            const width = size.width - margin.left - margin.right;
+            const height = size.height - margin.top - margin.bottom;
+            const parseDate = timeParse("%Y-%m-%d");
+            data.forEach((d) => {
+                d.date = parseDate(d.date);
+            });
+            const keys = Object.keys(data[0]).filter((k) => k !== "date");
+            const stackedData = stack().keys(keys)(data);
+            const dateExtent = extent(data, (d) => d.date);
+            const validDateExtent = dateExtent[0] && dateExtent[1]
+                ? [dateExtent[0], dateExtent[1]]
+                : [new Date(), new Date()];
+            const x = time()
+                .domain(validDateExtent)
+                .range([0, width]);
+            const y = linear()
+                .domain([0, max$3(stackedData[stackedData.length - 1], (d) => d[1])])
+                .nice()
+                .range([height, 0]);
+            const color = ordinal().domain(keys).range(colors);
+            const area$1 = area()
+                .x((d, i) => x(data[i].date))
+                .y0((d) => y(d[0]))
+                .y1((d) => y(d[1]));
+            select(div).selectAll("*").remove();
+            const svg = select(div)
+                .append("svg")
+                .attr("width", size.width)
+                .attr("height", size.height)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+            // Add areas
+            svg
+                .selectAll("path")
+                .data(stackedData)
+                .join("path")
+                .attr("fill", ({ key }) => color(key))
+                .attr("d", (d) => area$1(d))
+                .on("mousemove", function (event, layer) {
+                const [xPos] = pointer(event);
+                const xDate = x.invert(xPos);
+                const i = bisector((d) => d.date).center(data, xDate);
+                const d = data[i];
+                const tooltipHtml = keys
+                    .map((k) => `<div><span style="color:${color(k)};">●</span> ${k}: ${d[k]}</div>`)
+                    .join("");
+                tooltip
+                    .html(`<strong>${timeFormat("%Y-%m-%d")(d.date)}</strong>${tooltipHtml}`)
+                    .style("left", `${event.pageX + 15}px`)
+                    .style("top", `${event.pageY - 28}px`)
+                    .style("opacity", 1);
+            })
+                .on("mouseout", () => {
+                tooltip.style("opacity", 0);
+            });
+            // Axes
+            svg
+                .append("g")
+                .attr("transform", `translate(0,${height})`)
+                .call(axisBottom(x).ticks(6));
+            svg.append("g").call(axisLeft(y));
+            // Tooltip div
+            const tooltip = select("body")
+                .append("div")
+                .attr("class", "tooltip")
+                .style("position", "absolute")
+                .style("background", "#fff")
+                .style("border", "1px solid #ccc")
+                .style("border-radius", "4px")
+                .style("padding", "8px")
+                .style("font-size", "12px")
+                .style("pointer-events", "none")
+                .style("opacity", 0);
+            // Legend
+            const legend = svg
+                .append("g")
+                .attr("transform", `translate(${width + 20}, 0)`);
+            keys.forEach((key, i) => {
+                const g = legend.append("g").attr("transform", `translate(0, ${i * 20})`);
+                g.append("rect")
+                    .attr("width", 12)
+                    .attr("height", 12)
+                    .attr("fill", color(key));
+                g.append("text")
+                    .attr("x", 18)
+                    .attr("y", 10)
+                    .text(key)
+                    .style("font-size", "12px")
+                    .style("alignment-baseline", "middle");
+            });
+        });
+    }
 
+    exports.areachart = areachart;
     exports.barchart = barchart;
     exports.bollinger = bollinger;
     exports.boxplot = boxplot;

@@ -1,6 +1,23 @@
 Building blocks:
 
 
+<areachart
+data='[
+  { "date": "2024-01-01", "catA": 10, "catB": 20, "catC": 30 },
+  { "date": "2024-01-02", "catA": 15, "catB": 25, "catC": 35 },
+  { "date": "2024-01-03", "catA": 20, "catB": 22, "catC": 28 },
+  { "date": "2024-01-04", "catA": 18, "catB": 30, "catC": 25 },
+  { "date": "2024-01-05", "catA": 22, "catB": 28, "catC": 32 },
+  { "date": "2024-01-06", "catA": 19, "catB": 26, "catC": 29 },
+  { "date": "2024-01-07", "catA": 24, "catB": 30, "catC": 35 },
+  { "date": "2024-01-08", "catA": 28, "catB": 33, "catC": 40 }
+]'
+  size='{"width":500,"height":500}'
+  colors='flare'
+>
+</areachart>
+
+
 <contour
 data='[
   [0, 10, 20, 30, 20],
