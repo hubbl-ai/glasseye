@@ -8,7 +8,7 @@ Sankey diagram:
 ```html
 <skey
   size='{"width":600,"height":225}'
-  file='{"path": "data/energy.json", "format": "json"}'
+  file='{"path":"data/energy.json", "format":"json"}'
 >
 </skey>
 ```
@@ -122,6 +122,80 @@ generated from this picture:
 ![Farming a field](images/100_6253.jpg){width=320}
 
 using the [Coolors app](https://coolors.co/), just to pick an example utility.
+
+## Color maps
+
+While most charts are rendered by *categorical* color maps - i.e. lists
+of colors that are used to render particular graphical elements - some
+(notably the [`heatmap`](/charts/heatmap)) map a *range* of values to a *range* of colors.
+This is called [color interpolation](https://d3js.org/d3-interpolate/color)
+and is described in the documentation for the [d3-interpolate](https://d3js.org/d3-interpolate)
+module.
+The syntax for specifying color maps has a few extra parameters,
+compared to color palettes.
+
+| Parameter | Default | Description |
+|-|-|-|
+| `colors` | None | A list of two colors, for the simplest case |
+| `interp` | None | The interpolation method |
+| `gamma` | 1.0 |  Governs the transition speed |
+| `intensity` | 0.5 | How bright the colors appear |
+
+The following:
+
+```html
+<heatmap
+  colors='["purple", "orange"]'
+  interp="rgb">
+  ...
+```
+
+produces this color map:
+
+![RGB color map](images/rgb-bar.png)
+
+The set of color interpolators includes:
+
+| Name | Description |
+| - | - |
+| `rgb` | Transitions between two colors |
+| `rgb-basis` | Transitions between any number of colors |
+| `rgb-closed` | Transitions between any number of colors, ending at the beginning |
+| `hsl` | Two color interpolation in the HSL color space |
+| `hsl-long` | Like `hsl` but does not use the shortest path between colors |
+| `lab` | [CIELAB color space](https://en.wikipedia.org/wiki/Lab_color_space#CIELAB) interpolator between the two colors |
+| `hcl` | [CIELCh<sub>ab</sub> color space](https://en.wikipedia.org/wiki/CIELAB_color_space#Cylindrical_representation:_CIELCh_or_CIEHLC) interpolator between the two colors |
+| `hcl-long` | Like `hcl` but does not use the shortest path between colors |
+| `cube-helix` | [Cubehelix](https://jiffyclub.github.io/palettable/cubehelix/) color space interpolator between the two colors |
+| `cube-helix-long` | Like `cube-helix` but does not use the shortest path between colors |
+
+
+Given the wealth of possibilities for specifying color maps in
+d3, glasseye does not extend support to Python-based color maps
+like those in Seaborn and matplotlib. We do, however, support
+interpolation of *categorical* color maps from Seaborn or elsewhere,
+as follows:
+
+```html
+<heatmap
+  colors="flare"
+  interp="rgb-basis"
+  ...
+```
+
+This is equivalent to giving the list of colors in the `flare`
+color palette to the interpolator:
+
+
+```html
+<heatmap
+  colors="[
+    '#EA9972', '#E88265', '#E36C5D', '#DA555C', '#CB4563',
+    '#B73D6A', '#A1376F', '#8B3170', '#752C6E', '#5F2868'
+  ]"
+  interp="rgb-basis"
+  ...
+```
 
 <script>
  setTimeout(() => {
