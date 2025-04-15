@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Mon Apr 14 15:15:29 CAT 2025
+// Generated Mon Apr 14 16:07:40 CAT 2025
 
 
 /// base.ts
@@ -1697,8 +1697,7 @@ export async function dendrogram(
   const height = size.height - margin.top - margin.bottom;
 
   d3.select(div).select("svg").remove(); // Clear previous
-
-  console.log("Dendrogram ", div, view_scale_factor)
+  
   const svg = d3
     .select(div)
     .append("svg")

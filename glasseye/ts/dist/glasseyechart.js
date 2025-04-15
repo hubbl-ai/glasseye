@@ -11507,7 +11507,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Mon Apr 14 15:15:29 CAT 2025
+    // Generated Mon Apr 14 16:07:40 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -12770,7 +12770,6 @@ var Glasseye = (function (exports) {
             const width = size.width - margin.left - margin.right;
             const height = size.height - margin.top - margin.bottom;
             select(div).select("svg").remove(); // Clear previous
-            console.log("Dendrogram ", div, view_scale_factor);
             const svg = select(div)
                 .append("svg")
                 .attr("width", size.width)

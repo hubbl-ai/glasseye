@@ -24,6 +24,7 @@ SOURCE_FILES = \
 	disjoint.ts \
 	dendrogram.ts \
 	contour.ts \
+	area.ts \
 
 all: $(TARGET_FILE)
 
