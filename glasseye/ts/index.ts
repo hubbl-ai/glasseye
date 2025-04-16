@@ -1,11 +1,19 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Tue Apr 15 15:30:47 CAT 2025
+// Generated Wed Apr 16 15:54:44 CAT 2025
 
 
 /// base.ts
 
 import * as d3 from "d3";
-import { sankey, sankeyLinkHorizontal, SankeyGraph, sankeyLeft, sankeyRight, sankeyCenter, sankeyJustify } from "d3-sankey";
+import {
+  sankey,
+  sankeyLinkHorizontal,
+  SankeyGraph,
+  sankeyLeft,
+  sankeyRight,
+  sankeyCenter,
+  sankeyJustify,
+} from "d3-sankey";
 import { SimulationNodeDatum } from "d3";
 import { Contours } from "d3-contour";
 
@@ -79,7 +87,7 @@ const formatters: { [key: string]: Function } = {
   tsv: d3.tsv,
   json: d3.json,
   txt: d3.text,
-  hsv: (path: string) => d3.dsv('#',path)
+  hsv: (path: string) => d3.dsv("#", path),
 };
 
 async function loadData(path: string, format: string = ""): Promise<any> {
@@ -104,6 +112,13 @@ interface Link {
   source: string;
   target: string;
 }
+
+const interp_map = {
+  rgb: d3.interpolateRgb,
+};
+
+function interp(args:any) {}
+
 /// barchart.ts
 
 export async function barchart(
@@ -759,7 +774,10 @@ export async function heatmap(
   data: any = defaultArgumentObject.data,
   size: Size = defaultArgumentObject.size,
   file?: DataFile,
-  colors: string[] = defaultArgumentObject.colors
+  colors: string[] = defaultArgumentObject.colors,
+  interp = 'rgb',
+  intensity=0.5,
+  gamma = 0
 ) {
  
   if (file?.path) {

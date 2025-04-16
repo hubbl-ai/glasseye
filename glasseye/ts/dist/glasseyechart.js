@@ -11684,7 +11684,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Tue Apr 15 15:30:47 CAT 2025
+    // Generated Wed Apr 16 15:54:44 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -11698,7 +11698,7 @@ var Glasseye = (function (exports) {
         tsv: tsv,
         json: json,
         txt: text,
-        hsv: (path) => dsv('#', path)
+        hsv: (path) => dsv("#", path),
     };
     function loadData(path_1) {
         return __awaiter(this, arguments, void 0, function* (path, format = "") {
@@ -12218,7 +12218,7 @@ var Glasseye = (function (exports) {
     }
     /// heatmap.ts
     function heatmap() {
-        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors) {
+        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors, interp = 'rgb', intensity = 0.5, gamma = 0) {
             if (file === null || file === void 0 ? void 0 : file.path) {
                 data = yield loadData(file === null || file === void 0 ? void 0 : file.path, file === null || file === void 0 ? void 0 : file.format);
             }

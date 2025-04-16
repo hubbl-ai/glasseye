@@ -3,7 +3,10 @@ export async function heatmap(
   data: any = defaultArgumentObject.data,
   size: Size = defaultArgumentObject.size,
   file?: DataFile,
-  colors: string[] = defaultArgumentObject.colors
+  colors: string[] = defaultArgumentObject.colors,
+  interp = 'rgb',
+  intensity=0.5,
+  gamma = 0
 ) {
  
   if (file?.path) {

@@ -1,5 +1,13 @@
 import * as d3 from "d3";
-import { sankey, sankeyLinkHorizontal, SankeyGraph, sankeyLeft, sankeyRight, sankeyCenter, sankeyJustify } from "d3-sankey";
+import {
+  sankey,
+  sankeyLinkHorizontal,
+  SankeyGraph,
+  sankeyLeft,
+  sankeyRight,
+  sankeyCenter,
+  sankeyJustify,
+} from "d3-sankey";
 import { SimulationNodeDatum } from "d3";
 import { Contours } from "d3-contour";
 
@@ -73,7 +81,7 @@ const formatters: { [key: string]: Function } = {
   tsv: d3.tsv,
   json: d3.json,
   txt: d3.text,
-  hsv: (path: string) => d3.dsv('#',path)
+  hsv: (path: string) => d3.dsv("#", path),
 };
 
 async function loadData(path: string, format: string = ""): Promise<any> {
@@ -98,3 +106,12 @@ interface Link {
   source: string;
   target: string;
 }
+
+const interp_map = {
+  rgb: d3.interpolateRgb,
+  hsl: d3.interpolateHsl,
+  hslLong: d3.interpolateHslLong,
+  lab: d3.interpolateLab,
+};
+
+function interp(args: any) {}
