@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Wed Apr 16 15:54:44 CAT 2025
+// Generated Thu Apr 17 14:58:25 CAT 2025
 
 
 /// base.ts
@@ -115,9 +115,21 @@ interface Link {
 
 const interp_map = {
   rgb: d3.interpolateRgb,
+  hsl: d3.interpolateHsl,
+  hslLong: d3.interpolateHslLong,
+  lab: d3.interpolateLab,
 };
 
-function interp(args:any) {}
+function color_interp(args: any) {
+  const interp = args['interp'] || 'rgb';
+  const intensity = args['intensity'] || 0.5;
+  const gamma = args['gamma'] || 0;
+  const colors:string[] = args['colors'] || [];
+  if ('gamma' in args && gamma > 0) {
+    return interp_map[interp]['gamma'](gamma)(colors[0], colors[1])(intensity);
+  }
+  return interp_map[interp](colors[0], colors[1])(intensity);
+}
 
 /// barchart.ts
 
@@ -809,7 +821,7 @@ export async function heatmap(
   // Define scales
   const xScale = d3.scaleBand().domain(xCategories).range([0, width]).padding(0.05);
   const yScale = d3.scaleBand().domain(yCategories).range([height, 0]).padding(0.05);
-  const colorScale = d3.scaleSequential(d3.interpolateBlues)
+  const colorScale = d3.scaleSequential(color_interp(interp=interp,intensity=intensity,gamma=gamma))
     .domain([d3.min(data, (d: any) => +d.value) as number, d3.max(data, (d: any) => +d.value) as number])
 
   // Add X Axis
