@@ -114,13 +114,17 @@ const interp_map = {
   lab: d3.interpolateLab,
 };
 
+type InterpType = keyof typeof interp_map;
+
 function color_interp(args: any) {
-  const interp = args['interp'] || 'rgb';
-  const intensity = args['intensity'] || 0.5;
-  const gamma = args['gamma'] || 0;
-  const colors:string[] = args['colors'] || [];
-  if ('gamma' in args && gamma > 0) {
-    return interp_map[interp]['gamma'](gamma)(colors[0], colors[1])(intensity);
+  const interp = (args['interp'] || 'rgb') as InterpType;
+  const intensity = args['intensity'] ?? 0.5;
+  const gamma = args['gamma'] ?? 0;
+  const colors: string[] = args['colors'] || [];
+
+  if (interp === 'rgb' && gamma > 0) {
+    return d3.interpolateRgb.gamma(gamma)(colors[0], colors[1])(intensity);
   }
+
   return interp_map[interp](colors[0], colors[1])(intensity);
 }

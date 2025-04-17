@@ -29,7 +29,7 @@ data='[
   { "x": "D", "y": "5", "value": 8 }
 ]'
   size='{"width":500,"height":500}'
-  colors='deep'
+  colors='["red", "blue"]'
 >
 </heatmap>
 
