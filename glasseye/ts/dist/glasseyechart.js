@@ -11655,7 +11655,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Thu Apr 17 18:18:22 CAT 2025
+    // Generated Thu Apr 17 19:36:09 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -11686,12 +11686,14 @@ var Glasseye = (function (exports) {
     }
     const interp_map = {
         rgb: interpolateRgb,
+        // rgbBasis: d3.interpolateRgbBasis,
         hsl: hsl$1,
         hslLong: hslLong,
         lab: lab,
     };
     function color_interp(args) {
         var _a, _b;
+        // console.log(args)
         const interp = (args['interp'] || 'rgb');
         const intensity = (_a = args['intensity']) !== null && _a !== void 0 ? _a : 0.5;
         const gamma = (_b = args['gamma']) !== null && _b !== void 0 ? _b : 0;
@@ -11699,7 +11701,9 @@ var Glasseye = (function (exports) {
         if (interp === 'rgb' && gamma > 0) {
             return interpolateRgb.gamma(gamma)(colors[0], colors[1])(intensity);
         }
-        return interp_map[interp](colors[0], colors[1])(intensity);
+        const rx = interp_map[interp](colors[0], colors[1]);
+        console.log(rx);
+        return rx;
     }
     /// barchart.ts
     function barchart() {
@@ -12229,7 +12233,8 @@ var Glasseye = (function (exports) {
             // Define scales
             const xScale = band().domain(xCategories).range([0, width]).padding(0.05);
             const yScale = band().domain(yCategories).range([height, 0]).padding(0.05);
-            const colorScale = sequential(color_interp({ interp: interp, intensity: intensity, gamma: gamma }))
+            // const colorScale = d3.scaleLinear().range(colors) .domain([d3.min(data, (d: any) => +d.value) as number, d3.max(data, (d: any) => +d.value) as number])
+            const colorScale = sequential(color_interp({ colors: colors, interp: interp, intensity: intensity, gamma: gamma }))
                 .domain([min$2(data, (d) => +d.value), max$3(data, (d) => +d.value)]);
             // Add X Axis
             zoomGroup.append("g")

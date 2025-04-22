@@ -38,7 +38,8 @@ export async function heatmap(
   // Define scales
   const xScale = d3.scaleBand().domain(xCategories).range([0, width]).padding(0.05);
   const yScale = d3.scaleBand().domain(yCategories).range([height, 0]).padding(0.05);
-  const colorScale = d3.scaleSequential(color_interp({interp:interp,intensity:intensity,gamma:gamma}))
+  // const colorScale = d3.scaleLinear().range(colors) .domain([d3.min(data, (d: any) => +d.value) as number, d3.max(data, (d: any) => +d.value) as number])
+  const colorScale = d3.scaleSequential(color_interp({colors:colors,interp:interp,intensity:intensity,gamma:gamma}))
     .domain([d3.min(data, (d: any) => +d.value) as number, d3.max(data, (d: any) => +d.value) as number])
 
   // Add X Axis

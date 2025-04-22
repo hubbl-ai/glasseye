@@ -29,7 +29,8 @@ data='[
   { "x": "D", "y": "5", "value": 8 }
 ]'
   size='{"width":500,"height":500}'
-  colors='["red", "blue"]'
+  colors='flare'
+  interp='"rgbBasis"'
 >
 </heatmap>
 
