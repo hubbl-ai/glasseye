@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>interp</title>
+        <link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Droid%20Sans' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+        <link rel="stylesheet" href="css/tufte.css" />
+        <link rel="stylesheet" href="css/glasseyeCharts.css" />
+        <script src="ts/dist/glasseyechart.js"></script>
+    </head>
+
+    <body>
+        <div id = "tufte_container">
+            <table>
+<tr>
+<td>
+<h3 id="a-heatmap-chart-rgb">A heatmap chart RGB</h3>
+<span id="heatmap_0"></span><br/>
+</td>
+<td>
+<h3 id="a-heatmap-chart-rgb-gamma">A heatmap chart RGB Gamma</h3>
+<span id="heatmap_1"></span><br/>
+</td>
+</tr>
+<tr>
+<td>
+<h3 id="a-heatmap-chart-hsl-long">A heatmap chart HSL LONG</h3>
+<span id="heatmap_2"></span><br/>
+</td>
+<td>
+<h3 id="a-heatmap-chart-lab">A heatmap chart LAB</h3>
+<span id="heatmap_3"></span><br/>
+</td>
+</tr>
+<tr>
+<td>
+<h3 id="a-heatmap-chart-hsl">A heatmap chart HSL</h3>
+<span id="heatmap_4"></span><br/>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td>
+<h3 id="a-heatmap-chart-rgb-basis">A heatmap chart RGB Basis</h3>
+<span id="heatmap_5"></span><br/>
+</td>
+<td>
+<h3 id="a-heatmap-chart-rgb-basis-closed">A heatmap chart Rgb Basis
+Closed</h3>
+<span id="heatmap_6"></span><br/>
+</td>
+</tr>
+</table>
+
+        </div>
+        <script type="text/javascript">
+            Glasseye.heatmap('#heatmap_0',[
+{ "x": "A", "y": "1", "value": 5 },
+{ "x": "A", "y": "2", "value": 10 },
+{ "x": "A", "y": "3", "value": 12 },
+{ "x": "A", "y": "4", "value": 8 },
+{ "x": "A", "y": "5", "value": 14 },
+{ "x": "B", "y": "1", "value": 15 },
+{ "x": "B", "y": "2", "value": 20 },
+{ "x": "B", "y": "3", "value": 18 },
+{ "x": "B", "y": "4", "value": 22 },
+{ "x": "B", "y": "5", "value": 16 },
+{ "x": "C", "y": "1", "value": 9 },
+{ "x": "C", "y": "2", "value": 11 },
+{ "x": "C", "y": "3", "value": 13 },
+{ "x": "C", "y": "4", "value": 10 },
+{ "x": "C", "y": "5", "value": 12 },
+{ "x": "D", "y": "1", "value": 7 },
+{ "x": "D", "y": "2", "value": 6 },
+{ "x": "D", "y": "3", "value": 5 },
+{ "x": "D", "y": "4", "value": 9 },
+{ "x": "D", "y": "5", "value": 8 }
+],{"width":500,"height":500},{},['#FF0000', '#0000FF', '#FF0000', '#0000FF', '#FF0000', '#0000FF', '#FF0000', '#0000FF', '#FF0000', '#0000FF'],0,"rgb",0);
+            Glasseye.heatmap('#heatmap_1',[
+{ "x": "A", "y": "1", "value": 5 },
+{ "x": "A", "y": "2", "value": 10 },
+{ "x": "A", "y": "3", "value": 12 },
+{ "x": "A", "y": "4", "value": 8 },
+{ "x": "A", "y": "5", "value": 14 },
+{ "x": "B", "y": "1", "value": 15 },
+{ "x": "B", "y": "2", "value": 20 },
+{ "x": "B", "y": "3", "value": 18 },
+{ "x": "B", "y": "4", "value": 22 },
+{ "x": "B", "y": "5", "value": 16 },
+{ "x": "C", "y": "1", "value": 9 },
+{ "x": "C", "y": "2", "value": 11 },
+{ "x": "C", "y": "3", "value": 13 },
+{ "x": "C", "y": "4", "value": 10 },
+{ "x": "C", "y": "5", "value": 12 },
+{ "x": "D", "y": "1", "value": 7 },
+{ "x": "D", "y": "2", "value": 6 },
+{ "x": "D", "y": "3", "value": 5 },
+{ "x": "D", "y": "4", "value": 9 },
+{ "x": "D", "y": "5", "value": 8 }
+],{"width":500,"height":500},{},['#FF0000', '#0000FF', '#FF0000', '#0000FF', '#FF0000', '#0000FF', '#FF0000', '#0000FF', '#FF0000', '#0000FF'],0,"rgb",2.2);
+            Glasseye.heatmap('#heatmap_2',[
+{ "x": "A", "y": "1", "value": 5 },
+{ "x": "A", "y": "2", "value": 10 },
+{ "x": "A", "y": "3", "value": 12 },
+{ "x": "A", "y": "4", "value": 8 },
+{ "x": "A", "y": "5", "value": 14 },
+{ "x": "B", "y": "1", "value": 15 },
+{ "x": "B", "y": "2", "value": 20 },
+{ "x": "B", "y": "3", "value": 18 },
+{ "x": "B", "y": "4", "value": 22 },
+{ "x": "B", "y": "5", "value": 16 },
+{ "x": "C", "y": "1", "value": 9 },
+{ "x": "C", "y": "2", "value": 11 },
+{ "x": "C", "y": "3", "value": 13 },
+{ "x": "C", "y": "4", "value": 10 },
+{ "x": "C", "y": "5", "value": 12 },
+{ "x": "D", "y": "1", "value": 7 },
+{ "x": "D", "y": "2", "value": 6 },
+{ "x": "D", "y": "3", "value": 5 },
+{ "x": "D", "y": "4", "value": 9 },
+{ "x": "D", "y": "5", "value": 8 }
+],{"width":500,"height":500},{},['#FF0000', '#0000FF', '#FF0000', '#0000FF', '#FF0000', '#0000FF', '#FF0000', '#0000FF', '#FF0000', '#0000FF'],0,"hslLong",0);
+            Glasseye.heatmap('#heatmap_3',[
+{ "x": "A", "y": "1", "value": 5 },
+{ "x": "A", "y": "2", "value": 10 },
+{ "x": "A", "y": "3", "value": 12 },
+{ "x": "A", "y": "4", "value": 8 },
+{ "x": "A", "y": "5", "value": 14 },
+{ "x": "B", "y": "1", "value": 15 },
+{ "x": "B", "y": "2", "value": 20 },
+{ "x": "B", "y": "3", "value": 18 },
+{ "x": "B", "y": "4", "value": 22 },
+{ "x": "B", "y": "5", "value": 16 },
+{ "x": "C", "y": "1", "value": 9 },
+{ "x": "C", "y": "2", "value": 11 },
+{ "x": "C", "y": "3", "value": 13 },
+{ "x": "C", "y": "4", "value": 10 },
+{ "x": "C", "y": "5", "value": 12 },
+{ "x": "D", "y": "1", "value": 7 },
+{ "x": "D", "y": "2", "value": 6 },
+{ "x": "D", "y": "3", "value": 5 },
+{ "x": "D", "y": "4", "value": 9 },
+{ "x": "D", "y": "5", "value": 8 }
+],{"width":500,"height":500},{},['#FF0000', '#0000FF', '#FF0000', '#0000FF', '#FF0000', '#0000FF', '#FF0000', '#0000FF', '#FF0000', '#0000FF'],0,"lab",0);
+            Glasseye.heatmap('#heatmap_4',[
+{ "x": "A", "y": "1", "value": 5 },
+{ "x": "A", "y": "2", "value": 10 },
+{ "x": "A", "y": "3", "value": 12 },
+{ "x": "A", "y": "4", "value": 8 },
+{ "x": "A", "y": "5", "value": 14 },
+{ "x": "B", "y": "1", "value": 15 },
+{ "x": "B", "y": "2", "value": 20 },
+{ "x": "B", "y": "3", "value": 18 },
+{ "x": "B", "y": "4", "value": 22 },
+{ "x": "B", "y": "5", "value": 16 },
+{ "x": "C", "y": "1", "value": 9 },
+{ "x": "C", "y": "2", "value": 11 },
+{ "x": "C", "y": "3", "value": 13 },
+{ "x": "C", "y": "4", "value": 10 },
+{ "x": "C", "y": "5", "value": 12 },
+{ "x": "D", "y": "1", "value": 7 },
+{ "x": "D", "y": "2", "value": 6 },
+{ "x": "D", "y": "3", "value": 5 },
+{ "x": "D", "y": "4", "value": 9 },
+{ "x": "D", "y": "5", "value": 8 }
+],{"width":500,"height":500},{},['#FF0000', '#0000FF', '#FF0000', '#0000FF', '#FF0000', '#0000FF', '#FF0000', '#0000FF', '#FF0000', '#0000FF'],0,"hsl",0);
+            Glasseye.heatmap('#heatmap_5',[
+{ "x": "A", "y": "1", "value": 5 },
+{ "x": "A", "y": "2", "value": 10 },
+{ "x": "A", "y": "3", "value": 12 },
+{ "x": "A", "y": "4", "value": 8 },
+{ "x": "A", "y": "5", "value": 14 },
+{ "x": "B", "y": "1", "value": 15 },
+{ "x": "B", "y": "2", "value": 20 },
+{ "x": "B", "y": "3", "value": 18 },
+{ "x": "B", "y": "4", "value": 22 },
+{ "x": "B", "y": "5", "value": 16 },
+{ "x": "C", "y": "1", "value": 9 },
+{ "x": "C", "y": "2", "value": 11 },
+{ "x": "C", "y": "3", "value": 13 },
+{ "x": "C", "y": "4", "value": 10 },
+{ "x": "C", "y": "5", "value": 12 },
+{ "x": "D", "y": "1", "value": 7 },
+{ "x": "D", "y": "2", "value": 6 },
+{ "x": "D", "y": "3", "value": 5 },
+{ "x": "D", "y": "4", "value": 9 },
+{ "x": "D", "y": "5", "value": 8 }
+],{"width":500,"height":500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],0,"rgbBasis",0);
+            Glasseye.heatmap('#heatmap_6',[
+{ "x": "A", "y": "1", "value": 5 },
+{ "x": "A", "y": "2", "value": 10 },
+{ "x": "A", "y": "3", "value": 12 },
+{ "x": "A", "y": "4", "value": 8 },
+{ "x": "A", "y": "5", "value": 14 },
+{ "x": "B", "y": "1", "value": 15 },
+{ "x": "B", "y": "2", "value": 20 },
+{ "x": "B", "y": "3", "value": 18 },
+{ "x": "B", "y": "4", "value": 22 },
+{ "x": "B", "y": "5", "value": 16 },
+{ "x": "C", "y": "1", "value": 9 },
+{ "x": "C", "y": "2", "value": 11 },
+{ "x": "C", "y": "3", "value": 13 },
+{ "x": "C", "y": "4", "value": 10 },
+{ "x": "C", "y": "5", "value": 12 },
+{ "x": "D", "y": "1", "value": 7 },
+{ "x": "D", "y": "2", "value": 6 },
+{ "x": "D", "y": "3", "value": 5 },
+{ "x": "D", "y": "4", "value": 9 },
+{ "x": "D", "y": "5", "value": 8 }
+],{"width":500,"height":500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],0,"rgbBasisClosed",0);
+        </script>
+    </body>
+</html>

@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Thu Apr 17 19:36:09 CAT 2025
+// Generated Tue Apr 22 19:24:03 CAT 2025
 
 
 /// base.ts
@@ -115,27 +115,32 @@ interface Link {
 
 const interp_map = {
   rgb: d3.interpolateRgb,
-  // rgbBasis: d3.interpolateRgbBasis,
   hsl: d3.interpolateHsl,
   hslLong: d3.interpolateHslLong,
-  lab: d3.interpolateLab,
+  lab: d3.interpolateLab
 };
 
+const interp_map_list = {
+  rgbBasis: d3.interpolateRgbBasis,
+  rgbBasisClosed: d3.interpolateRgbBasisClosed
+};
+
+
 type InterpType = keyof typeof interp_map;
+type InterpListType = keyof typeof interp_map_list;
 
 function color_interp(args: any) {
-  // console.log(args)
+  const interp_list = (args['interp'] || 'rgbBasis') as InterpListType;
   const interp = (args['interp'] || 'rgb') as InterpType;
-  const intensity = args['intensity'] ?? 0.5;
   const gamma = args['gamma'] ?? 0;
   const colors: string[] = args['colors'] || [];
+  const color_list = !(interp in interp_map);
 
   if (interp === 'rgb' && gamma > 0) {
-    return d3.interpolateRgb.gamma(gamma)(colors[0], colors[1])(intensity);
+    return interp_map[interp].gamma(gamma)(colors[0], colors[1]);
   }
 
-  const rx = interp_map[interp](colors[0], colors[1]);
-  console.log(rx);
+  const rx = color_list ? interp_map_list[interp_list](colors) :interp_map[interp](colors[0], colors[1]);
   return rx;
 }
 
@@ -795,11 +800,10 @@ export async function heatmap(
   size: Size = defaultArgumentObject.size,
   file?: DataFile,
   colors: string[] = defaultArgumentObject.colors,
-  interp = 'rgb',
-  intensity=0.5,
+  show_legend = 0,
+  interp = "rgb",
   gamma = 0
 ) {
- 
   if (file?.path) {
     data = await loadData(file?.path, file?.format);
   }
@@ -819,33 +823,61 @@ export async function heatmap(
     .attr("width", svgWidth)
     .attr("height", svgHeight);
 
-  const zoomGroup = svg.append("g")
+  const zoomGroup = svg
+    .append("g")
     .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
 
   // Extract unique X and Y categories
-  const xCategories = Array.from(new Set(data.map((d: any) => d.x))) as string[];
-  const yCategories = Array.from(new Set(data.map((d: any) => d.y))) as string[];
+  const xCategories = Array.from(
+    new Set(data.map((d: any) => d.x))
+  ) as string[];
+  const yCategories = Array.from(
+    new Set(data.map((d: any) => d.y))
+  ) as string[];
 
   // Define scales
-  const xScale = d3.scaleBand().domain(xCategories).range([0, width]).padding(0.05);
-  const yScale = d3.scaleBand().domain(yCategories).range([height, 0]).padding(0.05);
+  const xScale = d3
+    .scaleBand()
+    .domain(xCategories)
+    .range([0, width])
+    .padding(0.05);
+  const yScale = d3
+    .scaleBand()
+    .domain(yCategories)
+    .range([height, 0])
+    .padding(0.05);
   // const colorScale = d3.scaleLinear().range(colors) .domain([d3.min(data, (d: any) => +d.value) as number, d3.max(data, (d: any) => +d.value) as number])
-  const colorScale = d3.scaleSequential(color_interp({colors:colors,interp:interp,intensity:intensity,gamma:gamma}))
-    .domain([d3.min(data, (d: any) => +d.value) as number, d3.max(data, (d: any) => +d.value) as number])
+  const colorScale = d3
+    .scaleSequential(
+      color_interp({
+        colors: colors,
+        interp: interp,
+        gamma: gamma,
+      })
+    )
+    .domain([
+      d3.min(data, (d: any) => +d.value) as number,
+      d3.max(data, (d: any) => +d.value) as number,
+    ]);
 
   // Add X Axis
-  zoomGroup.append("g")
+  zoomGroup
+    .append("g")
     .attr("transform", `translate(0,${height})`)
     .call(d3.axisBottom(xScale).tickSize(0))
-    .select(".domain").remove();
+    .select(".domain")
+    .remove();
 
   // Add Y Axis
-  zoomGroup.append("g")
+  zoomGroup
+    .append("g")
     .call(d3.axisLeft(yScale).tickSize(0))
-    .select(".domain").remove();
+    .select(".domain")
+    .remove();
 
   // Add heatmap squares
-  zoomGroup.selectAll()
+  zoomGroup
+    .selectAll()
     .data(data)
     .enter()
     .append("rect")
@@ -855,59 +887,81 @@ export async function heatmap(
     .attr("height", yScale.bandwidth())
     .style("fill", (d: any) => colorScale(d.value));
 
-  // Add color legend
-  const legendWidth = 200, legendHeight = 10;
-  const legendSvg = svg.append("g").attr("transform", `translate(${width - legendWidth}, -30)`);
+  if (show_legend > 0) {
+    // Add color legend
+    const legendWidth = 200,
+      legendHeight = 10;
+    const legendSvg = svg
+      .append("g")
+      .attr("transform", `translate(${width - legendWidth}, -30)`);
 
-  legendSvg.append("text")
-  .attr("x", legendWidth / 2)
-  .attr("y", 0) 
-  .attr("text-anchor", "middle")
-  .style("font-size", "14px")
-  .style("font-weight", "bold")
-  .style("color", "#000")
-  .text("Legend");
+    legendSvg
+      .append("text")
+      .attr("x", legendWidth / 2)
+      .attr("y", 0)
+      .attr("text-anchor", "middle")
+      .style("font-size", "14px")
+      .style("font-weight", "bold")
+      .style("color", "#000")
+      .text("Legend");
 
-  const legendScale = d3.scaleLinear()
-    .domain(colorScale.domain())
-    .range([0, legendWidth]);
+    const legendScale = d3
+      .scaleLinear()
+      .domain(colorScale.domain())
+      .range([0, legendWidth]);
 
-  const legendAxis = d3.axisBottom(legendScale).ticks(5);
-  
-  const legendGradient = legendSvg.append("defs")
-    .append("linearGradient")
-    .attr("id", "legend-gradient")
-    .attr("x1", "0%").attr("x2", "100%")
-    .attr("y1", "0%").attr("y2", "0%");
-  
-  legendGradient.selectAll("stop")
-    .data([
-      { offset: "0%", color: colors[0] },
-      { offset: "100%", color: colors[1] }
-    ])
-    .enter()
-    .append("stop")
-    .attr("offset", (d) => d.offset)
-    .attr("stop-color", (d) => d.color);
+    const legendAxis = d3.axisBottom(legendScale).ticks(5);
 
-  legendSvg.append("rect")
-    .attr("width", legendWidth)
-    .attr("height", legendHeight * 2.5)
-    .style("fill", "url(#legend-gradient)");
+    const legendGradient = legendSvg
+      .append("defs")
+      .append("linearGradient")
+      .attr("id", "legend-gradient")
+      .attr("x1", "0%")
+      .attr("x2", "100%")
+      .attr("y1", "0%")
+      .attr("y2", "0%");
 
-  legendSvg.append("g")
-    .attr("transform", `translate(0, ${legendHeight})`)
-    .call(legendAxis);
+    legendGradient
+      .selectAll("stop")
+      .data([
+        { offset: "0%", color: colors[0] },
+        { offset: "100%", color: colors[1] },
+      ])
+      .enter()
+      .append("stop")
+      .attr("offset", (d) => d.offset)
+      .attr("stop-color", (d) => d.color);
 
-  const zoom = d3.zoom()
+    legendSvg
+      .append("rect")
+      .attr("width", legendWidth)
+      .attr("height", legendHeight * 2.5)
+      .style("fill", "url(#legend-gradient)");
+
+    legendSvg
+      .append("g")
+      .attr("transform", `translate(0, ${legendHeight})`)
+      .call(legendAxis);
+  }
+
+  const zoom = d3
+    .zoom()
     .scaleExtent([1, 5]) // Min and max zoom levels
-    .translateExtent([[0, 0], [svgWidth, svgHeight]]) // Restrict panning
+    .translateExtent([
+      [0, 0],
+      [svgWidth, svgHeight],
+    ]) // Restrict panning
     .on("zoom", (event) => {
       zoomGroup.attr("transform", event.transform);
     });
 
-    svg.call(zoom as unknown as (selection: d3.Selection<SVGSVGElement, unknown, HTMLElement, any>) => void);
+  svg.call(
+    zoom as unknown as (
+      selection: d3.Selection<SVGSVGElement, unknown, HTMLElement, any>
+    ) => void
+  );
 }
+
 /// linechart.ts
 
 

@@ -2476,6 +2476,38 @@ var Glasseye = (function (exports) {
       }
     }));
 
+    function basis(t1, v0, v1, v2, v3) {
+      var t2 = t1 * t1, t3 = t2 * t1;
+      return ((1 - 3 * t1 + 3 * t2 - t3) * v0
+          + (4 - 6 * t2 + 3 * t3) * v1
+          + (1 + 3 * t1 + 3 * t2 - 3 * t3) * v2
+          + t3 * v3) / 6;
+    }
+
+    function basis$1(values) {
+      var n = values.length - 1;
+      return function(t) {
+        var i = t <= 0 ? (t = 0) : t >= 1 ? (t = 1, n - 1) : Math.floor(t * n),
+            v1 = values[i],
+            v2 = values[i + 1],
+            v0 = i > 0 ? values[i - 1] : 2 * v1 - v2,
+            v3 = i < n - 1 ? values[i + 2] : 2 * v2 - v1;
+        return basis((t - i / n) * n, v0, v1, v2, v3);
+      };
+    }
+
+    function basisClosed(values) {
+      var n = values.length;
+      return function(t) {
+        var i = Math.floor(((t %= 1) < 0 ? ++t : t) * n),
+            v0 = values[(i + n - 1) % n],
+            v1 = values[i % n],
+            v2 = values[(i + 1) % n],
+            v3 = values[(i + 2) % n];
+        return basis((t - i / n) * n, v0, v1, v2, v3);
+      };
+    }
+
     var constant$8 = x => () => x;
 
     function linear$1(a, d) {
@@ -2527,6 +2559,35 @@ var Glasseye = (function (exports) {
 
       return rgb$1;
     })(1);
+
+    function rgbSpline(spline) {
+      return function(colors) {
+        var n = colors.length,
+            r = new Array(n),
+            g = new Array(n),
+            b = new Array(n),
+            i, color;
+        for (i = 0; i < n; ++i) {
+          color = rgb(colors[i]);
+          r[i] = color.r || 0;
+          g[i] = color.g || 0;
+          b[i] = color.b || 0;
+        }
+        r = spline(r);
+        g = spline(g);
+        b = spline(b);
+        color.opacity = 1;
+        return function(t) {
+          color.r = r(t);
+          color.g = g(t);
+          color.b = b(t);
+          return color + "";
+        };
+      };
+    }
+
+    var rgbBasis = rgbSpline(basis$1);
+    var rgbBasisClosed = rgbSpline(basisClosed);
 
     function numberArray(a, b) {
       if (!b) b = [];
@@ -11655,7 +11716,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Thu Apr 17 19:36:09 CAT 2025
+    // Generated Tue Apr 22 19:24:03 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -11686,23 +11747,25 @@ var Glasseye = (function (exports) {
     }
     const interp_map = {
         rgb: interpolateRgb,
-        // rgbBasis: d3.interpolateRgbBasis,
         hsl: hsl$1,
         hslLong: hslLong,
-        lab: lab,
+        lab: lab
+    };
+    const interp_map_list = {
+        rgbBasis: rgbBasis,
+        rgbBasisClosed: rgbBasisClosed
     };
     function color_interp(args) {
-        var _a, _b;
-        // console.log(args)
+        var _a;
+        const interp_list = (args['interp'] || 'rgbBasis');
         const interp = (args['interp'] || 'rgb');
-        const intensity = (_a = args['intensity']) !== null && _a !== void 0 ? _a : 0.5;
-        const gamma = (_b = args['gamma']) !== null && _b !== void 0 ? _b : 0;
+        const gamma = (_a = args['gamma']) !== null && _a !== void 0 ? _a : 0;
         const colors = args['colors'] || [];
+        const color_list = !(interp in interp_map);
         if (interp === 'rgb' && gamma > 0) {
-            return interpolateRgb.gamma(gamma)(colors[0], colors[1])(intensity);
+            return interp_map[interp].gamma(gamma)(colors[0], colors[1]);
         }
-        const rx = interp_map[interp](colors[0], colors[1]);
-        console.log(rx);
+        const rx = color_list ? interp_map_list[interp_list](colors) : interp_map[interp](colors[0], colors[1]);
         return rx;
     }
     /// barchart.ts
@@ -12210,7 +12273,7 @@ var Glasseye = (function (exports) {
     }
     /// heatmap.ts
     function heatmap() {
-        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors, interp = 'rgb', intensity = 0.5, gamma = 0) {
+        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors, show_legend = 0, interp = "rgb", gamma = 0) {
             if (file === null || file === void 0 ? void 0 : file.path) {
                 data = yield loadData(file === null || file === void 0 ? void 0 : file.path, file === null || file === void 0 ? void 0 : file.format);
             }
@@ -12225,28 +12288,47 @@ var Glasseye = (function (exports) {
                 .append("svg")
                 .attr("width", svgWidth)
                 .attr("height", svgHeight);
-            const zoomGroup = svg.append("g")
+            const zoomGroup = svg
+                .append("g")
                 .attr("transform", `translate(${(margin === null || margin === void 0 ? void 0 : margin.left) || 0},${(margin === null || margin === void 0 ? void 0 : margin.top) || 0})`);
             // Extract unique X and Y categories
             const xCategories = Array.from(new Set(data.map((d) => d.x)));
             const yCategories = Array.from(new Set(data.map((d) => d.y)));
             // Define scales
-            const xScale = band().domain(xCategories).range([0, width]).padding(0.05);
-            const yScale = band().domain(yCategories).range([height, 0]).padding(0.05);
+            const xScale = band()
+                .domain(xCategories)
+                .range([0, width])
+                .padding(0.05);
+            const yScale = band()
+                .domain(yCategories)
+                .range([height, 0])
+                .padding(0.05);
             // const colorScale = d3.scaleLinear().range(colors) .domain([d3.min(data, (d: any) => +d.value) as number, d3.max(data, (d: any) => +d.value) as number])
-            const colorScale = sequential(color_interp({ colors: colors, interp: interp, intensity: intensity, gamma: gamma }))
-                .domain([min$2(data, (d) => +d.value), max$3(data, (d) => +d.value)]);
+            const colorScale = sequential(color_interp({
+                colors: colors,
+                interp: interp,
+                gamma: gamma,
+            }))
+                .domain([
+                min$2(data, (d) => +d.value),
+                max$3(data, (d) => +d.value),
+            ]);
             // Add X Axis
-            zoomGroup.append("g")
+            zoomGroup
+                .append("g")
                 .attr("transform", `translate(0,${height})`)
                 .call(axisBottom(xScale).tickSize(0))
-                .select(".domain").remove();
+                .select(".domain")
+                .remove();
             // Add Y Axis
-            zoomGroup.append("g")
+            zoomGroup
+                .append("g")
                 .call(axisLeft(yScale).tickSize(0))
-                .select(".domain").remove();
+                .select(".domain")
+                .remove();
             // Add heatmap squares
-            zoomGroup.selectAll()
+            zoomGroup
+                .selectAll()
                 .data(data)
                 .enter()
                 .append("rect")
@@ -12255,45 +12337,59 @@ var Glasseye = (function (exports) {
                 .attr("width", xScale.bandwidth())
                 .attr("height", yScale.bandwidth())
                 .style("fill", (d) => colorScale(d.value));
-            // Add color legend
-            const legendWidth = 200, legendHeight = 10;
-            const legendSvg = svg.append("g").attr("transform", `translate(${width - legendWidth}, -30)`);
-            legendSvg.append("text")
-                .attr("x", legendWidth / 2)
-                .attr("y", 0)
-                .attr("text-anchor", "middle")
-                .style("font-size", "14px")
-                .style("font-weight", "bold")
-                .style("color", "#000")
-                .text("Legend");
-            const legendScale = linear()
-                .domain(colorScale.domain())
-                .range([0, legendWidth]);
-            const legendAxis = axisBottom(legendScale).ticks(5);
-            const legendGradient = legendSvg.append("defs")
-                .append("linearGradient")
-                .attr("id", "legend-gradient")
-                .attr("x1", "0%").attr("x2", "100%")
-                .attr("y1", "0%").attr("y2", "0%");
-            legendGradient.selectAll("stop")
-                .data([
-                { offset: "0%", color: colors[0] },
-                { offset: "100%", color: colors[1] }
-            ])
-                .enter()
-                .append("stop")
-                .attr("offset", (d) => d.offset)
-                .attr("stop-color", (d) => d.color);
-            legendSvg.append("rect")
-                .attr("width", legendWidth)
-                .attr("height", legendHeight * 2.5)
-                .style("fill", "url(#legend-gradient)");
-            legendSvg.append("g")
-                .attr("transform", `translate(0, ${legendHeight})`)
-                .call(legendAxis);
+            if (show_legend > 0) {
+                // Add color legend
+                const legendWidth = 200, legendHeight = 10;
+                const legendSvg = svg
+                    .append("g")
+                    .attr("transform", `translate(${width - legendWidth}, -30)`);
+                legendSvg
+                    .append("text")
+                    .attr("x", legendWidth / 2)
+                    .attr("y", 0)
+                    .attr("text-anchor", "middle")
+                    .style("font-size", "14px")
+                    .style("font-weight", "bold")
+                    .style("color", "#000")
+                    .text("Legend");
+                const legendScale = linear()
+                    .domain(colorScale.domain())
+                    .range([0, legendWidth]);
+                const legendAxis = axisBottom(legendScale).ticks(5);
+                const legendGradient = legendSvg
+                    .append("defs")
+                    .append("linearGradient")
+                    .attr("id", "legend-gradient")
+                    .attr("x1", "0%")
+                    .attr("x2", "100%")
+                    .attr("y1", "0%")
+                    .attr("y2", "0%");
+                legendGradient
+                    .selectAll("stop")
+                    .data([
+                    { offset: "0%", color: colors[0] },
+                    { offset: "100%", color: colors[1] },
+                ])
+                    .enter()
+                    .append("stop")
+                    .attr("offset", (d) => d.offset)
+                    .attr("stop-color", (d) => d.color);
+                legendSvg
+                    .append("rect")
+                    .attr("width", legendWidth)
+                    .attr("height", legendHeight * 2.5)
+                    .style("fill", "url(#legend-gradient)");
+                legendSvg
+                    .append("g")
+                    .attr("transform", `translate(0, ${legendHeight})`)
+                    .call(legendAxis);
+            }
             const zoom$1 = zoom()
                 .scaleExtent([1, 5]) // Min and max zoom levels
-                .translateExtent([[0, 0], [svgWidth, svgHeight]]) // Restrict panning
+                .translateExtent([
+                [0, 0],
+                [svgWidth, svgHeight],
+            ]) // Restrict panning
                 .on("zoom", (event) => {
                 zoomGroup.attr("transform", event.transform);
             });

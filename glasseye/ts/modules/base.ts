@@ -109,26 +109,31 @@ interface Link {
 
 const interp_map = {
   rgb: d3.interpolateRgb,
-  // rgbBasis: d3.interpolateRgbBasis,
   hsl: d3.interpolateHsl,
   hslLong: d3.interpolateHslLong,
-  lab: d3.interpolateLab,
+  lab: d3.interpolateLab
 };
 
+const interp_map_list = {
+  rgbBasis: d3.interpolateRgbBasis,
+  rgbBasisClosed: d3.interpolateRgbBasisClosed
+};
+
+
 type InterpType = keyof typeof interp_map;
+type InterpListType = keyof typeof interp_map_list;
 
 function color_interp(args: any) {
-  // console.log(args)
+  const interp_list = (args['interp'] || 'rgbBasis') as InterpListType;
   const interp = (args['interp'] || 'rgb') as InterpType;
-  const intensity = args['intensity'] ?? 0.5;
   const gamma = args['gamma'] ?? 0;
   const colors: string[] = args['colors'] || [];
+  const color_list = !(interp in interp_map);
 
   if (interp === 'rgb' && gamma > 0) {
-    return d3.interpolateRgb.gamma(gamma)(colors[0], colors[1])(intensity);
+    return interp_map[interp].gamma(gamma)(colors[0], colors[1]);
   }
 
-  const rx = interp_map[interp](colors[0], colors[1]);
-  console.log(rx);
+  const rx = color_list ? interp_map_list[interp_list](colors) :interp_map[interp](colors[0], colors[1]);
   return rx;
 }
