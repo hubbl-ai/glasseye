@@ -11716,7 +11716,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Tue Apr 22 19:24:03 CAT 2025
+    // Generated Fri Apr 25 00:42:31 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -12318,6 +12318,11 @@ var Glasseye = (function (exports) {
                 .append("g")
                 .attr("transform", `translate(0,${height})`)
                 .call(axisBottom(xScale).tickSize(0))
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-.8em")
+                .attr("dy", ".15em")
+                .attr("transform", "rotate(-65)")
                 .select(".domain")
                 .remove();
             // Add Y Axis

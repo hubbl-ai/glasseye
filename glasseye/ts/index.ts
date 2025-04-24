@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Tue Apr 22 19:24:03 CAT 2025
+// Generated Fri Apr 25 00:42:31 CAT 2025
 
 
 /// base.ts
@@ -865,6 +865,11 @@ export async function heatmap(
     .append("g")
     .attr("transform", `translate(0,${height})`)
     .call(d3.axisBottom(xScale).tickSize(0))
+    .selectAll("text")  
+    .style("text-anchor", "end")
+    .attr("dx", "-.8em")
+    .attr("dy", ".15em")
+    .attr("transform", "rotate(-65)")
     .select(".domain")
     .remove();
 
