@@ -1,3 +1,19 @@
+### Matplotlib output to JSON heatmap
+
+<heatmap
+ file='{"path": "data/symmetric_matrix.json", "format": "json"}'
+size='{"width":500,"height":500}'
+colors='deep'
+interp='"rgb"'
+> </heatmap>
+
+
+
+
+
+
+
+
 <table>
   <tr>
     <td>
