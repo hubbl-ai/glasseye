@@ -408,6 +408,7 @@ In dev mode, the script must be run in the same folder as the script.
         'contour':None,
         'areachart':None,
         'bubblechart':None,
+        'voronoi':None,
         }
 
     for s, args in standard_charts.items():

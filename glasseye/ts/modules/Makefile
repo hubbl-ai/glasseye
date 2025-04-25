@@ -26,6 +26,7 @@ SOURCE_FILES = \
 	contour.ts \
 	area.ts \
 	bubblechart.ts \
+	voronoi.ts \
 
 all: $(TARGET_FILE)
 

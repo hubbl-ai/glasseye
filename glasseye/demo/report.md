@@ -8,6 +8,26 @@ colors='deep'
 > </bubblechart>
 
 
+
+<voronoi
+data='[
+  { "x": 100, "y": 200, "name": "A" },
+  { "x": 150, "y": 80, "name": "B" },
+  { "x": 300, "y": 150, "name": "C" },
+  { "x": 400, "y": 300, "name": "D" },
+  { "x": 250, "y": 400, "name": "E" },
+  { "x": 500, "y": 200, "name": "F" },
+  { "x": 350, "y": 100, "name": "G" },
+  { "x": 180, "y": 320, "name": "H" },
+  { "x": 90, "y": 450, "name": "I" },
+  { "x": 600, "y": 350, "name": "J" }
+]'
+  size='{"width":850,"height":500}'
+  colors='flare'
+>
+</voronoi>
+
+
 <areachart
 data='[
   { "date": "2024-01-01", "catA": 10, "catB": 20, "catC": 30 },
