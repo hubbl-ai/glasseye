@@ -25,6 +25,7 @@ SOURCE_FILES = \
 	dendrogram.ts \
 	contour.ts \
 	area.ts \
+	bubblechart.ts \
 
 all: $(TARGET_FILE)
 

@@ -11716,7 +11716,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Fri Apr 25 00:42:31 CAT 2025
+    // Generated Fri Apr 25 16:03:02 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -13221,11 +13221,54 @@ var Glasseye = (function (exports) {
             });
         });
     }
+    function bubblechart() {
+        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors) {
+            if (file === null || file === void 0 ? void 0 : file.path) {
+                data = yield loadData(file === null || file === void 0 ? void 0 : file.path, file === null || file === void 0 ? void 0 : file.format);
+            }
+            // Clear existing content
+            select(div).selectAll("*").remove();
+            const svg = select(div)
+                .append("svg")
+                .attr("width", size.width)
+                .attr("height", size.height)
+                .attr("viewBox", `0 0 ${size.width} ${size.height}`)
+                .style("font-family", "sans-serif");
+            const colorScale = ordinal()
+                .range(colors);
+            const root = hierarchy(data)
+                .sum(d => d.value)
+                .sort((a, b) => b.value - a.value);
+            const pack = index$1()
+                .size([size.width, size.height])
+                .padding(5);
+            const nodes = pack(root).descendants();
+            const node = svg.selectAll("g")
+                .data(nodes)
+                .enter()
+                .append("g")
+                .attr("transform", d => `translate(${d.x},${d.y})`);
+            node.append("circle")
+                .attr("r", d => d.r)
+                .attr("fill", (d, i) => colorScale(i.toString()))
+                .attr("stroke", "#fff")
+                .attr("stroke-width", 1);
+            node
+                .filter(d => !d.children)
+                .append("text")
+                .text(d => d.data.name)
+                .attr("text-anchor", "middle")
+                .attr("dy", "0.3em")
+                .style("font-size", d => `${Math.min(2 * d.r / d.data.name.length, 12)}px`)
+                .style("fill", "#fff");
+        });
+    }
 
     exports.areachart = areachart;
     exports.barchart = barchart;
     exports.bollinger = bollinger;
     exports.boxplot = boxplot;
+    exports.bubblechart = bubblechart;
     exports.chord = chord;
     exports.contour = contour;
     exports.dendrogram = dendrogram;

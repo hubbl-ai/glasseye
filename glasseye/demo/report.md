@@ -1,5 +1,13 @@
 Building blocks:
 
+
+<bubblechart
+ file='{"path": "data/bubbles.json", "format": "json"}'
+size='{"width":500,"height":500}'
+colors='deep'
+> </bubblechart>
+
+
 <areachart
 data='[
   { "date": "2024-01-01", "catA": 10, "catB": 20, "catC": 30 },
