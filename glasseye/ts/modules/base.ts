@@ -10,6 +10,7 @@ import {
 } from "d3-sankey";
 import { SimulationNodeDatum } from "d3";
 import { Contours } from "d3-contour";
+import {HierarchyCircularNode} from 'd3';
 
 interface Margin {
   top: number;

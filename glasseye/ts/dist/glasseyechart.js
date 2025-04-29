@@ -13090,7 +13090,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Fri Apr 25 16:22:57 CAT 2025
+    // Generated Tue Apr 29 18:13:07 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -14608,33 +14608,61 @@ var Glasseye = (function (exports) {
                 .attr("height", size.height)
                 .attr("viewBox", `0 0 ${size.width} ${size.height}`)
                 .style("font-family", "sans-serif");
-            const colorScale = ordinal()
-                .range(colors);
-            const root = hierarchy(data)
-                .sum(d => d.value)
-                .sort((a, b) => b.value - a.value);
-            const pack = index$1()
-                .size([size.width, size.height])
-                .padding(5);
-            const nodes = pack(root).descendants();
-            const node = svg.selectAll("g")
-                .data(nodes)
-                .enter()
-                .append("g")
-                .attr("transform", d => `translate(${d.x},${d.y})`);
-            node.append("circle")
-                .attr("r", d => d.r)
-                .attr("fill", (d, i) => colorScale(i.toString()))
-                .attr("stroke", "#fff")
-                .attr("stroke-width", 1);
-            node
-                .filter(d => !d.children)
-                .append("text")
-                .text(d => d.data.name)
-                .attr("text-anchor", "middle")
-                .attr("dy", "0.3em")
-                .style("font-size", d => `${Math.min(2 * d.r / d.data.name.length, 12)}px`)
-                .style("fill", "#fff");
+            const colorScale = ordinal().range(colors);
+            const format$1 = format(",d");
+            const pack = index$1().size([size.width, size.height]).padding(5);
+            let nodes = [];
+            const isNested = !Array.isArray(data);
+            console.log(isNested, data);
+            if (isNested) {
+                const root = hierarchy(data)
+                    .sum((d) => d.value || 0)
+                    .sort((a, b) => b.value - a.value);
+                nodes = pack(root).descendants();
+                const node = svg
+                    .selectAll("g")
+                    .data(nodes)
+                    .enter()
+                    .append("g")
+                    .attr("transform", (d) => `translate(${d.x},${d.y})`);
+                node
+                    .append("circle")
+                    .attr("r", (d) => d.r)
+                    .attr("fill", (d, i) => colorScale(i.toString()))
+                    .attr("stroke", "#fff")
+                    .attr("stroke-width", 1);
+                node
+                    .filter((d) => !d.children)
+                    .append("text")
+                    .text((d) => d.data.name || "")
+                    .attr("text-anchor", "middle")
+                    .attr("dy", "0.3em")
+                    .style("font-size", (d) => `${Math.min((2 * d.r) / (d.data.name ? d.data.name.length : 0), 12)}px`)
+                    .style("fill", "#fff");
+            }
+            else {
+                const root = pack(hierarchy({ children: data }).sum((d) => d.value || 0));
+                const node = svg
+                    .append("g")
+                    .selectAll()
+                    .data(root.leaves())
+                    .join("g")
+                    .attr("transform", (d) => `translate(${d.x},${d.y})`);
+                node.append("title").text((d) => `${d.data.name}\n${format$1(d.value || 0)}`);
+                // Add a filled circle.
+                node
+                    .append("circle")
+                    .attr("fill-opacity", 0.7)
+                    .attr("fill", (d) => { var _a, _b; return colorScale(((_a = d.parent) === null || _a === void 0 ? void 0 : _a.data.name) || ((_b = d.data.name) === null || _b === void 0 ? void 0 : _b.split(".")[1]) || ""); })
+                    .attr("r", (d) => d.r);
+                node
+                    .append("text")
+                    .text((d) => d.data.name || "")
+                    .attr("text-anchor", "middle")
+                    .attr("dy", "0.3em")
+                    .style("font-size", (d) => `${Math.min((2 * d.r) / (d.data.name ? d.data.name.length : 0), 12)}px`)
+                    .style("fill", "#fff");
+            }
         });
     }
     function voronoi() {

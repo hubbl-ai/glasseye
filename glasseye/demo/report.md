@@ -9,6 +9,12 @@ colors='deep'
 
 
 
+<bubblechart
+ file='{"path": "data/flare.json", "format": "json"}'
+size='{"width":500,"height":500}'
+colors='deep'
+> </bubblechart>
+
 <voronoi
 data='[
   { "x": 100, "y": 200, "name": "A" },
