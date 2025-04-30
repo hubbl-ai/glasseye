@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Tue Apr 29 18:13:07 CAT 2025
+// Generated Wed Apr 30 01:07:42 CAT 2025
 
 
 /// base.ts
@@ -2080,7 +2080,6 @@ export async function bubblechart(
 
   console.log(isNested, data);
 
-
   if (isNested) {
     const root = d3
       .hierarchy<BubbleNode>(data)
@@ -2096,28 +2095,31 @@ export async function bubblechart(
       .append("g")
       .attr("transform", (d) => `translate(${d.x},${d.y})`);
 
-    node
+      node
       .append("circle")
-      .attr("r", (d) => d.r)
+      .attr("r", 0)
       .attr("fill", (d, i) => colorScale(i.toString()))
       .attr("stroke", "#fff")
-      .attr("stroke-width", 1);
+      .attr("stroke-width", 1)
+      .transition()
+      .duration(800)
+      .attr("r", (d) => d.r);
 
-    node
-      .filter((d) => !d.children)
+      node
       .append("text")
+      .style("opacity", 0)
       .text((d) => d.data.name || "")
       .attr("text-anchor", "middle")
       .attr("dy", "0.3em")
+      .style("fill", "#fff")
+      .transition()
+      .delay(4000)
+      .style("opacity", 1)
       .style(
         "font-size",
         (d) =>
-          `${Math.min(
-            (2 * d.r) / (d.data.name ? d.data.name.length : 0),
-            12
-          )}px`
-      )
-      .style("fill", "#fff");
+          `${Math.min((2 * d.r) / (d.data.name?.length || 1), 12)}px`
+      );
   } else {
     const root = pack(
       d3.hierarchy<BubbleNode>({ children: data }).sum((d) => d.value || 0)
@@ -2135,25 +2137,32 @@ export async function bubblechart(
     // Add a filled circle.
     node
       .append("circle")
+      .attr("fill", (d) =>
+        colorScale(d.parent?.data.name || d.data.name?.split(".")[1] || "")
+      )
+      .attr("fill-opacity", 0)
+      .attr("r", 0)
+      .transition()
+      .duration(4000)
+      .ease(d3.easeBounceOut)
       .attr("fill-opacity", 0.7)
-      .attr("fill", (d) => colorScale(d.parent?.data.name || d.data.name?.split(".")[1]  || ""))
       .attr("r", (d) => d.r);
-
 
       node
       .append("text")
+      .style("opacity", 0)
       .text((d) => d.data.name || "")
       .attr("text-anchor", "middle")
       .attr("dy", "0.3em")
+      .style("fill", "#fff")
+      .transition()
+      .delay(4000)
+      .style("opacity", 1)
       .style(
         "font-size",
         (d) =>
-          `${Math.min(
-            (2 * d.r) / (d.data.name ? d.data.name.length : 0),
-            12
-          )}px`
-      )
-      .style("fill", "#fff");
+          `${Math.min((2 * d.r) / (d.data.name?.length || 1), 12)}px`
+      );
   }
 }
 

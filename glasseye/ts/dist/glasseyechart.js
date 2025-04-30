@@ -3912,6 +3912,21 @@ var Glasseye = (function (exports) {
       return ((t *= 2) <= 1 ? t * t * t : (t -= 2) * t * t + 2) / 2;
     }
 
+    var b1 = 4 / 11,
+        b2 = 6 / 11,
+        b3 = 8 / 11,
+        b4 = 3 / 4,
+        b5 = 9 / 11,
+        b6 = 10 / 11,
+        b7 = 15 / 16,
+        b8 = 21 / 22,
+        b9 = 63 / 64,
+        b0 = 1 / b1 / b1;
+
+    function bounceOut(t) {
+      return (t = +t) < b1 ? b0 * t * t : t < b3 ? b0 * (t -= b2) * t + b4 : t < b6 ? b0 * (t -= b5) * t + b7 : b0 * (t -= b8) * t + b9;
+    }
+
     var defaultTiming = {
       time: null, // Set on use.
       delay: 0,
@@ -13090,7 +13105,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Tue Apr 29 18:13:07 CAT 2025
+    // Generated Wed Apr 30 01:07:42 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -14627,18 +14642,24 @@ var Glasseye = (function (exports) {
                     .attr("transform", (d) => `translate(${d.x},${d.y})`);
                 node
                     .append("circle")
-                    .attr("r", (d) => d.r)
+                    .attr("r", 0)
                     .attr("fill", (d, i) => colorScale(i.toString()))
                     .attr("stroke", "#fff")
-                    .attr("stroke-width", 1);
+                    .attr("stroke-width", 1)
+                    .transition()
+                    .duration(800)
+                    .attr("r", (d) => d.r);
                 node
-                    .filter((d) => !d.children)
                     .append("text")
+                    .style("opacity", 0)
                     .text((d) => d.data.name || "")
                     .attr("text-anchor", "middle")
                     .attr("dy", "0.3em")
-                    .style("font-size", (d) => `${Math.min((2 * d.r) / (d.data.name ? d.data.name.length : 0), 12)}px`)
-                    .style("fill", "#fff");
+                    .style("fill", "#fff")
+                    .transition()
+                    .delay(4000)
+                    .style("opacity", 1)
+                    .style("font-size", (d) => { var _a; return `${Math.min((2 * d.r) / (((_a = d.data.name) === null || _a === void 0 ? void 0 : _a.length) || 1), 12)}px`; });
             }
             else {
                 const root = pack(hierarchy({ children: data }).sum((d) => d.value || 0));
@@ -14652,16 +14673,25 @@ var Glasseye = (function (exports) {
                 // Add a filled circle.
                 node
                     .append("circle")
-                    .attr("fill-opacity", 0.7)
                     .attr("fill", (d) => { var _a, _b; return colorScale(((_a = d.parent) === null || _a === void 0 ? void 0 : _a.data.name) || ((_b = d.data.name) === null || _b === void 0 ? void 0 : _b.split(".")[1]) || ""); })
+                    .attr("fill-opacity", 0)
+                    .attr("r", 0)
+                    .transition()
+                    .duration(4000)
+                    .ease(bounceOut)
+                    .attr("fill-opacity", 0.7)
                     .attr("r", (d) => d.r);
                 node
                     .append("text")
+                    .style("opacity", 0)
                     .text((d) => d.data.name || "")
                     .attr("text-anchor", "middle")
                     .attr("dy", "0.3em")
-                    .style("font-size", (d) => `${Math.min((2 * d.r) / (d.data.name ? d.data.name.length : 0), 12)}px`)
-                    .style("fill", "#fff");
+                    .style("fill", "#fff")
+                    .transition()
+                    .delay(4000)
+                    .style("opacity", 1)
+                    .style("font-size", (d) => { var _a; return `${Math.min((2 * d.r) / (((_a = d.data.name) === null || _a === void 0 ? void 0 : _a.length) || 1), 12)}px`; });
             }
         });
     }

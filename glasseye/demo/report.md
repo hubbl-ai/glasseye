@@ -11,7 +11,7 @@ colors='deep'
 
 <bubblechart
  file='{"path": "data/flare.json", "format": "json"}'
-size='{"width":500,"height":500}'
+size='{"width":900,"height":900}'
 colors='deep'
 > </bubblechart>
 
