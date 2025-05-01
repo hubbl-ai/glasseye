@@ -407,7 +407,7 @@ In dev mode, the script must be run in the same folder as the script.
         'dendrogram': {'view_scale_factor':1},
         'contour':None,
         'areachart':None,
-        'bubblechart':None,
+        'bubblechart':{'ease_in':0,'drag_animations':0},
         'voronoi':None,
         }
 

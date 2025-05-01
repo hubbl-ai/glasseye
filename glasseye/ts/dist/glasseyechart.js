@@ -6656,6 +6656,103 @@ var Glasseye = (function (exports) {
       return (random() - 0.5) * 1e-6;
     }
 
+    function x$4(d) {
+      return d.x + d.vx;
+    }
+
+    function y$4(d) {
+      return d.y + d.vy;
+    }
+
+    function collide(radius) {
+      var nodes,
+          radii,
+          random,
+          strength = 1,
+          iterations = 1;
+
+      if (typeof radius !== "function") radius = constant$5(radius == null ? 1 : +radius);
+
+      function force() {
+        var i, n = nodes.length,
+            tree,
+            node,
+            xi,
+            yi,
+            ri,
+            ri2;
+
+        for (var k = 0; k < iterations; ++k) {
+          tree = quadtree(nodes, x$4, y$4).visitAfter(prepare);
+          for (i = 0; i < n; ++i) {
+            node = nodes[i];
+            ri = radii[node.index], ri2 = ri * ri;
+            xi = node.x + node.vx;
+            yi = node.y + node.vy;
+            tree.visit(apply);
+          }
+        }
+
+        function apply(quad, x0, y0, x1, y1) {
+          var data = quad.data, rj = quad.r, r = ri + rj;
+          if (data) {
+            if (data.index > node.index) {
+              var x = xi - data.x - data.vx,
+                  y = yi - data.y - data.vy,
+                  l = x * x + y * y;
+              if (l < r * r) {
+                if (x === 0) x = jiggle(random), l += x * x;
+                if (y === 0) y = jiggle(random), l += y * y;
+                l = (r - (l = Math.sqrt(l))) / l * strength;
+                node.vx += (x *= l) * (r = (rj *= rj) / (ri2 + rj));
+                node.vy += (y *= l) * r;
+                data.vx -= x * (r = 1 - r);
+                data.vy -= y * r;
+              }
+            }
+            return;
+          }
+          return x0 > xi + r || x1 < xi - r || y0 > yi + r || y1 < yi - r;
+        }
+      }
+
+      function prepare(quad) {
+        if (quad.data) return quad.r = radii[quad.data.index];
+        for (var i = quad.r = 0; i < 4; ++i) {
+          if (quad[i] && quad[i].r > quad.r) {
+            quad.r = quad[i].r;
+          }
+        }
+      }
+
+      function initialize() {
+        if (!nodes) return;
+        var i, n = nodes.length, node;
+        radii = new Array(n);
+        for (i = 0; i < n; ++i) node = nodes[i], radii[node.index] = +radius(node, i, nodes);
+      }
+
+      force.initialize = function(_nodes, _random) {
+        nodes = _nodes;
+        random = _random;
+        initialize();
+      };
+
+      force.iterations = function(_) {
+        return arguments.length ? (iterations = +_, force) : iterations;
+      };
+
+      force.strength = function(_) {
+        return arguments.length ? (strength = +_, force) : strength;
+      };
+
+      force.radius = function(_) {
+        return arguments.length ? (radius = typeof _ === "function" ? _ : constant$5(+_), initialize(), force) : radius;
+      };
+
+      return force;
+    }
+
     function index$3(d) {
       return d.index;
     }
@@ -13105,7 +13202,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Wed Apr 30 01:07:42 CAT 2025
+    // Generated Thu May  1 16:50:24 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -14611,7 +14708,7 @@ var Glasseye = (function (exports) {
         });
     }
     function bubblechart() {
-        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors) {
+        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors, ease_in = 0, drag_animations = 0) {
             if (file === null || file === void 0 ? void 0 : file.path) {
                 data = yield loadData(file === null || file === void 0 ? void 0 : file.path, file === null || file === void 0 ? void 0 : file.format);
             }
@@ -14628,7 +14725,6 @@ var Glasseye = (function (exports) {
             const pack = index$1().size([size.width, size.height]).padding(5);
             let nodes = [];
             const isNested = !Array.isArray(data);
-            console.log(isNested, data);
             if (isNested) {
                 const root = hierarchy(data)
                     .sum((d) => d.value || 0)
@@ -14640,26 +14736,43 @@ var Glasseye = (function (exports) {
                     .enter()
                     .append("g")
                     .attr("transform", (d) => `translate(${d.x},${d.y})`);
-                node
-                    .append("circle")
-                    .attr("r", 0)
-                    .attr("fill", (d, i) => colorScale(i.toString()))
-                    .attr("stroke", "#fff")
-                    .attr("stroke-width", 1)
-                    .transition()
-                    .duration(800)
-                    .attr("r", (d) => d.r);
-                node
-                    .append("text")
-                    .style("opacity", 0)
-                    .text((d) => d.data.name || "")
-                    .attr("text-anchor", "middle")
-                    .attr("dy", "0.3em")
-                    .style("fill", "#fff")
-                    .transition()
-                    .delay(4000)
-                    .style("opacity", 1)
-                    .style("font-size", (d) => { var _a; return `${Math.min((2 * d.r) / (((_a = d.data.name) === null || _a === void 0 ? void 0 : _a.length) || 1), 12)}px`; });
+                if (ease_in > 0) {
+                    node
+                        .append("circle")
+                        .attr("fill", (d, i) => colorScale(i.toString()))
+                        .attr("stroke", "#fff")
+                        .attr("stroke-width", 1)
+                        .attr("r", 0)
+                        .transition()
+                        .duration(800)
+                        .ease(bounceOut)
+                        .attr("r", (d) => d.r);
+                }
+                else {
+                    node
+                        .append("circle")
+                        .attr("fill", (d, i) => colorScale(i.toString()))
+                        .attr("stroke", "#fff")
+                        .attr("stroke-width", 1).attr("r", (d) => d.r);
+                }
+                if (ease_in > 0) {
+                    node
+                        .append("text")
+                        .text((d) => d.data.name || "")
+                        .attr("text-anchor", "middle")
+                        .attr("dy", "0.3em")
+                        .style("fill", "#fff")
+                        .style("font-size", (d) => { var _a; return `${Math.min((2 * d.r) / (((_a = d.data.name) === null || _a === void 0 ? void 0 : _a.length) || 1), 12)}px`; }).style("opacity", 0).transition().delay(4000).style("opacity", 1);
+                }
+                else {
+                    node
+                        .append("text")
+                        .text((d) => d.data.name || "")
+                        .attr("text-anchor", "middle")
+                        .attr("dy", "0.3em")
+                        .style("fill", "#fff")
+                        .style("font-size", (d) => { var _a; return `${Math.min((2 * d.r) / (((_a = d.data.name) === null || _a === void 0 ? void 0 : _a.length) || 1), 12)}px`; }).style("opacity", 1);
+                }
             }
             else {
                 const root = pack(hierarchy({ children: data }).sum((d) => d.value || 0));
@@ -14669,29 +14782,74 @@ var Glasseye = (function (exports) {
                     .data(root.leaves())
                     .join("g")
                     .attr("transform", (d) => `translate(${d.x},${d.y})`);
+                const simulation$1 = simulation(root.leaves())
+                    .force("charge", manyBody().strength(5))
+                    .force("center", center$1(size.width / 2, size.height / 2))
+                    .force("collision", collide((d) => d.r + 2))
+                    .on("tick", () => {
+                    node.attr("transform", (d) => `translate(${d.x},${d.y})`);
+                });
                 node.append("title").text((d) => `${d.data.name}\n${format$1(d.value || 0)}`);
                 // Add a filled circle.
-                node
-                    .append("circle")
-                    .attr("fill", (d) => { var _a, _b; return colorScale(((_a = d.parent) === null || _a === void 0 ? void 0 : _a.data.name) || ((_b = d.data.name) === null || _b === void 0 ? void 0 : _b.split(".")[1]) || ""); })
-                    .attr("fill-opacity", 0)
-                    .attr("r", 0)
-                    .transition()
-                    .duration(4000)
-                    .ease(bounceOut)
-                    .attr("fill-opacity", 0.7)
-                    .attr("r", (d) => d.r);
-                node
-                    .append("text")
-                    .style("opacity", 0)
-                    .text((d) => d.data.name || "")
-                    .attr("text-anchor", "middle")
-                    .attr("dy", "0.3em")
-                    .style("fill", "#fff")
-                    .transition()
-                    .delay(4000)
-                    .style("opacity", 1)
-                    .style("font-size", (d) => { var _a; return `${Math.min((2 * d.r) / (((_a = d.data.name) === null || _a === void 0 ? void 0 : _a.length) || 1), 12)}px`; });
+                if (ease_in > 0) {
+                    node
+                        .append("circle")
+                        .attr("fill", (d) => { var _a, _b; return colorScale(((_a = d.parent) === null || _a === void 0 ? void 0 : _a.data.name) || ((_b = d.data.name) === null || _b === void 0 ? void 0 : _b.split(".")[1]) || ""); })
+                        .attr("fill-opacity", 0)
+                        .attr("r", 0)
+                        .transition()
+                        .duration(4000)
+                        .ease(bounceOut)
+                        .attr("fill-opacity", 0.7)
+                        .attr("r", (d) => d.r);
+                }
+                else {
+                    node
+                        .append("circle")
+                        .attr("fill", (d) => { var _a, _b; return colorScale(((_a = d.parent) === null || _a === void 0 ? void 0 : _a.data.name) || ((_b = d.data.name) === null || _b === void 0 ? void 0 : _b.split(".")[1]) || ""); })
+                        .attr("fill-opacity", 0.7).attr("r", (d) => d.r);
+                }
+                if (ease_in > 0) {
+                    node
+                        .append("text")
+                        .text((d) => d.data.name || "")
+                        .attr("text-anchor", "middle")
+                        .attr("dy", "0.3em")
+                        .style("fill", "#fff")
+                        .style("font-size", (d) => { var _a; return `${Math.min((2 * d.r) / (((_a = d.data.name) === null || _a === void 0 ? void 0 : _a.length) || 1), 12)}px`; }).style("opacity", 0).transition().delay(4000).style("opacity", 1);
+                }
+                else {
+                    node
+                        .append("text")
+                        .text((d) => d.data.name || "")
+                        .attr("text-anchor", "middle")
+                        .attr("dy", "0.3em")
+                        .style("fill", "#fff")
+                        .style("font-size", (d) => { var _a; return `${Math.min((2 * d.r) / (((_a = d.data.name) === null || _a === void 0 ? void 0 : _a.length) || 1), 12)}px`; }).style("opacity", 1);
+                }
+                const drag$1 = drag()
+                    .on("start", (event, d) => {
+                    if (!event.active)
+                        simulation$1.alphaTarget(0.3).restart();
+                    d.fx = d.x;
+                    d.fy = d.y;
+                    console.log("start drag", d);
+                })
+                    .on("drag", (event, d) => {
+                    d.fx = event.x;
+                    d.fy = event.y;
+                    console.log("drag", d, event);
+                })
+                    .on("end", (event, d) => {
+                    if (!event.active)
+                        simulation$1.alphaTarget(0);
+                    d.fx = null;
+                    d.fy = null;
+                    console.log("end drag", d);
+                });
+                if (drag_animations > 0) {
+                    node.call(drag$1);
+                }
             }
         });
     }

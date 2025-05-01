@@ -5,6 +5,7 @@ Building blocks:
  file='{"path": "data/bubbles.json", "format": "json"}'
 size='{"width":500,"height":500}'
 colors='deep'
+ease_in = 1
 > </bubblechart>
 
 
@@ -13,7 +14,10 @@ colors='deep'
  file='{"path": "data/flare.json", "format": "json"}'
 size='{"width":900,"height":900}'
 colors='deep'
+ease_in = 1
+drag_animations=1
 > </bubblechart>
+
 
 <voronoi
 data='[
