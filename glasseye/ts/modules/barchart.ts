@@ -69,12 +69,12 @@ export async function barchart(
       if (horizontal) {
         return yHorizontal(d.label)!;
       } else {
-        return yVertical(d.value);
+        return yVertical(0); // Start at baseline
       }
     })
     .attr("width", (d) => {
       if (horizontal) {
-        return xHorizontal(d.value);
+        return 0; // Start with zero width
       } else {
         return xVertical.bandwidth();
       }
@@ -83,7 +83,7 @@ export async function barchart(
       if (horizontal) {
         return yHorizontal.bandwidth();
       } else {
-        return chartHeight - yVertical(d.value);
+        return 0; // Start with zero height
       }
     })
     .attr("fill", colors[0])
@@ -98,5 +98,28 @@ export async function barchart(
     .on("mouseout", function () {
       d3.select(this).transition().duration(200).style("opacity", 1);
       tooltip.style("display", "none");
+    })
+    .transition()
+    .duration(800)
+    .attr("width", (d) => {
+      if (horizontal) {
+        return xHorizontal(d.value);
+      } else {
+        return xVertical.bandwidth();
+      }
+    })
+    .attr("height", (d) => {
+      if (horizontal) {
+        return yHorizontal.bandwidth();
+      } else {
+        return chartHeight - yVertical(d.value);
+      }
+    })
+    .attr("y", (d) => {
+      if (!horizontal) {
+        return yVertical(d.value);
+      } else {
+        return yHorizontal(d.label)!;
+      }
     });
 }

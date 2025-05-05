@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <title>test</title>
+        <link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Droid%20Sans' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+        <link rel="stylesheet" href="css/tufte.css" />
+        <link rel="stylesheet" href="css/glasseyeCharts.css" />
+        <script src="ts/dist/glasseyechart.js"></script>
+    </head>
+
+    <body>
+        <div id = "tufte_container">
+            <h3 id="a-pie-chart">A Pie chart</h3>
+<p><span id="piechart_0"></span><br/></p>
+<h3 id="a-donut-chart">A Donut chart</h3>
+<p><span id="piechart_1"></span><br/></p>
+<h3 id="a-vertical-bar-chart">A Vertical Bar chart</h3>
+<p><span id="barchart_0"></span><br/></p>
+<h3 id="a-horizontal-bar-chart">A Horizontal Bar chart</h3>
+<p><span id="barchart_1"></span><br/></p>
+
+        </div>
+        <script type="text/javascript">
+            Glasseye.piechart('#piechart_0',[
+  { "label": "Apples", "value": 10 },
+  { "label": "Bananas", "value": 20 },
+  { "label": "Cherries", "value": 15 },
+  { "label": "Grapes", "value": 25 }
+],{"width":500,"height":500},{},['#4C72B0', '#DD8452', '#55A868', '#C44E52', '#8172B3', '#937860', '#DA8BC3', '#8C8C8C', '#CCB974', '#64B5CD'],0,1);
+            Glasseye.piechart('#piechart_1',[
+  { "label": "Apples", "value": 10 },
+  { "label": "Bananas", "value": 20 },
+  { "label": "Cherries", "value": 15 },
+  { "label": "Grapes", "value": 25 }
+],{"width":500,"height":500},{},['#A1C9F4', '#FFB482', '#8DE5A1', '#FF9F9B', '#D0BBFF', '#DEBB9B', '#FAB0E4', '#CFCFCF', '#FFFEA3', '#B9F2F0'],1,1);
+            Glasseye.barchart('#barchart_0',[
+  { "label": "Apples", "value": 10 },
+  { "label": "Bananas", "value": 20 },
+  { "label": "Cherries", "value": 15 },
+  { "label": "Grapes", "value": 25 }
+],{"width":500,"height":500},{},['#FF6700', '#008000', '#FF6700', '#008000', '#FF6700', '#008000', '#FF6700', '#008000', '#FF6700', '#008000'],0);
+            Glasseye.barchart('#barchart_1',[
+  { "label": "Apples", "value": 10 },
+  { "label": "Bananas", "value": 20 },
+  { "label": "Cherries", "value": 15 },
+  { "label": "Grapes", "value": 25 }
+],{"width":500,"height":500},{},['#FF6700', '#008000', '#FF6700', '#008000', '#FF6700', '#008000', '#FF6700', '#008000', '#FF6700', '#008000'],1);
+        </script>
+    </body>
+</html>

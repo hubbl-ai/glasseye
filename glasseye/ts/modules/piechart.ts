@@ -5,7 +5,8 @@ export async function piechart(
   size: Size = defaultArgumentObject.size,
   file?: DataFile,
   colors: string[]= defaultArgumentObject.colors,
-  donut?: 0
+  donut?: 0,
+  continuos_rotation?:0
 ) {
   const { width, height } = size;
   const radius = Math.min(width, height) / 2;
@@ -25,15 +26,17 @@ export async function piechart(
     .select(div)
     .append("svg")
     .attr("width", width)
-    .attr("height", height)
+    .attr("height", height);
+
+  const container = svg
     .append("g")
-    .attr("transform", `translate(${width / 2}, ${height / 2})`);
+    .attr("transform", `translate(${width / 2}, ${height / 2}) rotate(0)`)
+    // .attr("transform-origin", "center");
 
   const color = d3
     .scaleOrdinal<string>()
     .domain(processed_data.map((d:any) => d.label))
     .range(colors);
-    // .range(d3.schemeTableau10);
 
   const pie = d3.pie<DataLabeled>().value((d) => d.value);
 
@@ -53,7 +56,7 @@ export async function piechart(
     .style("font-size", "12px")
     .style("display", "none");
 
-  const arcs = svg
+  const arcs = container
     .selectAll("arc")
     .data(pie(processed_data))
     .enter()
@@ -87,4 +90,17 @@ export async function piechart(
     .style("font-size", "16px")
     .style("fill", "#FFFFFF")
     .text((d: any) => d.data.label);
+
+
+    if(continuos_rotation){
+      // Start continuous rotation after 2 second delay
+      setTimeout(() => {
+        let angle = 0;
+        d3.timer((elapsed) => {
+          angle = (elapsed / 50) % 360; // Adjust speed as needed
+          container.attr("transform", `translate(${width / 2}, ${height / 2}) rotate(${angle})`);
+        });
+      }, 2000); 
+
+    }
 }

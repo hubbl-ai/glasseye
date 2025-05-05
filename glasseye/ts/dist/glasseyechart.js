@@ -13202,7 +13202,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Thu May  1 16:50:24 CAT 2025
+    // Generated Mon May  5 15:00:05 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -13310,9 +13310,40 @@ var Glasseye = (function (exports) {
                     return yHorizontal(d.label);
                 }
                 else {
-                    return yVertical(d.value);
+                    return yVertical(0); // Start at baseline
                 }
             })
+                .attr("width", (d) => {
+                if (horizontal) {
+                    return 0; // Start with zero width
+                }
+                else {
+                    return xVertical.bandwidth();
+                }
+            })
+                .attr("height", (d) => {
+                if (horizontal) {
+                    return yHorizontal.bandwidth();
+                }
+                else {
+                    return 0; // Start with zero height
+                }
+            })
+                .attr("fill", colors[0])
+                .on("mouseover", function (event, d) {
+                select(this).transition().duration(200).style("opacity", 0.7);
+                tooltip
+                    .style("display", "block")
+                    .style("left", `${event.pageX}px`)
+                    .style("top", `${event.pageY}px`)
+                    .text(d.label);
+            })
+                .on("mouseout", function () {
+                select(this).transition().duration(200).style("opacity", 1);
+                tooltip.style("display", "none");
+            })
+                .transition()
+                .duration(800)
                 .attr("width", (d) => {
                 if (horizontal) {
                     return xHorizontal(d.value);
@@ -13329,18 +13360,13 @@ var Glasseye = (function (exports) {
                     return chartHeight - yVertical(d.value);
                 }
             })
-                .attr("fill", colors[0])
-                .on("mouseover", function (event, d) {
-                select(this).transition().duration(200).style("opacity", 0.7);
-                tooltip
-                    .style("display", "block")
-                    .style("left", `${event.pageX}px`)
-                    .style("top", `${event.pageY}px`)
-                    .text(d.label);
-            })
-                .on("mouseout", function () {
-                select(this).transition().duration(200).style("opacity", 1);
-                tooltip.style("display", "none");
+                .attr("y", (d) => {
+                if (!horizontal) {
+                    return yVertical(d.value);
+                }
+                else {
+                    return yHorizontal(d.label);
+                }
             });
         });
     }
@@ -13941,7 +13967,7 @@ var Glasseye = (function (exports) {
     }
     /// piechart.ts
     function piechart() {
-        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors, donut) {
+        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors, donut, continuos_rotation) {
             const { width, height } = size;
             const radius = Math.min(width, height) / 2;
             if (file === null || file === void 0 ? void 0 : file.path) {
@@ -13954,13 +13980,14 @@ var Glasseye = (function (exports) {
             const svg = select(div)
                 .append("svg")
                 .attr("width", width)
-                .attr("height", height)
+                .attr("height", height);
+            const container = svg
                 .append("g")
-                .attr("transform", `translate(${width / 2}, ${height / 2})`);
+                .attr("transform", `translate(${width / 2}, ${height / 2}) rotate(0)`);
+            // .attr("transform-origin", "center");
             const color = ordinal()
                 .domain(processed_data.map((d) => d.label))
                 .range(colors);
-            // .range(d3.schemeTableau10);
             const pie$1 = pie().value((d) => d.value);
             const arc$1 = arc()
                 .innerRadius(donut ? radius * 0.5 : 0)
@@ -13974,7 +14001,7 @@ var Glasseye = (function (exports) {
                 .style("border-radius", "4px")
                 .style("font-size", "12px")
                 .style("display", "none");
-            const arcs = svg
+            const arcs = container
                 .selectAll("arc")
                 .data(pie$1(processed_data))
                 .enter()
@@ -14003,6 +14030,16 @@ var Glasseye = (function (exports) {
                 .style("font-size", "16px")
                 .style("fill", "#FFFFFF")
                 .text((d) => d.data.label);
+            if (continuos_rotation) {
+                // Start continuous rotation after 2 second delay
+                setTimeout(() => {
+                    let angle = 0;
+                    timer((elapsed) => {
+                        angle = (elapsed / 50) % 360; // Adjust speed as needed
+                        container.attr("transform", `translate(${width / 2}, ${height / 2}) rotate(${angle})`);
+                    });
+                }, 2000);
+            }
         });
     }
     /// scatterplot.ts
