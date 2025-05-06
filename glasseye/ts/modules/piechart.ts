@@ -30,8 +30,7 @@ export async function piechart(
 
   const container = svg
     .append("g")
-    .attr("transform", `translate(${width / 2}, ${height / 2}) rotate(0)`)
-    // .attr("transform-origin", "center");
+    .attr("transform", `translate(${width / 2}, ${height / 2}) rotate(0)`);
 
   const color = d3
     .scaleOrdinal<string>()
@@ -104,16 +103,16 @@ export async function piechart(
 
     }else{
       setTimeout(() => {
-        let angle = 0;
-        const timer = d3.timer((elapsed) => {
-          angle = (elapsed / 2);
-          if (angle >= 360) {
-            container.attr("transform", `translate(${width / 2}, ${height / 2}) rotate(360)`);
-            timer.stop(); 
-          } else {
-            container.attr("transform", `translate(${width / 2}, ${height / 2}) rotate(${angle})`);
-          }
-        });
+        container
+          .transition()
+          .duration(1000) 
+          .ease(d3.easeCubicInOut) 
+          .attrTween("transform", () =>
+            d3.interpolateString(
+              `translate(${width / 2}, ${height / 2}) rotate(0)`,
+              `translate(${width / 2}, ${height / 2}) rotate(360)`
+            )
+          );
       }, 100);
     }
 }

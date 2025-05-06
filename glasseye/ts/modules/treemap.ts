@@ -48,7 +48,13 @@ export async function treemap(
    .attr("width", (d) => d.x1 - d.x0)
    .attr("height", (d) => d.y1 - d.y0)
    .style("fill", (d) => colorScale(d.data.name))
-   .style("stroke", "#FFFFFF");
+   .style("stroke", "#FFFFFF")
+   .on("mouseover", function (event, d:any) {
+    d3.select(this).transition().duration(200).style("opacity", 0.7);
+  })
+  .on("mouseout", function () {
+    d3.select(this).transition().duration(200).style("opacity", 1);
+  });
 
  // Add labels
  svg

@@ -47,14 +47,24 @@ export async function linechart(
     .y((d) => yScale(d.y))
     .curve(curved ? d3.curveMonotoneX : d3.curveLinear);
 
-  // Append the line path
-  svg
+  // Append the line path with animation
+  const path = svg
     .append("path")
     .datum(processed_data)
     .attr("fill", "none")
     .attr("stroke", colors[0])
     .attr("stroke-width", 2)
     .attr("d", line);
+
+  const totalLength = (path.node() as SVGPathElement).getTotalLength();
+
+  path
+    .attr("stroke-dasharray", totalLength)
+    .attr("stroke-dashoffset", totalLength)
+    .transition()
+    .duration(1000)
+    .ease(d3.easeLinear)
+    .attr("stroke-dashoffset", 0);
 
   // Append X axis
   svg

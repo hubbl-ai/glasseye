@@ -1,3 +1,21 @@
+
+
+### A chord diagram 
+
+
+<chord
+data='[
+  [0, 5, 10, 2],
+  [5, 0, 3, 7],
+  [10, 3, 0, 6],
+  [2, 7, 6, 0]
+]
+'
+  size='{"width":500,"height":500}'
+  colors='deep'
+>
+</chord>
+
 ### A Pie chart
 
 

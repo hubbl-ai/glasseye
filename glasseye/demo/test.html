@@ -14,7 +14,9 @@
 
     <body>
         <div id = "tufte_container">
-            <h3 id="a-pie-chart">A Pie chart</h3>
+            <h3 id="a-chord-diagram">A chord diagram</h3>
+<p><span id="chord_0"></span><br/></p>
+<h3 id="a-pie-chart">A Pie chart</h3>
 <p><span id="piechart_0"></span><br/></p>
 <h3 id="a-donut-chart">A Donut chart</h3>
 <p><span id="piechart_1"></span><br/></p>
@@ -49,6 +51,13 @@
   { "label": "Cherries", "value": 15 },
   { "label": "Grapes", "value": 25 }
 ],{"width":500,"height":500},{},['#FF6700', '#008000', '#FF6700', '#008000', '#FF6700', '#008000', '#FF6700', '#008000', '#FF6700', '#008000'],1);
+            Glasseye.chord('#chord_0',[
+  [0, 5, 10, 2],
+  [5, 0, 3, 7],
+  [10, 3, 0, 6],
+  [2, 7, 6, 0]
+]
+,{"width":500,"height":500},{},['#4C72B0', '#DD8452', '#55A868', '#C44E52', '#8172B3', '#937860', '#DA8BC3', '#8C8C8C', '#CCB974', '#64B5CD']);
         </script>
     </body>
 </html>

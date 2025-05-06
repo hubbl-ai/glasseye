@@ -2510,7 +2510,7 @@ var Glasseye = (function (exports) {
 
     var constant$8 = x => () => x;
 
-    function linear$1(a, d) {
+    function linear$2(a, d) {
       return function(t) {
         return a + t * d;
       };
@@ -2524,7 +2524,7 @@ var Glasseye = (function (exports) {
 
     function hue(a, b) {
       var d = b - a;
-      return d ? linear$1(a, d > 180 || d < -180 ? d - 360 * Math.round(d / 360) : d) : constant$8(isNaN(a) ? b : a);
+      return d ? linear$2(a, d > 180 || d < -180 ? d - 360 * Math.round(d / 360) : d) : constant$8(isNaN(a) ? b : a);
     }
 
     function gamma(y) {
@@ -2535,7 +2535,7 @@ var Glasseye = (function (exports) {
 
     function nogamma(a, b) {
       var d = b - a;
-      return d ? linear$1(a, d) : constant$8(isNaN(a) ? b : a);
+      return d ? linear$2(a, d) : constant$8(isNaN(a) ? b : a);
     }
 
     var interpolateRgb = (function rgbGamma(y) {
@@ -3907,6 +3907,8 @@ var Glasseye = (function (exports) {
       end: transition_end,
       [Symbol.iterator]: selection_prototype[Symbol.iterator]
     };
+
+    const linear$1 = t => +t;
 
     function cubicInOut(t) {
       return ((t *= 2) <= 1 ? t * t * t : (t -= 2) * t * t + 2) / 2;
@@ -13202,7 +13204,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Tue May  6 14:28:22 CAT 2025
+    // Generated Tue May  6 14:53:29 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -13573,11 +13575,12 @@ var Glasseye = (function (exports) {
             const svg = select(div)
                 .append("svg")
                 .attr("width", width)
-                .attr("height", height)
+                .attr("height", height);
+            const container = svg
                 .append("g")
-                .attr("transform", `translate(${width / 2},${height / 2})`);
+                .attr("transform", `translate(${width / 2}, ${height / 2}) rotate(0)`);
             // Draw arcs
-            const group = svg
+            const group = container
                 .append("g")
                 .selectAll("g")
                 .data(chords.groups)
@@ -13601,7 +13604,7 @@ var Glasseye = (function (exports) {
                 .append("title")
                 .text((d, i) => `Group ${i}: ${d.value}`);
             // Draw ribbons
-            svg
+            container
                 .append("g")
                 .selectAll("path")
                 .data(chords)
@@ -13610,6 +13613,13 @@ var Glasseye = (function (exports) {
                 .attr("d", ribbon)
                 .style("fill", (d) => color(d.source.index.toString()))
                 .style("stroke", "#000");
+            setTimeout(() => {
+                container
+                    .transition()
+                    .duration(1000)
+                    .ease(cubicInOut)
+                    .attrTween("transform", () => interpolateString(`translate(${width / 2}, ${height / 2}) rotate(0)`, `translate(${width / 2}, ${height / 2}) rotate(360)`));
+            }, 100);
         });
     }
     /// dotplot.ts
@@ -13945,14 +13955,22 @@ var Glasseye = (function (exports) {
                 .x((d) => xScale(d.x))
                 .y((d) => yScale(d.y))
                 .curve(curved ? monotoneX : curveLinear);
-            // Append the line path
-            svg
+            // Append the line path with animation
+            const path = svg
                 .append("path")
                 .datum(processed_data)
                 .attr("fill", "none")
                 .attr("stroke", colors[0])
                 .attr("stroke-width", 2)
                 .attr("d", line$1);
+            const totalLength = path.node().getTotalLength();
+            path
+                .attr("stroke-dasharray", totalLength)
+                .attr("stroke-dashoffset", totalLength)
+                .transition()
+                .duration(1000)
+                .ease(linear$1)
+                .attr("stroke-dashoffset", 0);
             // Append X axis
             svg
                 .append("g")
@@ -13984,7 +14002,6 @@ var Glasseye = (function (exports) {
             const container = svg
                 .append("g")
                 .attr("transform", `translate(${width / 2}, ${height / 2}) rotate(0)`);
-            // .attr("transform-origin", "center");
             const color = ordinal()
                 .domain(processed_data.map((d) => d.label))
                 .range(colors);
@@ -14042,17 +14059,11 @@ var Glasseye = (function (exports) {
             }
             else {
                 setTimeout(() => {
-                    let angle = 0;
-                    const timer$1 = timer((elapsed) => {
-                        angle = (elapsed / 2);
-                        if (angle >= 360) {
-                            container.attr("transform", `translate(${width / 2}, ${height / 2}) rotate(360)`);
-                            timer$1.stop();
-                        }
-                        else {
-                            container.attr("transform", `translate(${width / 2}, ${height / 2}) rotate(${angle})`);
-                        }
-                    });
+                    container
+                        .transition()
+                        .duration(1000)
+                        .ease(cubicInOut)
+                        .attrTween("transform", () => interpolateString(`translate(${width / 2}, ${height / 2}) rotate(0)`, `translate(${width / 2}, ${height / 2}) rotate(360)`));
                 }, 100);
             }
         });
@@ -14388,7 +14399,13 @@ var Glasseye = (function (exports) {
                 .attr("width", (d) => d.x1 - d.x0)
                 .attr("height", (d) => d.y1 - d.y0)
                 .style("fill", (d) => colorScale(d.data.name))
-                .style("stroke", "#FFFFFF");
+                .style("stroke", "#FFFFFF")
+                .on("mouseover", function (event, d) {
+                select(this).transition().duration(200).style("opacity", 0.7);
+            })
+                .on("mouseout", function () {
+                select(this).transition().duration(200).style("opacity", 1);
+            });
             // Add labels
             svg
                 .selectAll("text")

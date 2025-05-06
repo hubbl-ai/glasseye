@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Tue May  6 14:28:22 CAT 2025
+// Generated Tue May  6 14:53:29 CAT 2025
 
 
 /// base.ts
@@ -546,12 +546,14 @@ export async function chord(
     .select(div)
     .append("svg")
     .attr("width", width)
-    .attr("height", height)
+    .attr("height", height);
+
+    const container = svg
     .append("g")
-    .attr("transform", `translate(${width / 2},${height / 2})`);
+    .attr("transform", `translate(${width / 2}, ${height / 2}) rotate(0)`);
 
   // Draw arcs
-  const group = svg
+  const group = container
     .append("g")
     .selectAll("g")
     .data(chords.groups)
@@ -579,7 +581,7 @@ export async function chord(
     .text((d, i) => `Group ${i}: ${d.value}`);
 
   // Draw ribbons
-  svg
+  container
     .append("g")
     .selectAll("path")
     .data(chords)
@@ -588,6 +590,19 @@ export async function chord(
     .attr("d", ribbon as any)
     .style("fill", (d) => color(d.source.index.toString()))
     .style("stroke", "#000");
+
+    setTimeout(() => {
+      container
+        .transition()
+        .duration(1000) 
+        .ease(d3.easeCubicInOut) 
+        .attrTween("transform", () =>
+          d3.interpolateString(
+            `translate(${width / 2}, ${height / 2}) rotate(0)`,
+            `translate(${width / 2}, ${height / 2}) rotate(360)`
+          )
+        );
+    }, 100);
 }
 
 /// dotplot.ts
@@ -1042,14 +1057,24 @@ export async function linechart(
     .y((d) => yScale(d.y))
     .curve(curved ? d3.curveMonotoneX : d3.curveLinear);
 
-  // Append the line path
-  svg
+  // Append the line path with animation
+  const path = svg
     .append("path")
     .datum(processed_data)
     .attr("fill", "none")
     .attr("stroke", colors[0])
     .attr("stroke-width", 2)
     .attr("d", line);
+
+  const totalLength = (path.node() as SVGPathElement).getTotalLength();
+
+  path
+    .attr("stroke-dasharray", totalLength)
+    .attr("stroke-dashoffset", totalLength)
+    .transition()
+    .duration(1000)
+    .ease(d3.easeLinear)
+    .attr("stroke-dashoffset", 0);
 
   // Append X axis
   svg
@@ -1097,8 +1122,7 @@ export async function piechart(
 
   const container = svg
     .append("g")
-    .attr("transform", `translate(${width / 2}, ${height / 2}) rotate(0)`)
-    // .attr("transform-origin", "center");
+    .attr("transform", `translate(${width / 2}, ${height / 2}) rotate(0)`);
 
   const color = d3
     .scaleOrdinal<string>()
@@ -1171,16 +1195,16 @@ export async function piechart(
 
     }else{
       setTimeout(() => {
-        let angle = 0;
-        const timer = d3.timer((elapsed) => {
-          angle = (elapsed / 2);
-          if (angle >= 360) {
-            container.attr("transform", `translate(${width / 2}, ${height / 2}) rotate(360)`);
-            timer.stop(); 
-          } else {
-            container.attr("transform", `translate(${width / 2}, ${height / 2}) rotate(${angle})`);
-          }
-        });
+        container
+          .transition()
+          .duration(1000) 
+          .ease(d3.easeCubicInOut) 
+          .attrTween("transform", () =>
+            d3.interpolateString(
+              `translate(${width / 2}, ${height / 2}) rotate(0)`,
+              `translate(${width / 2}, ${height / 2}) rotate(360)`
+            )
+          );
       }, 100);
     }
 }
@@ -1609,7 +1633,13 @@ export async function treemap(
    .attr("width", (d) => d.x1 - d.x0)
    .attr("height", (d) => d.y1 - d.y0)
    .style("fill", (d) => colorScale(d.data.name))
-   .style("stroke", "#FFFFFF");
+   .style("stroke", "#FFFFFF")
+   .on("mouseover", function (event, d:any) {
+    d3.select(this).transition().duration(200).style("opacity", 0.7);
+  })
+  .on("mouseout", function () {
+    d3.select(this).transition().duration(200).style("opacity", 1);
+  });
 
  // Add labels
  svg

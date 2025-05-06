@@ -26,12 +26,14 @@ export async function chord(
     .select(div)
     .append("svg")
     .attr("width", width)
-    .attr("height", height)
+    .attr("height", height);
+
+    const container = svg
     .append("g")
-    .attr("transform", `translate(${width / 2},${height / 2})`);
+    .attr("transform", `translate(${width / 2}, ${height / 2}) rotate(0)`);
 
   // Draw arcs
-  const group = svg
+  const group = container
     .append("g")
     .selectAll("g")
     .data(chords.groups)
@@ -59,7 +61,7 @@ export async function chord(
     .text((d, i) => `Group ${i}: ${d.value}`);
 
   // Draw ribbons
-  svg
+  container
     .append("g")
     .selectAll("path")
     .data(chords)
@@ -68,4 +70,17 @@ export async function chord(
     .attr("d", ribbon as any)
     .style("fill", (d) => color(d.source.index.toString()))
     .style("stroke", "#000");
+
+    setTimeout(() => {
+      container
+        .transition()
+        .duration(1000) 
+        .ease(d3.easeCubicInOut) 
+        .attrTween("transform", () =>
+          d3.interpolateString(
+            `translate(${width / 2}, ${height / 2}) rotate(0)`,
+            `translate(${width / 2}, ${height / 2}) rotate(360)`
+          )
+        );
+    }, 100);
 }
