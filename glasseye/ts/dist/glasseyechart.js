@@ -13202,7 +13202,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Mon May  5 15:00:05 CAT 2025
+    // Generated Tue May  6 14:28:22 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -14035,10 +14035,25 @@ var Glasseye = (function (exports) {
                 setTimeout(() => {
                     let angle = 0;
                     timer((elapsed) => {
-                        angle = (elapsed / 50) % 360; // Adjust speed as needed
+                        angle = (elapsed / 50) % 360;
                         container.attr("transform", `translate(${width / 2}, ${height / 2}) rotate(${angle})`);
                     });
                 }, 2000);
+            }
+            else {
+                setTimeout(() => {
+                    let angle = 0;
+                    const timer$1 = timer((elapsed) => {
+                        angle = (elapsed / 2);
+                        if (angle >= 360) {
+                            container.attr("transform", `translate(${width / 2}, ${height / 2}) rotate(360)`);
+                            timer$1.stop();
+                        }
+                        else {
+                            container.attr("transform", `translate(${width / 2}, ${height / 2}) rotate(${angle})`);
+                        }
+                    });
+                }, 100);
             }
         });
     }

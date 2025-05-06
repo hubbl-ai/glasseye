@@ -10,7 +10,6 @@ data='[
 ]'
   size='{"width":500,"height":500}'
   colors='deep'
-  continuos_rotation=1
 >
 </piechart>
 

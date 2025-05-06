@@ -97,10 +97,23 @@ export async function piechart(
       setTimeout(() => {
         let angle = 0;
         d3.timer((elapsed) => {
-          angle = (elapsed / 50) % 360; // Adjust speed as needed
+          angle = (elapsed / 50) % 360; 
           container.attr("transform", `translate(${width / 2}, ${height / 2}) rotate(${angle})`);
         });
       }, 2000); 
 
+    }else{
+      setTimeout(() => {
+        let angle = 0;
+        const timer = d3.timer((elapsed) => {
+          angle = (elapsed / 2);
+          if (angle >= 360) {
+            container.attr("transform", `translate(${width / 2}, ${height / 2}) rotate(360)`);
+            timer.stop(); 
+          } else {
+            container.attr("transform", `translate(${width / 2}, ${height / 2}) rotate(${angle})`);
+          }
+        });
+      }, 100);
     }
 }
