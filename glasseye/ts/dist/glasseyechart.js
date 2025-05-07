@@ -13204,7 +13204,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Tue May  6 14:53:29 CAT 2025
+    // Generated Wed May  7 11:27:22 AM EDT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -13233,28 +13233,38 @@ var Glasseye = (function (exports) {
             return data;
         });
     }
-    const interp_map = {
+    const interpolaters = {
         rgb: interpolateRgb,
         hsl: hsl$1,
         hslLong: hslLong,
-        lab: lab
-    };
-    const interp_map_list = {
+        lab: lab,
         rgbBasis: rgbBasis,
         rgbBasisClosed: rgbBasisClosed
     };
     function color_interp(args) {
         var _a;
-        const interp_list = (args['interp'] || 'rgbBasis');
-        const interp = (args['interp'] || 'rgb');
-        const gamma = (_a = args['gamma']) !== null && _a !== void 0 ? _a : 0;
-        const colors = args['colors'] || [];
-        const color_list = !(interp in interp_map);
-        if (interp === 'rgb' && gamma > 0) {
-            return interp_map[interp].gamma(gamma)(colors[0], colors[1]);
+        let interp_name = args['interp'] || 'rgb';
+        if (!interpolaters.hasOwnProperty(interp_name)) {
+            console.log(`invalid interpreter ${interp_name}; using rgb`);
+            interp_name = 'rgb';
         }
-        const rx = color_list ? interp_map_list[interp_list](colors) : interp_map[interp](colors[0], colors[1]);
-        return rx;
+        const colors = args['colors'] || [];
+        switch (interp_name) {
+            case 'rgbBasis':
+            case 'rgbBasisClosed':
+                const list_interp = interpolaters[interp_name];
+                return list_interp(colors);
+            case 'rgb':
+                let gamma_interp = interpolaters[interp_name];
+                const gamma = (_a = args['gamma']) !== null && _a !== void 0 ? _a : 0;
+                if (gamma > 0) {
+                    gamma_interp = gamma_interp.gamma(gamma);
+                }
+                return gamma_interp(colors[0], colors[1]);
+            default:
+                const pair_interp = interpolaters[interp_name];
+                return pair_interp(colors[0], colors[1]);
+        }
     }
     /// barchart.ts
     function barchart() {
