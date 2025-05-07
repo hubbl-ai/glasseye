@@ -145,7 +145,7 @@ data='[
   { "label": "Grapes", "value": 25 }
 ]'
   size='{"width":500,"height":500}'
-  colors='["#FF6700","#004E98"]'
+   colors='deep'
 >
 </piechart>
 
@@ -164,7 +164,7 @@ data='[
   { "label": "Grapes", "value": 25 }
 ]'
   size='{"width":500,"height":500}'
-  colors='["#FF6700","#004E98"]'
+  colors='deep'
   donut = '1'
 >
 </piechart>

@@ -13204,7 +13204,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Tue May  6 14:53:29 CAT 2025
+    // Generated Wed May  7 14:50:48 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -13999,6 +13999,18 @@ var Glasseye = (function (exports) {
                 .append("svg")
                 .attr("width", width)
                 .attr("height", height);
+            const mnu = select(div)
+                .append("div")
+                .attr("width", 50)
+                .attr("height", 50);
+            mnu
+                .append("span")
+                .style("padding", "6px")
+                .style("background", "#333")
+                .style("color", "#fff")
+                .style("border-radius", "4px")
+                .style("font-size", "12px")
+                .text("Menu");
             const container = svg
                 .append("g")
                 .attr("transform", `translate(${width / 2}, ${height / 2}) rotate(0)`);

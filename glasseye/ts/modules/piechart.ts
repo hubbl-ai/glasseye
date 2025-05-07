@@ -28,6 +28,22 @@ export async function piechart(
     .attr("width", width)
     .attr("height", height);
 
+
+    const mnu = d3
+    .select(div)
+    .append("div")
+    .attr("width", 50)
+    .attr("height", 50);
+
+    mnu
+    .append("span")
+    .style("padding", "6px")
+    .style("background", "#333")
+    .style("color", "#fff")
+    .style("border-radius", "4px")
+    .style("font-size", "12px")
+    .text("Menu");
+
   const container = svg
     .append("g")
     .attr("transform", `translate(${width / 2}, ${height / 2}) rotate(0)`);
