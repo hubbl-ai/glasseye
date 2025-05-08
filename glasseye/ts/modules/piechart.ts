@@ -35,14 +35,44 @@ export async function piechart(
     .attr("width", 50)
     .attr("height", 50);
 
-    mnu
+    const divDropdown = mnu
+    .append("div")
+    .attr("class", "dropdown");
+
+
+    const mnuBtn = divDropdown
+    .append("button")
+    .attr("class", "dropdown-button");
+
+
+    const hamburger = mnuBtn
     .append("span")
-    .style("padding", "6px")
-    .style("background", "#333")
-    .style("color", "#fff")
-    .style("border-radius", "4px")
-    .style("font-size", "12px")
-    .text("Menu");
+    .attr("class", "hamburger");
+
+    const dropdownContent = divDropdown
+    .append("div")
+    .attr("class", "dropdown-content");
+
+    const links = [
+      {label:"Download PNG",ext:"png"},
+      {label:"Download JPEG",ext:"jpg"},
+      {label:"Download SVG",ext:"svg"},
+    ]
+
+    for (const link of links) {
+    dropdownContent
+    .append("a")
+    .text(link.label)
+    .on("click", function (event) {
+      const divIdWithoutHash = div.replace("#", "");
+      const span = document.getElementById(divIdWithoutHash);
+      const svg_td = span?.querySelector("svg");
+      if (svg_td instanceof SVGSVGElement) {
+        downloadSvgAsImage(svg_td, `${divIdWithoutHash}.${link.ext}`);
+      }
+    });
+      
+    }
 
   const container = svg
     .append("g")

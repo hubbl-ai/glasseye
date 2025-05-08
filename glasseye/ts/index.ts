@@ -1,9 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-<<<<<<< HEAD
-// Generated Wed May  7 14:50:48 CAT 2025
-=======
-// Generated Wed May  7 11:27:22 AM EDT 2025
->>>>>>> 48ce037b65d76011bbcbd0c2ebffc08e4789af1c
+// Generated Thu May  8 14:38:01 CAT 2025
 
 
 /// base.ts
@@ -20,7 +16,7 @@ import {
 } from "d3-sankey";
 import { SimulationNodeDatum } from "d3";
 import { Contours } from "d3-contour";
-import {HierarchyCircularNode} from 'd3';
+import { HierarchyCircularNode } from "d3";
 
 interface Margin {
   top: number;
@@ -128,27 +124,27 @@ const interpolaters: Record<string, InterpList | InterpPair | InterpGamma> = {
   hslLong: d3.interpolateHslLong,
   lab: d3.interpolateLab,
   rgbBasis: d3.interpolateRgbBasis,
-  rgbBasisClosed: d3.interpolateRgbBasisClosed
+  rgbBasisClosed: d3.interpolateRgbBasisClosed,
 };
 
 function color_interp(args: any) {
-  let interp_name: string = args['interp'] || 'rgb';
+  let interp_name: string = args["interp"] || "rgb";
 
   if (!interpolaters.hasOwnProperty(interp_name)) {
     console.log(`invalid interpreter ${interp_name}; using rgb`);
-    interp_name = 'rgb';
+    interp_name = "rgb";
   }
 
-  const colors: string[] = args['colors'] || [];
+  const colors: string[] = args["colors"] || [];
 
   switch (interp_name) {
-    case 'rgbBasis':
-    case 'rgbBasisClosed':
+    case "rgbBasis":
+    case "rgbBasisClosed":
       const list_interp = interpolaters[interp_name] as InterpList;
       return list_interp(colors);
-    case 'rgb':
+    case "rgb":
       let gamma_interp = interpolaters[interp_name] as InterpGamma;
-      const gamma = args['gamma'] ?? 0;
+      const gamma = args["gamma"] ?? 0;
 
       if (gamma > 0) {
         gamma_interp = gamma_interp.gamma(gamma);
@@ -159,6 +155,67 @@ function color_interp(args: any) {
       const pair_interp = interpolaters[interp_name] as InterpPair;
       return pair_interp(colors[0], colors[1]);
   }
+}
+
+function downloadSvgAsImage(
+  svgElement: SVGSVGElement,
+  filename: string = "image.png"
+) {
+  const extension = filename.slice(filename.lastIndexOf(".")).replace(".", "");
+  const serializer = new XMLSerializer();
+  const svgString = serializer.serializeToString(svgElement);
+
+  // Add XML namespace if missing
+  const svgData = svgString.includes("xmlns")
+    ? svgString
+    : svgString.replace("<svg", '<svg xmlns="http://www.w3.org/2000/svg"');
+
+  const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+  const url = URL.createObjectURL(svgBlob);
+
+  if (extension === "svg") {
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(url);
+    return;
+  }
+
+  const img = new Image();
+  const width = svgElement.clientWidth;
+  const height = svgElement.clientHeight;
+
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      console.error("Canvas context is not available.");
+      return;
+    }
+
+    ctx.drawImage(img, 0, 0, width, height);
+    URL.revokeObjectURL(url);
+
+    canvas.toBlob((blob) => {
+      if (blob) {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    }, `image/${extension}`);
+  };
+
+  img.src = url;
 }
 
 /// barchart.ts
@@ -1143,14 +1200,44 @@ export async function piechart(
     .attr("width", 50)
     .attr("height", 50);
 
-    mnu
+    const divDropdown = mnu
+    .append("div")
+    .attr("class", "dropdown");
+
+
+    const mnuBtn = divDropdown
+    .append("button")
+    .attr("class", "dropdown-button");
+
+
+    const hamburger = mnuBtn
     .append("span")
-    .style("padding", "6px")
-    .style("background", "#333")
-    .style("color", "#fff")
-    .style("border-radius", "4px")
-    .style("font-size", "12px")
-    .text("Menu");
+    .attr("class", "hamburger");
+
+    const dropdownContent = divDropdown
+    .append("div")
+    .attr("class", "dropdown-content");
+
+    const links = [
+      {label:"Download PNG",ext:"png"},
+      {label:"Download JPEG",ext:"jpg"},
+      {label:"Download SVG",ext:"svg"},
+    ]
+
+    for (const link of links) {
+    dropdownContent
+    .append("a")
+    .text(link.label)
+    .on("click", function (event) {
+      const divIdWithoutHash = div.replace("#", "");
+      const span = document.getElementById(divIdWithoutHash);
+      const svg_td = span?.querySelector("svg");
+      if (svg_td instanceof SVGSVGElement) {
+        downloadSvgAsImage(svg_td, `${divIdWithoutHash}.${link.ext}`);
+      }
+    });
+      
+    }
 
   const container = svg
     .append("g")
