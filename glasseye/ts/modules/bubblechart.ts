@@ -28,6 +28,8 @@ export async function bubblechart(
     .attr("viewBox", `0 0 ${size.width} ${size.height}`)
     .style("font-family", "sans-serif");
 
+    hamburgerMenu(div, data);
+
   const colorScale = d3.scaleOrdinal<string>().range(colors);
 
   const format = d3.format(",d");

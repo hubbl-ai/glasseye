@@ -27,6 +27,8 @@ export async function heatmap(
     .attr("width", svgWidth)
     .attr("height", svgHeight);
 
+    hamburgerMenu(div, data);
+
   const zoomGroup = svg
     .append("g")
     .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);

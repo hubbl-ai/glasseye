@@ -22,6 +22,8 @@ export async function barchart(
     .append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
+    hamburgerMenu(div, data);
+
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 

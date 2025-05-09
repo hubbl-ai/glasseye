@@ -26,6 +26,8 @@ export async function venn(
     .append("g")
     .attr("transform", `translate(${svgWidth / 2}, ${svgHeight / 2})`);
 
+    hamburgerMenu(div, data);
+
   // Define a pack layout to determine circle positions
   const pack = d3.pack<DataNode>().size([width, height]).padding(10);
 

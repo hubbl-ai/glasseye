@@ -25,6 +25,8 @@ export  async function skey(
     .attr("viewBox", [0, 0, width, height])
     .attr("style", "max-width: 100%; height: auto;");
 
+    hamburgerMenu(div, data);
+
   // Define Sankey generator
   const sankeyGenerator = sankey<any, any>()
     .nodeId(d => d.name)

@@ -37,6 +37,8 @@ export async function treemap(
    .append("g")
    .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
 
+   hamburgerMenu(div, data);
+
  // Add rectangles
  svg
    .selectAll("rect")

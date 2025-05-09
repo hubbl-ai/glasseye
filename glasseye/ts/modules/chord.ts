@@ -28,6 +28,8 @@ export async function chord(
     .attr("width", width)
     .attr("height", height);
 
+    hamburgerMenu(div, data);
+
     const container = svg
     .append("g")
     .attr("transform", `translate(${width / 2}, ${height / 2}) rotate(0)`);

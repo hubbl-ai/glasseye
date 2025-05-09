@@ -26,6 +26,8 @@ export async function linechart(
     .attr("width", width)
     .attr("height", height);
 
+    hamburgerMenu(div, data);
+
   // Define X and Y scales
   const xScale = d3
     .scaleLinear()

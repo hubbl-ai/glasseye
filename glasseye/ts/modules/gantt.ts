@@ -15,6 +15,8 @@ export async function gantt(
     .attr("width", size.width)
     .attr("height", size.height);
 
+    hamburgerMenu(div, data);
+
   
   const margin = defaultMargin;
   const width = size.width - margin.left - margin.right;

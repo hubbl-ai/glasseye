@@ -25,6 +25,8 @@ export async function dendrogram(
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
+    hamburgerMenu(div, data);
+
   const root = d3.hierarchy(data);
   const treeLayout = d3.tree().size([height, width]);
   treeLayout(root);

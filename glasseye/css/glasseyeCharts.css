@@ -70,7 +70,7 @@ svg {
 }
 
 .dropdown-button {
-  background-color: #3498db;
+  background-color: #dcebf0;
   color: white;
   font-size: 20px;
   border: none;
@@ -129,7 +129,7 @@ svg {
 }
 
 .dropdown-content a:hover {
-  background-color: #f0f0f0;
+  background-color: #dcebf0;
 }
 
 .dropdown:hover .dropdown-content {

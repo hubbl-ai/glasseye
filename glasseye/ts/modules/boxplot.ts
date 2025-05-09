@@ -27,6 +27,8 @@ export async function boxplot(
     .append("g")
     .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
 
+    hamburgerMenu(div, data);
+
   // Compute summary statistics (quartiles, median, min, max)
   const groupedData = d3.group(data, (d: any) => d.category);
   const summaryData = Array.from(groupedData, ([key, values]) => {

@@ -21,6 +21,8 @@ export async function minard(
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
+
+      hamburgerMenu(div, data);
   
     const root = d3.hierarchy(data);
     const treeLayout = d3.tree().size([height, width]);

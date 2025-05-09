@@ -211,3 +211,65 @@ function downloadSvgAsImage(
 
   img.src = url;
 }
+
+function downloadAsJson(data: object | any[], filename: string = "data.json") {
+  const jsonStr = JSON.stringify(data, null, 2); // pretty print with 2-space indent
+  const blob = new Blob([jsonStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  URL.revokeObjectURL(url);
+}
+
+function hamburgerMenu(div: string = "", data: object | any[] = []) {
+  if (div.length <= 0) {
+    console.error("Error,No div element specified.");
+    return;
+  }
+
+  const mnu = d3.select(div).append("div").attr("width", 50).attr("height", 50);
+
+  const divDropdown = mnu.append("div").attr("class", "dropdown");
+
+  const mnuBtn = divDropdown.append("button").attr("class", "dropdown-button");
+
+  const hamburger = mnuBtn.append("span").attr("class", "hamburger");
+
+  const dropdownContent = divDropdown
+    .append("div")
+    .attr("class", "dropdown-content");
+
+  const links = [
+    { label: "Download PNG", ext: "png" },
+    { label: "Download JPEG", ext: "jpg" },
+    { label: "Download SVG", ext: "svg" },
+  ];
+
+  for (const link of links) {
+    dropdownContent
+      .append("a")
+      .text(link.label)
+      .on("click", function (event) {
+        const divIdWithoutHash = div.replace("#", "");
+        const span = document.getElementById(divIdWithoutHash);
+        const svg_td = span?.querySelector("svg");
+        if (svg_td instanceof SVGSVGElement) {
+          downloadSvgAsImage(svg_td, `${divIdWithoutHash}.${link.ext}`);
+        }
+      });
+  }
+
+  dropdownContent
+    .append("a")
+    .text("Download JSON data")
+    .on("click", function (event) {
+      const divIdWithoutHash = div.replace("#", "");
+      downloadAsJson(data, `${divIdWithoutHash}.json`);
+    });
+}

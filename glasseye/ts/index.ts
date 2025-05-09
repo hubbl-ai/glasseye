@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Thu May  8 14:38:01 CAT 2025
+// Generated Thu May  8 23:25:24 CAT 2025
 
 
 /// base.ts
@@ -218,6 +218,68 @@ function downloadSvgAsImage(
   img.src = url;
 }
 
+function downloadAsJson(data: object | any[], filename: string = "data.json") {
+  const jsonStr = JSON.stringify(data, null, 2); // pretty print with 2-space indent
+  const blob = new Blob([jsonStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  URL.revokeObjectURL(url);
+}
+
+function hamburgerMenu(div: string = "", data: object | any[] = []) {
+  if (div.length <= 0) {
+    console.error("Error,No div element specified.");
+    return;
+  }
+
+  const mnu = d3.select(div).append("div").attr("width", 50).attr("height", 50);
+
+  const divDropdown = mnu.append("div").attr("class", "dropdown");
+
+  const mnuBtn = divDropdown.append("button").attr("class", "dropdown-button");
+
+  const hamburger = mnuBtn.append("span").attr("class", "hamburger");
+
+  const dropdownContent = divDropdown
+    .append("div")
+    .attr("class", "dropdown-content");
+
+  const links = [
+    { label: "Download PNG", ext: "png" },
+    { label: "Download JPEG", ext: "jpg" },
+    { label: "Download SVG", ext: "svg" },
+  ];
+
+  for (const link of links) {
+    dropdownContent
+      .append("a")
+      .text(link.label)
+      .on("click", function (event) {
+        const divIdWithoutHash = div.replace("#", "");
+        const span = document.getElementById(divIdWithoutHash);
+        const svg_td = span?.querySelector("svg");
+        if (svg_td instanceof SVGSVGElement) {
+          downloadSvgAsImage(svg_td, `${divIdWithoutHash}.${link.ext}`);
+        }
+      });
+  }
+
+  dropdownContent
+    .append("a")
+    .text("Download JSON data")
+    .on("click", function (event) {
+      const divIdWithoutHash = div.replace("#", "");
+      downloadAsJson(data, `${divIdWithoutHash}.json`);
+    });
+}
+
 /// barchart.ts
 
 export async function barchart(
@@ -243,6 +305,8 @@ export async function barchart(
     .attr("height", height)
     .append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+    hamburgerMenu(div, data);
 
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
@@ -406,6 +470,8 @@ export function bollinger(
     .attr("height", height)
     .append("g");
 
+    hamburgerMenu(div, data);
+
   // Draw bands
   svg
     .append("path")
@@ -489,6 +555,8 @@ export async function boxplot(
     .attr("height", svgHeight)
     .append("g")
     .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
+
+    hamburgerMenu(div, data);
 
   // Compute summary statistics (quartiles, median, min, max)
   const groupedData = d3.group(data, (d: any) => d.category);
@@ -621,6 +689,8 @@ export async function chord(
     .attr("width", width)
     .attr("height", height);
 
+    hamburgerMenu(div, data);
+
     const container = svg
     .append("g")
     .attr("transform", `translate(${width / 2}, ${height / 2}) rotate(0)`);
@@ -709,6 +779,8 @@ export async function dotplot(
     .append("g")
     .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
 
+    hamburgerMenu(div, data);
+
   // Define scales
   const xScale = d3
     .scaleBand()
@@ -795,6 +867,8 @@ export async function force(
     .attr("viewBox", [0, 0, width/viewScaleFactor, height/viewScaleFactor])
     .attr("style", "max-width: 100%; height: auto;");
 
+    hamburgerMenu(div, data);
+
   const simulation = d3
     .forceSimulation<Node>(data.nodes)
     .force("link", d3.forceLink<Node, Link>(data.links).id((d:any) => d.id).distance(100))
@@ -862,6 +936,8 @@ export async function gantt(
     .append("svg")
     .attr("width", size.width)
     .attr("height", size.height);
+
+    hamburgerMenu(div, data);
 
   
   const margin = defaultMargin;
@@ -934,6 +1010,8 @@ export async function heatmap(
     .append("svg")
     .attr("width", svgWidth)
     .attr("height", svgHeight);
+
+    hamburgerMenu(div, data);
 
   const zoomGroup = svg
     .append("g")
@@ -1109,6 +1187,8 @@ export async function linechart(
     .attr("width", width)
     .attr("height", height);
 
+    hamburgerMenu(div, data);
+
   // Define X and Y scales
   const xScale = d3
     .scaleLinear()
@@ -1163,29 +1243,26 @@ export async function linechart(
 }
 /// piechart.ts
 
-
 export async function piechart(
   div: string = defaultArgumentObject.div,
   data: any = defaultArgumentObject.data,
   size: Size = defaultArgumentObject.size,
   file?: DataFile,
-  colors: string[]= defaultArgumentObject.colors,
+  colors: string[] = defaultArgumentObject.colors,
   donut?: 0,
-  continuos_rotation?:0
+  continuos_rotation?: 0
 ) {
   const { width, height } = size;
   const radius = Math.min(width, height) / 2;
 
-  if(file?.path)
-    {
-      data = await loadData(file?.path, file?.format);
-    }
-    const processed_data:DataLabeled[] = data as DataLabeled[];
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
+  const processed_data: DataLabeled[] = data as DataLabeled[];
 
-    if (colors.length < 10)
-    {
-      colors.push(...defaultArgumentObject.colors);
-    }
+  if (colors.length < 10) {
+    colors.push(...defaultArgumentObject.colors);
+  }
 
   const svg = d3
     .select(div)
@@ -1193,51 +1270,7 @@ export async function piechart(
     .attr("width", width)
     .attr("height", height);
 
-
-    const mnu = d3
-    .select(div)
-    .append("div")
-    .attr("width", 50)
-    .attr("height", 50);
-
-    const divDropdown = mnu
-    .append("div")
-    .attr("class", "dropdown");
-
-
-    const mnuBtn = divDropdown
-    .append("button")
-    .attr("class", "dropdown-button");
-
-
-    const hamburger = mnuBtn
-    .append("span")
-    .attr("class", "hamburger");
-
-    const dropdownContent = divDropdown
-    .append("div")
-    .attr("class", "dropdown-content");
-
-    const links = [
-      {label:"Download PNG",ext:"png"},
-      {label:"Download JPEG",ext:"jpg"},
-      {label:"Download SVG",ext:"svg"},
-    ]
-
-    for (const link of links) {
-    dropdownContent
-    .append("a")
-    .text(link.label)
-    .on("click", function (event) {
-      const divIdWithoutHash = div.replace("#", "");
-      const span = document.getElementById(divIdWithoutHash);
-      const svg_td = span?.querySelector("svg");
-      if (svg_td instanceof SVGSVGElement) {
-        downloadSvgAsImage(svg_td, `${divIdWithoutHash}.${link.ext}`);
-      }
-    });
-      
-    }
+  hamburgerMenu(div, data);
 
   const container = svg
     .append("g")
@@ -1245,17 +1278,17 @@ export async function piechart(
 
   const color = d3
     .scaleOrdinal<string>()
-    .domain(processed_data.map((d:any) => d.label))
+    .domain(processed_data.map((d: any) => d.label))
     .range(colors);
 
   const pie = d3.pie<DataLabeled>().value((d) => d.value);
 
   const arc: any = d3
     .arc<d3.PieArcDatum<DataLabeled>>()
-    .innerRadius(donut ? radius * 0.5 :0)
+    .innerRadius(donut ? radius * 0.5 : 0)
     .outerRadius(radius);
 
-    const tooltip = d3
+  const tooltip = d3
     .select("body")
     .append("div")
     .style("position", "absolute")
@@ -1272,21 +1305,19 @@ export async function piechart(
     .enter()
     .append("g")
     .attr("class", "arc")
-    .on("mouseover", function (event, d:any) {
+    .on("mouseover", function (event, d: any) {
       d3.select(this).transition().duration(200).style("opacity", 0.7);
 
       tooltip
-      .style("display", "block")
-      .style("left", `${event.pageX}px`)
-      .style("top", `${event.pageY}px`)
-      .text(d.data.label);
-
+        .style("display", "block")
+        .style("left", `${event.pageX}px`)
+        .style("top", `${event.pageY}px`)
+        .text(d.data.label);
     })
     .on("mouseout", function () {
       d3.select(this).transition().duration(200).style("opacity", 1);
       tooltip.style("display", "none");
     });
-    
 
   arcs
     .append("path")
@@ -1301,32 +1332,34 @@ export async function piechart(
     .style("fill", "#FFFFFF")
     .text((d: any) => d.data.label);
 
-
-    if(continuos_rotation){
-      // Start continuous rotation after 2 second delay
-      setTimeout(() => {
-        let angle = 0;
-        d3.timer((elapsed) => {
-          angle = (elapsed / 50) % 360; 
-          container.attr("transform", `translate(${width / 2}, ${height / 2}) rotate(${angle})`);
-        });
-      }, 2000); 
-
-    }else{
-      setTimeout(() => {
-        container
-          .transition()
-          .duration(1000) 
-          .ease(d3.easeCubicInOut) 
-          .attrTween("transform", () =>
-            d3.interpolateString(
-              `translate(${width / 2}, ${height / 2}) rotate(0)`,
-              `translate(${width / 2}, ${height / 2}) rotate(360)`
-            )
-          );
-      }, 100);
-    }
+  if (continuos_rotation) {
+    // Start continuous rotation after 2 second delay
+    setTimeout(() => {
+      let angle = 0;
+      d3.timer((elapsed) => {
+        angle = (elapsed / 50) % 360;
+        container.attr(
+          "transform",
+          `translate(${width / 2}, ${height / 2}) rotate(${angle})`
+        );
+      });
+    }, 2000);
+  } else {
+    setTimeout(() => {
+      container
+        .transition()
+        .duration(1000)
+        .ease(d3.easeCubicInOut)
+        .attrTween("transform", () =>
+          d3.interpolateString(
+            `translate(${width / 2}, ${height / 2}) rotate(0)`,
+            `translate(${width / 2}, ${height / 2}) rotate(360)`
+          )
+        );
+    }, 100);
+  }
 }
+
 /// scatterplot.ts
 
 export async function scatterplot(
@@ -1357,6 +1390,8 @@ export async function scatterplot(
     .attr("height", svgHeight)
     .append("g")
     .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
+
+    hamburgerMenu(div, data);
 
   // Define scales
   const xScale = d3
@@ -1446,6 +1481,8 @@ export  async function skey(
     .attr("height", height)
     .attr("viewBox", [0, 0, width, height])
     .attr("style", "max-width: 100%; height: auto;");
+
+    hamburgerMenu(div, data);
 
   // Define Sankey generator
   const sankeyGenerator = sankey<any, any>()
@@ -1587,6 +1624,8 @@ export async function tree(
     .attr("height", svgHeight)
     .append("g")
     .attr("transform", `translate(${margin?.left || 0}, ${margin?.top || 0})`);
+
+    hamburgerMenu(div, data);
 
   // Create hierarchical data structure
   const root = d3.hierarchy(data);
@@ -1741,6 +1780,8 @@ export async function treemap(
    .append("g")
    .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
 
+   hamburgerMenu(div, data);
+
  // Add rectangles
  svg
    .selectAll("rect")
@@ -1804,6 +1845,8 @@ export async function venn(
     .attr("height", svgHeight)
     .append("g")
     .attr("transform", `translate(${svgWidth / 2}, ${svgHeight / 2})`);
+
+    hamburgerMenu(div, data);
 
   // Define a pack layout to determine circle positions
   const pack = d3.pack<DataNode>().size([width, height]).padding(10);
@@ -1907,6 +1950,8 @@ export async function disjoint(
         .attr("viewBox", [-width / viewScaleFactor, -height / viewScaleFactor, width, height])
         .attr("style", "max-width: 100%; height: auto;");
 
+        hamburgerMenu(div, data);
+
     // Add a line for each link, and a circle for each node.
     const link = svg.append("g")
         .attr("stroke", "#999")
@@ -2007,6 +2052,8 @@ export async function dendrogram(
     .attr("style", "max-width: 100%; height: auto;")
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    hamburgerMenu(div, data);
 
   const root = d3.hierarchy(data);
   const treeLayout = d3.tree().size([height, width]);
@@ -2166,6 +2213,8 @@ export async function areachart(
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
+    hamburgerMenu(div, data);
+
   // Add areas
   svg
     .selectAll("path")
@@ -2271,6 +2320,8 @@ export async function bubblechart(
     .attr("height", size.height)
     .attr("viewBox", `0 0 ${size.width} ${size.height}`)
     .style("font-family", "sans-serif");
+
+    hamburgerMenu(div, data);
 
   const colorScale = d3.scaleOrdinal<string>().range(colors);
 
@@ -2457,89 +2508,96 @@ export async function voronoi(
   file?: DataFile,
   colors: string[] = defaultArgumentObject.colors
 ) {
-    if (file?.path) {
-        data = await loadData(file?.path, file?.format);
-      }
+  if (file?.path) {
+    data = await loadData(file?.path, file?.format);
+  }
 
-      const points: PointData[] = data;
+  const points: PointData[] = data;
 
-      d3.select(div).selectAll("*").remove();
-    
-      const svg = d3
-        .select(div)
-        .append("svg")
-        .attr("width", size.width)
-        .attr("height", size.height)
-        .style("font-family", "sans-serif");
-    
-      const delaunay = d3.Delaunay.from(
-        points,
-        d => d.x,
-        d => d.y
-      );
-    
-      const voronoi = delaunay.voronoi([0, 0, size.width, size.height]);
-    
-      const color = d3.scaleOrdinal<string>()
-        .domain(points.map((_, i) => i.toString()))
-        .range(colors);
-    
-      // Draw Voronoi cells
-      const cellGroup = svg.append("g").attr("class", "cells");
-      const cellPaths = cellGroup
-        .selectAll("path")
-        .data(points)
-        .join("path")
-        .attr("d", (_, i) => voronoi.renderCell(i))
-        .attr("fill", (_, i) => color(i.toString()))
-        .attr("stroke", "#333")
-        .attr("stroke-width", 1);
-    
-      // Draw circles
-      const circleGroup = svg.append("g").attr("class", "points");
-      const circles = circleGroup
-        .selectAll("circle")
-        .data(points)
-        .join("circle")
-        .attr("cx", d => d.x)
-        .attr("cy", d => d.y)
-        .attr("r", 3)
-        .attr("fill", "#000");
-    
-      // Draw text
-      const textGroup = svg.append("g").attr("class", "labels");
-      const labels = textGroup
-        .selectAll("text")
-        .data(points)
-        .join("text")
-        .attr("x", d => d.x + 5)
-        .attr("y", d => d.y - 5)
-        .text(d => `${d.name ?? "Point"} (${Math.round(d.x)}, ${Math.round(d.y)})`)
-        .style("font-size", "10px")
-        .style("fill", "#000");
-    
-      // Interactivity
-      svg
-        .selectAll("g")
-        .selectAll<SVGPathElement | SVGCircleElement | SVGTextElement, PointData>("path,circle,text")
-        .on("mouseover", function (_, d) {
-          const index = points.indexOf(d);
-    
-          cellPaths
-            .attr("stroke-width", (d2, i) => (i === index ? 2.5 : 1))
-            .attr("stroke", (d2, i) => (i === index ? "#000" : "#333"));
-    
-          circles
-            .attr("r", (d2, i) => (i === index ? 6 : 3))
-            .attr("fill", (d2, i) => (i === index ? "#f00" : "#000"));
-    
-          labels
-            .style("font-weight", (d2, i) => (i === index ? "bold" : "normal"))
-            .style("fill", (d2, i) => (i === index ? "#d00" : "#000"));
-        })
-        .on("mouseout", () => {
-          cellPaths.attr("stroke-width", 1).attr("stroke", "#333");
-          circles.attr("r", 3).attr("fill", "#000");
-          labels.style("font-weight", "normal").style("fill", "#000");
-        });
+  d3.select(div).selectAll("*").remove();
+
+  const svg = d3
+    .select(div)
+    .append("svg")
+    .attr("width", size.width)
+    .attr("height", size.height)
+    .style("font-family", "sans-serif");
+
+  hamburgerMenu(div, data);
+
+  const delaunay = d3.Delaunay.from(
+    points,
+    (d) => d.x,
+    (d) => d.y
+  );
+
+  const voronoi = delaunay.voronoi([0, 0, size.width, size.height]);
+
+  const color = d3
+    .scaleOrdinal<string>()
+    .domain(points.map((_, i) => i.toString()))
+    .range(colors);
+
+  // Draw Voronoi cells
+  const cellGroup = svg.append("g").attr("class", "cells");
+  const cellPaths = cellGroup
+    .selectAll("path")
+    .data(points)
+    .join("path")
+    .attr("d", (_, i) => voronoi.renderCell(i))
+    .attr("fill", (_, i) => color(i.toString()))
+    .attr("stroke", "#333")
+    .attr("stroke-width", 1);
+
+  // Draw circles
+  const circleGroup = svg.append("g").attr("class", "points");
+  const circles = circleGroup
+    .selectAll("circle")
+    .data(points)
+    .join("circle")
+    .attr("cx", (d) => d.x)
+    .attr("cy", (d) => d.y)
+    .attr("r", 3)
+    .attr("fill", "#000");
+
+  // Draw text
+  const textGroup = svg.append("g").attr("class", "labels");
+  const labels = textGroup
+    .selectAll("text")
+    .data(points)
+    .join("text")
+    .attr("x", (d) => d.x + 5)
+    .attr("y", (d) => d.y - 5)
+    .text(
+      (d) => `${d.name ?? "Point"} (${Math.round(d.x)}, ${Math.round(d.y)})`
+    )
+    .style("font-size", "10px")
+    .style("fill", "#000");
+
+  // Interactivity
+  svg
+    .selectAll("g")
+    .selectAll<SVGPathElement | SVGCircleElement | SVGTextElement, PointData>(
+      "path,circle,text"
+    )
+    .on("mouseover", function (_, d) {
+      const index = points.indexOf(d);
+
+      cellPaths
+        .attr("stroke-width", (d2, i) => (i === index ? 2.5 : 1))
+        .attr("stroke", (d2, i) => (i === index ? "#000" : "#333"));
+
+      circles
+        .attr("r", (d2, i) => (i === index ? 6 : 3))
+        .attr("fill", (d2, i) => (i === index ? "#f00" : "#000"));
+
+      labels
+        .style("font-weight", (d2, i) => (i === index ? "bold" : "normal"))
+        .style("fill", (d2, i) => (i === index ? "#d00" : "#000"));
+    })
+    .on("mouseout", () => {
+      cellPaths.attr("stroke-width", 1).attr("stroke", "#333");
+      circles.attr("r", 3).attr("fill", "#000");
+      labels.style("font-weight", "normal").style("fill", "#000");
+    });
 }

@@ -59,6 +59,8 @@ export async function areachart(
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
+    hamburgerMenu(div, data);
+
   // Add areas
   svg
     .selectAll("path")

@@ -34,6 +34,8 @@ export async function disjoint(
         .attr("viewBox", [-width / viewScaleFactor, -height / viewScaleFactor, width, height])
         .attr("style", "max-width: 100%; height: auto;");
 
+        hamburgerMenu(div, data);
+
     // Add a line for each link, and a circle for each node.
     const link = svg.append("g")
         .attr("stroke", "#999")

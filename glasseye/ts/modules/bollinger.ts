@@ -57,6 +57,8 @@ export function bollinger(
     .attr("height", height)
     .append("g");
 
+    hamburgerMenu(div, data);
+
   // Draw bands
   svg
     .append("path")

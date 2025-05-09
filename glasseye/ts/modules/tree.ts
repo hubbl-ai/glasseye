@@ -28,6 +28,8 @@ export async function tree(
     .append("g")
     .attr("transform", `translate(${margin?.left || 0}, ${margin?.top || 0})`);
 
+    hamburgerMenu(div, data);
+
   // Create hierarchical data structure
   const root = d3.hierarchy(data);
 

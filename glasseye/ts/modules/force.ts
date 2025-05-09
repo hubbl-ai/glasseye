@@ -22,6 +22,8 @@ export async function force(
     .attr("viewBox", [0, 0, width/viewScaleFactor, height/viewScaleFactor])
     .attr("style", "max-width: 100%; height: auto;");
 
+    hamburgerMenu(div, data);
+
   const simulation = d3
     .forceSimulation<Node>(data.nodes)
     .force("link", d3.forceLink<Node, Link>(data.links).id((d:any) => d.id).distance(100))

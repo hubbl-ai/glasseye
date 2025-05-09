@@ -13204,7 +13204,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Thu May  8 14:38:01 CAT 2025
+    // Generated Thu May  8 23:25:24 CAT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -13313,6 +13313,56 @@ var Glasseye = (function (exports) {
         };
         img.src = url;
     }
+    function downloadAsJson(data, filename = "data.json") {
+        const jsonStr = JSON.stringify(data, null, 2); // pretty print with 2-space indent
+        const blob = new Blob([jsonStr], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+    function hamburgerMenu(div = "", data = []) {
+        if (div.length <= 0) {
+            console.error("Error,No div element specified.");
+            return;
+        }
+        const mnu = select(div).append("div").attr("width", 50).attr("height", 50);
+        const divDropdown = mnu.append("div").attr("class", "dropdown");
+        const mnuBtn = divDropdown.append("button").attr("class", "dropdown-button");
+        mnuBtn.append("span").attr("class", "hamburger");
+        const dropdownContent = divDropdown
+            .append("div")
+            .attr("class", "dropdown-content");
+        const links = [
+            { label: "Download PNG", ext: "png" },
+            { label: "Download JPEG", ext: "jpg" },
+            { label: "Download SVG", ext: "svg" },
+        ];
+        for (const link of links) {
+            dropdownContent
+                .append("a")
+                .text(link.label)
+                .on("click", function (event) {
+                const divIdWithoutHash = div.replace("#", "");
+                const span = document.getElementById(divIdWithoutHash);
+                const svg_td = span === null || span === void 0 ? void 0 : span.querySelector("svg");
+                if (svg_td instanceof SVGSVGElement) {
+                    downloadSvgAsImage(svg_td, `${divIdWithoutHash}.${link.ext}`);
+                }
+            });
+        }
+        dropdownContent
+            .append("a")
+            .text("Download JSON data")
+            .on("click", function (event) {
+            const divIdWithoutHash = div.replace("#", "");
+            downloadAsJson(data, `${divIdWithoutHash}.json`);
+        });
+    }
     /// barchart.ts
     function barchart() {
         return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors, horizontal = 0 // 0 = Vertical, 1 = Horizontal
@@ -13329,6 +13379,7 @@ var Glasseye = (function (exports) {
                 .attr("height", height)
                 .append("g")
                 .attr("transform", `translate(${margin.left}, ${margin.top})`);
+            hamburgerMenu(div, data);
             const chartWidth = width - margin.left - margin.right;
             const chartHeight = height - margin.top - margin.bottom;
             const xHorizontal = linear().domain([0, max$3(processed_data, (d) => d.value)]).range([0, chartWidth]);
@@ -13466,6 +13517,7 @@ var Glasseye = (function (exports) {
             .attr("width", width)
             .attr("height", height)
             .append("g");
+        hamburgerMenu(div, data);
         // Draw bands
         svg
             .append("path")
@@ -13532,6 +13584,7 @@ var Glasseye = (function (exports) {
                 .attr("height", svgHeight)
                 .append("g")
                 .attr("transform", `translate(${(margin === null || margin === void 0 ? void 0 : margin.left) || 0},${(margin === null || margin === void 0 ? void 0 : margin.top) || 0})`);
+            hamburgerMenu(div, data);
             // Compute summary statistics (quartiles, median, min, max)
             const groupedData = group(data, (d) => d.category);
             const summaryData = Array.from(groupedData, ([key, values]) => {
@@ -13633,6 +13686,7 @@ var Glasseye = (function (exports) {
                 .append("svg")
                 .attr("width", width)
                 .attr("height", height);
+            hamburgerMenu(div, data);
             const container = svg
                 .append("g")
                 .attr("transform", `translate(${width / 2}, ${height / 2}) rotate(0)`);
@@ -13698,6 +13752,7 @@ var Glasseye = (function (exports) {
                 .attr("height", svgHeight)
                 .append("g")
                 .attr("transform", `translate(${(margin === null || margin === void 0 ? void 0 : margin.left) || 0},${(margin === null || margin === void 0 ? void 0 : margin.top) || 0})`);
+            hamburgerMenu(div, data);
             // Define scales
             const xScale = band()
                 .domain(data.map((d) => d.category))
@@ -13763,6 +13818,7 @@ var Glasseye = (function (exports) {
                 .attr("height", height)
                 .attr("viewBox", [0, 0, width / viewScaleFactor, height / viewScaleFactor])
                 .attr("style", "max-width: 100%; height: auto;");
+            hamburgerMenu(div, data);
             const simulation$1 = simulation(data.nodes)
                 .force("link", link$3(data.links).id((d) => d.id).distance(100))
                 .force("charge", manyBody().strength(-300))
@@ -13818,6 +13874,7 @@ var Glasseye = (function (exports) {
                 .append("svg")
                 .attr("width", size.width)
                 .attr("height", size.height);
+            hamburgerMenu(div, data);
             const margin = defaultMargin;
             const width = size.width - margin.left - margin.right;
             const height = size.height - margin.top - margin.bottom;
@@ -13867,6 +13924,7 @@ var Glasseye = (function (exports) {
                 .append("svg")
                 .attr("width", svgWidth)
                 .attr("height", svgHeight);
+            hamburgerMenu(div, data);
             const zoomGroup = svg
                 .append("g")
                 .attr("transform", `translate(${(margin === null || margin === void 0 ? void 0 : margin.left) || 0},${(margin === null || margin === void 0 ? void 0 : margin.top) || 0})`);
@@ -13997,6 +14055,7 @@ var Glasseye = (function (exports) {
                 .append("svg")
                 .attr("width", width)
                 .attr("height", height);
+            hamburgerMenu(div, data);
             // Define X and Y scales
             const xScale = linear()
                 .domain([
@@ -14056,40 +14115,7 @@ var Glasseye = (function (exports) {
                 .append("svg")
                 .attr("width", width)
                 .attr("height", height);
-            const mnu = select(div)
-                .append("div")
-                .attr("width", 50)
-                .attr("height", 50);
-            const divDropdown = mnu
-                .append("div")
-                .attr("class", "dropdown");
-            const mnuBtn = divDropdown
-                .append("button")
-                .attr("class", "dropdown-button");
-            mnuBtn
-                .append("span")
-                .attr("class", "hamburger");
-            const dropdownContent = divDropdown
-                .append("div")
-                .attr("class", "dropdown-content");
-            const links = [
-                { label: "Download PNG", ext: "png" },
-                { label: "Download JPEG", ext: "jpg" },
-                { label: "Download SVG", ext: "svg" },
-            ];
-            for (const link of links) {
-                dropdownContent
-                    .append("a")
-                    .text(link.label)
-                    .on("click", function (event) {
-                    const divIdWithoutHash = div.replace("#", "");
-                    const span = document.getElementById(divIdWithoutHash);
-                    const svg_td = span === null || span === void 0 ? void 0 : span.querySelector("svg");
-                    if (svg_td instanceof SVGSVGElement) {
-                        downloadSvgAsImage(svg_td, `${divIdWithoutHash}.${link.ext}`);
-                    }
-                });
-            }
+            hamburgerMenu(div, data);
             const container = svg
                 .append("g")
                 .attr("transform", `translate(${width / 2}, ${height / 2}) rotate(0)`);
@@ -14178,6 +14204,7 @@ var Glasseye = (function (exports) {
                 .attr("height", svgHeight)
                 .append("g")
                 .attr("transform", `translate(${(margin === null || margin === void 0 ? void 0 : margin.left) || 0},${(margin === null || margin === void 0 ? void 0 : margin.top) || 0})`);
+            hamburgerMenu(div, data);
             // Define scales
             const xScale = linear()
                 .domain([0, max$3(data, (d) => +d.x) || 0])
@@ -14245,6 +14272,7 @@ var Glasseye = (function (exports) {
                 .attr("height", height)
                 .attr("viewBox", [0, 0, width, height])
                 .attr("style", "max-width: 100%; height: auto;");
+            hamburgerMenu(div, data);
             // Define Sankey generator
             const sankeyGenerator = Sankey()
                 .nodeId(d => d.name)
@@ -14358,6 +14386,7 @@ var Glasseye = (function (exports) {
                 .attr("height", svgHeight)
                 .append("g")
                 .attr("transform", `translate(${(margin === null || margin === void 0 ? void 0 : margin.left) || 0}, ${(margin === null || margin === void 0 ? void 0 : margin.top) || 0})`);
+            hamburgerMenu(div, data);
             // Create hierarchical data structure
             const root = hierarchy(data);
             // Create a tree layout
@@ -14479,6 +14508,7 @@ var Glasseye = (function (exports) {
                 .attr("height", svgHeight)
                 .append("g")
                 .attr("transform", `translate(${(margin === null || margin === void 0 ? void 0 : margin.left) || 0},${(margin === null || margin === void 0 ? void 0 : margin.top) || 0})`);
+            hamburgerMenu(div, data);
             // Add rectangles
             svg
                 .selectAll("rect")
@@ -14531,6 +14561,7 @@ var Glasseye = (function (exports) {
                 .attr("height", svgHeight)
                 .append("g")
                 .attr("transform", `translate(${svgWidth / 2}, ${svgHeight / 2})`);
+            hamburgerMenu(div, data);
             // Define a pack layout to determine circle positions
             const pack = index$1().size([width, height]).padding(10);
             // Convert data to a hierarchy structure
@@ -14613,6 +14644,7 @@ var Glasseye = (function (exports) {
                 .attr("height", height)
                 .attr("viewBox", [-width / viewScaleFactor, -height / viewScaleFactor, width, height])
                 .attr("style", "max-width: 100%; height: auto;");
+            hamburgerMenu(div, data);
             // Add a line for each link, and a circle for each node.
             const link = svg.append("g")
                 .attr("stroke", "#999")
@@ -14695,6 +14727,7 @@ var Glasseye = (function (exports) {
                 .attr("style", "max-width: 100%; height: auto;")
                 .append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`);
+            hamburgerMenu(div, data);
             const root = hierarchy(data);
             const treeLayout = tree$1().size([height, width]);
             treeLayout(root);
@@ -14806,6 +14839,7 @@ var Glasseye = (function (exports) {
                 .attr("height", size.height)
                 .append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`);
+            hamburgerMenu(div, data);
             // Add areas
             svg
                 .selectAll("path")
@@ -14880,6 +14914,7 @@ var Glasseye = (function (exports) {
                 .attr("height", size.height)
                 .attr("viewBox", `0 0 ${size.width} ${size.height}`)
                 .style("font-family", "sans-serif");
+            hamburgerMenu(div, data);
             const colorScale = ordinal().range(colors);
             const format$1 = format(",d");
             const pack = index$1().size([size.width, size.height]).padding(5);
@@ -15025,7 +15060,8 @@ var Glasseye = (function (exports) {
                 .attr("width", size.width)
                 .attr("height", size.height)
                 .style("font-family", "sans-serif");
-            const delaunay = Delaunay.from(points, d => d.x, d => d.y);
+            hamburgerMenu(div, data);
+            const delaunay = Delaunay.from(points, (d) => d.x, (d) => d.y);
             const voronoi = delaunay.voronoi([0, 0, size.width, size.height]);
             const color = ordinal()
                 .domain(points.map((_, i) => i.toString()))
@@ -15046,8 +15082,8 @@ var Glasseye = (function (exports) {
                 .selectAll("circle")
                 .data(points)
                 .join("circle")
-                .attr("cx", d => d.x)
-                .attr("cy", d => d.y)
+                .attr("cx", (d) => d.x)
+                .attr("cy", (d) => d.y)
                 .attr("r", 3)
                 .attr("fill", "#000");
             // Draw text
@@ -15056,9 +15092,9 @@ var Glasseye = (function (exports) {
                 .selectAll("text")
                 .data(points)
                 .join("text")
-                .attr("x", d => d.x + 5)
-                .attr("y", d => d.y - 5)
-                .text(d => { var _a; return `${(_a = d.name) !== null && _a !== void 0 ? _a : "Point"} (${Math.round(d.x)}, ${Math.round(d.y)})`; })
+                .attr("x", (d) => d.x + 5)
+                .attr("y", (d) => d.y - 5)
+                .text((d) => { var _a; return `${(_a = d.name) !== null && _a !== void 0 ? _a : "Point"} (${Math.round(d.x)}, ${Math.round(d.y)})`; })
                 .style("font-size", "10px")
                 .style("fill", "#000");
             // Interactivity

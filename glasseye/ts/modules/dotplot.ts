@@ -27,6 +27,8 @@ export async function dotplot(
     .append("g")
     .attr("transform", `translate(${margin?.left || 0},${margin?.top || 0})`);
 
+    hamburgerMenu(div, data);
+
   // Define scales
   const xScale = d3
     .scaleBand()
