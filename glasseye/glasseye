@@ -234,6 +234,7 @@ def main():
     server_mode = False
     zip_mode = False
     port = default_port
+    generate_pdf = False
     verbosity = logging.WARNING
     zipped_filename = ""
     errors = 0
@@ -250,6 +251,7 @@ where args arg one of:
 -v|--verbose       # Increase debugging output. May be repeated
 -z|--zip  file     # zip the output directory to file
 --port             # the port to use in the url. defaults to 7300
+--pdf              # generate a pdf file instead
 
 In dev mode, the script must be run in the same folder as the script.
 '''
@@ -284,6 +286,8 @@ In dev mode, the script must be run in the same folder as the script.
             zip_mode = True
         elif k in ['--port']:
             port = int(v)
+        elif k in ['--pdf']:
+            generate_pdf = True
         elif k in ['-?', '-h', '--help']:
             errors += 1
         else:
