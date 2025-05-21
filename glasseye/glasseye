@@ -15,6 +15,10 @@ from bs4 import BeautifulSoup
 from getopt import *
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 
+from playwright.sync_api import sync_playwright
+import requests
+
+
 fonts = [
     'http://fonts.googleapis.com/css?family=Raleway',
     'http://fonts.googleapis.com/css?family=Droid%20Sans',
@@ -27,7 +31,7 @@ base_stylesheets = [
 
 prod_stylesheets = [
     'https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/css/tufte.css',
-    'https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/css/GlasseyeCharts.css',
+    'https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/css/glasseyeCharts.css',
 ]
 
 dev_stylesheets = [
@@ -221,6 +225,52 @@ def add_chart(chart_id, fields, soup, code_parts, module=module_name, function_n
 
     return code_parts
 
+def run_download_as_json(page_url: str):
+    breakpoint()
+    js_url = "https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/ts/dist/glasseyechart.js"
+    js_code = requests.get(js_url).text
+
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.goto(page_url)
+
+        # Inject the GlasseyeChart script
+        page.add_script_tag(content=js_code)
+
+        # Evaluate chart creation and call downloadAsJson
+        result = page.evaluate("""
+            () => {
+                const container = document.createElement('div');
+                container.id = 'chart-container';
+                document.body.appendChild(container);
+
+                const chart = window.GlasseyeChart.default.create({
+                    el: '#chart-container',
+                    type: 'bar',
+                    data: [
+                        { name: 'A', value: 1 },
+                        { name: 'B', value: 2 }
+                    ],
+                    x: 'name',
+                    y: 'value',
+                    options: {}
+                });
+
+                return chart.downloadAsJson();
+            }
+        """)
+
+        browser.close()
+        return result
+
+def elementManipulation(d,name,id,element_class,attrs,contents):
+    d[1].name = name
+    d[1].contents = contents
+    d[1].attrs = attrs
+    d[1]['id'] = id
+    d[1]['class'] = element_class
+
 def main():
     global mode
     global logger
@@ -261,6 +311,9 @@ In dev mode, the script must be run in the same folder as the script.
         'c:D:f:o:pst:vz:',
         ('chart', 'dir', 'filter', 'output', 'plot', 'server', 'title:', 'verbose','zip=', 'port=')
     )
+
+    result = run_download_as_json("https://example.com")
+    logger.info(result)
     
     for k, v in opts:
         if k in ['-c', '--chart']:
