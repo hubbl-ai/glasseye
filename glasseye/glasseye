@@ -390,7 +390,7 @@ In dev mode, the script must be run in the same folder as the script.
 
     standard_charts = {
         'linechart':{'curved':0},
-        'piechart':{'donut':0,'continuos_rotation':0},
+        'piechart':{'donut':0,'continuous_rotation':0},
         'skey':{'link_color':'source-target', 'node_align':'left'},
         'barchart': {'horizontal':0},
         'tree':{'vertical':0},
