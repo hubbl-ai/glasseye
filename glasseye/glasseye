@@ -226,7 +226,7 @@ def add_chart(chart_id, fields, soup, code_parts, module=module_name, function_n
     return code_parts
 
 def run_download_as_json(page_url: str):
-    breakpoint()
+  
     js_url = "https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/ts/dist/glasseyechart.js"
     js_code = requests.get(js_url).text
 
@@ -237,30 +237,26 @@ def run_download_as_json(page_url: str):
 
         # Inject the GlasseyeChart script
         page.add_script_tag(content=js_code)
+        
 
         # Evaluate chart creation and call downloadAsJson
         result = page.evaluate("""
             () => {
-                const container = document.createElement('div');
-                container.id = 'chart-container';
-                document.body.appendChild(container);
-
-                const chart = window.GlasseyeChart.default.create({
-                    el: '#chart-container',
-                    type: 'bar',
-                    data: [
-                        { name: 'A', value: 1 },
-                        { name: 'B', value: 2 }
-                    ],
-                    x: 'name',
-                    y: 'value',
-                    options: {}
-                });
-
-                return chart.downloadAsJson();
+                const span = document.createElement('span');
+                span.id = '#piechart_0';
+                document.body.appendChild(span);
+                               
+                Glasseye.piechart('#piechart_0',[
+                { "label": "Apples", "value": 10 },
+                { "label": "Bananas", "value": 20 },
+                { "label": "Cherries", "value": 15 },
+                { "label": "Grapes", "value": 25 }
+                ],{"width":500,"height":500},{},['#4C72B0', '#DD8452', '#55A868', '#C44E52', '#8172B3', '#937860', '#DA8BC3', '#8C8C8C', '#CCB974', '#64B5CD'],0,0);
+                               
+                return document.body;
             }
         """)
-
+        breakpoint()
         browser.close()
         return result
 
@@ -313,7 +309,6 @@ In dev mode, the script must be run in the same folder as the script.
     )
 
     result = run_download_as_json("https://example.com")
-    logger.info(result)
     
     for k, v in opts:
         if k in ['-c', '--chart']:
