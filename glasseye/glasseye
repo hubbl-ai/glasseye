@@ -27,7 +27,7 @@ base_stylesheets = [
 
 prod_stylesheets = [
     'https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/css/tufte.css',
-    'https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/css/GlasseyeCharts.css',
+    'https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/css/glasseyeCharts.css',
 ]
 
 dev_stylesheets = [
