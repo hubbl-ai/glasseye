@@ -31,11 +31,13 @@ base_stylesheets = [
 
 prod_stylesheets = [
     'https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/css/tufte.css',
+    'https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/css/menu.css',
     'https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/css/glasseyeCharts.css',
 ]
 
 dev_stylesheets = [
     '{dir}/css/tufte.css',
+    '{dir}/css/menu.css',
     '{dir}/css/glasseyeCharts.css',
 ]
 
