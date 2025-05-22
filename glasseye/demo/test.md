@@ -45,8 +45,8 @@ data='[
 ]'
   size='{"width":500,"height":500}'
   colors='pastel'
-  donut = '1'
-  continuos_rotation=1
+  donut = true
+  continuous_rotation=true
 >
 </piechart>
 
@@ -65,7 +65,7 @@ data='[
 ]'
   size='{"width":500,"height":500}'
   colors='["#FF6700","#008000"]'
-  horizontal='0'
+  horizontal=false
 >
 </barchart>
 
@@ -85,6 +85,6 @@ data='[
 ]'
   size='{"width":500,"height":500}'
   colors='["#FF6700","#008000"]'
-  horizontal='1'
+  horizontal=true
 >
 </barchart>

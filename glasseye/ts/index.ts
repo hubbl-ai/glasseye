@@ -1,5 +1,5 @@
 // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-// Generated Thu May  8 23:25:24 CAT 2025
+// Generated Thu May 22 04:10:09 PM EDT 2025
 
 
 /// base.ts
@@ -1250,7 +1250,7 @@ export async function piechart(
   file?: DataFile,
   colors: string[] = defaultArgumentObject.colors,
   donut?: 0,
-  continuos_rotation?: 0
+  continuous_rotation?: 0
 ) {
   const { width, height } = size;
   const radius = Math.min(width, height) / 2;
@@ -1332,7 +1332,7 @@ export async function piechart(
     .style("fill", "#FFFFFF")
     .text((d: any) => d.data.label);
 
-  if (continuos_rotation) {
+  if (continuous_rotation) {
     // Start continuous rotation after 2 second delay
     setTimeout(() => {
       let angle = 0;

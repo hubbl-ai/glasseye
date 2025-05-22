@@ -65,9 +65,9 @@ Seaborn Pallette</h3>
 <p><span class="chart-container" id="tree_1"></span><br/></p>
 <h3 id="a-venn-diagram">A venn diagram</h3>
 <p><span class="chart-container" id="venn_0"></span><br/></p>
-<figure>
-<img src="plots/pandocplot17047664142327024119.png"/>
-</figure>
+<pre class="matplotlib"><code>import seaborn as sns
+df = sns.load_dataset("penguins")
+sns.pairplot(df, hue="species")</code></pre>
 <h3 id="a-force-diagram">A force diagram</h3>
 <p><span class="chart-container" id="force_0"></span><br/></p>
 <p><span class="chart-container" id="force_1"></span><br/></p>
@@ -115,7 +115,7 @@ Seaborn Pallette</h3>
   { "label": "Bananas", "value": 20 },
   { "label": "Cherries", "value": 15 },
   { "label": "Grapes", "value": 25 }
-],{"width":500,"height":500},{},['#5173AB', '#D68558', '#59A36A', '#BE5357', '#8275AF'],1,0);
+],{"width":500,"height":500},{},['#5173AB', '#D68558', '#59A36A', '#BE5357', '#8275AF'],true,true);
             Glasseye.skey('#skey_0',{
   "nodes": [
     { "name": "Source A" },

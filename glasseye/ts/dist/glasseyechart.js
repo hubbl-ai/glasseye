@@ -13204,7 +13204,7 @@ var Glasseye = (function (exports) {
     }
 
     // Warning! THIS FILE WAS GENERATED! DO NOT EDIT!
-    // Generated Thu May  8 23:25:24 CAT 2025
+    // Generated Thu May 22 04:10:09 PM EDT 2025
     const defaultMargin = { top: 20, bottom: 20, left: 20, right: 20 };
     const defaultSize = { width: 300, height: 300 };
     const defaultArgumentObject = {
@@ -14101,7 +14101,7 @@ var Glasseye = (function (exports) {
     }
     /// piechart.ts
     function piechart() {
-        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors, donut, continuos_rotation) {
+        return __awaiter(this, arguments, void 0, function* (div = defaultArgumentObject.div, data = defaultArgumentObject.data, size = defaultArgumentObject.size, file, colors = defaultArgumentObject.colors, donut, continuous_rotation) {
             const { width, height } = size;
             const radius = Math.min(width, height) / 2;
             if (file === null || file === void 0 ? void 0 : file.path) {
@@ -14164,7 +14164,7 @@ var Glasseye = (function (exports) {
                 .style("font-size", "16px")
                 .style("fill", "#FFFFFF")
                 .text((d) => d.data.label);
-            if (continuos_rotation) {
+            if (continuous_rotation) {
                 // Start continuous rotation after 2 second delay
                 setTimeout(() => {
                     let angle = 0;

@@ -71,8 +71,12 @@ mode = 'prod'
 
 module_name = 'Glasseye'
 src_dir = '.'
-logger = None
 default_port = 7300
+
+# Default logger. Overridden by the main function.
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger()
 
 # Function to wrap with tags
 def wrap(to_wrap, wrap_in):
@@ -81,13 +85,17 @@ def wrap(to_wrap, wrap_in):
 
 def resolve_color_palette(colors, n_colors, desat):
     if type(colors) == str and colors.startswith('cc.'):
-        try:
-            cc_palette = colors.split('.')[1]
-        except Exception as exc:
+        cc_palette_parts = colors.split('.')
+ 
+        if len(cc_palette_parts) == 2:
+            cc_palette = cc_palette_parts[1]
+        else:
             logger.fatal(f'invalid colorcet palette "{colors}"')
+            return None
+    
+        logger.info(f'using colorcet {cc_palette} palette')
 
         colors = getattr(cc, cc_palette)
-        logger.info(f'using colorcet {cc_palette} palette')
 
     palette = sns.color_palette(
         palette=colors, desat=desat, n_colors=n_colors)
@@ -332,7 +340,7 @@ In dev mode, the script must be run in the same folder as the script.
         pfp.close()
 
         if hasattr(py, 'convert'):
-            convert = py.convert
+            convert = py.convert # type: ignore
         else:
             convert = py.convert_file
         
@@ -390,7 +398,7 @@ In dev mode, the script must be run in the same folder as the script.
 
     standard_charts = {
         'linechart':{'curved':0},
-        'piechart':{'donut':0,'continuos_rotation':0},
+        'piechart':{'donut':0,'continuous_rotation':0},
         'skey':{'link_color':'source-target', 'node_align':'left'},
         'barchart': {'horizontal':0},
         'tree':{'vertical':0},

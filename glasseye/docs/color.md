@@ -8,9 +8,20 @@ Sankey diagram:
 ```html
 <skey
   size='{"width":600,"height":225}'
-  file='{"path":"data/energy.json", "format":"json"}'
+  path="data/energy.json"
+  format:"json"
 >
 </skey>
+```
+
+or, in Python from an analytics notebook:
+
+```python
+skey(
+   size={'width': 600, 'height': 225},
+   path='data/energy.json'
+   format='json'
+)
 ```
 
 which looks like this:

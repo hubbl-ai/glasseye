@@ -198,12 +198,7 @@ data='{
 >
 </skey>
 
-
-
-
-
-### A Donut chart using Seaborn Pallette
-
+### A rotating Donut chart using Seaborn Pallette
 
 <piechart
 data='[
@@ -216,15 +211,12 @@ data='[
   colors='deep'
   n_colors='5'
   desat='0.9'
-  donut = '1'
+  donut=true
+  continuous_rotation=true
 >
 </piechart>
 
-
-
-
-### A gantt chart using Seaborn Pallette
-
+### A Gantt chart using Seaborn Pallette
 
 <gantt
 data='[
