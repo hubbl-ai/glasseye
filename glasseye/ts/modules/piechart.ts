@@ -5,7 +5,7 @@ export async function piechart(
   file?: DataFile,
   colors: string[] = defaultArgumentObject.colors,
   donut?: 0,
-  continuos_rotation?: 0
+  continuous_rotation?: 0
 ) {
   const { width, height } = size;
   const radius = Math.min(width, height) / 2;
@@ -87,7 +87,7 @@ export async function piechart(
     .style("fill", "#FFFFFF")
     .text((d: any) => d.data.label);
 
-  if (continuos_rotation) {
+  if (continuous_rotation) {
     // Start continuous rotation after 2 second delay
     setTimeout(() => {
       let angle = 0;

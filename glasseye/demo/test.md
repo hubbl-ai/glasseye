@@ -46,7 +46,7 @@ data='[
   size='{"width":500,"height":500}'
   colors='pastel'
   donut = '1'
-  continuos_rotation=1
+  continuous_rotation=1
 >
 </piechart>
 
