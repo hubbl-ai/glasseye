@@ -78,6 +78,7 @@ mode = 'prod'
 module_name = 'Glasseye'
 src_dir = '.'
 logger = None
+raw_pandoc_json = ""
 default_port = 7300
 
 # Function to wrap with tags
@@ -227,6 +228,20 @@ def add_chart(chart_id, fields, soup, code_parts, module=module_name, function_n
 
     return code_parts
 
+def run_headless_browser(page_url, output_path=""):
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.goto(page_url, wait_until="load")
+        soup = BeautifulSoup(page.content(), "html.parser")
+        os.makedirs(output_path, exist_ok=True) 
+        for svg in soup.find_all("svg"):
+            svg_name = svg.parent.get("id", "unnamed_svg")
+            with open(os.path.join(output_path,f"{svg_name}.svg"), "w", encoding="utf-8") as f:
+                f.write(str(svg))
+
+        browser.close()
+
 def run_download_as_json(page_url: str):
   
     js_url = "https://cdn.jsdelivr.net/gh/hubbl-ai/glasseye@development/glasseye/ts/dist/glasseyechart.js"
@@ -258,7 +273,6 @@ def run_download_as_json(page_url: str):
                 return document.body;
             }
         """)
-        breakpoint()
         browser.close()
         return result
 
@@ -272,6 +286,7 @@ def elementManipulation(d,name,id,element_class,attrs,contents):
 def main():
     global mode
     global logger
+    global raw_pandoc_json
 
     filters = []
     chart_defs = []
@@ -309,8 +324,6 @@ In dev mode, the script must be run in the same folder as the script.
         'c:D:f:o:pst:vz:',
         ('chart', 'dir', 'filter', 'output', 'plot', 'server', 'title:', 'verbose','zip=', 'port=')
     )
-
-    result = run_download_as_json("https://example.com")
     
     for k, v in opts:
         if k in ['-c', '--chart']:
@@ -380,15 +393,32 @@ In dev mode, the script must be run in the same folder as the script.
 
     logger.info(f'creating {output_file}')
 
-    # Call pandoc and parse the HTML with BeautifulSoup
+    if hasattr(py, 'convert'):
+        convert = py.convert
+    else:
+        convert = py.convert_file
+
     output_dir = os.path.dirname(output_file)
+
+
+    # Call pandoc on the original markdown and get the pandoc JSON
+    with NamedTemporaryFile(suffix='json', delete_on_close=False, dir=output_dir) as pfp:
+        pfp.close()
+        
+        convert(
+            input_file,
+            'json',
+            outputfile=pfp.name,
+            extra_args=extras,
+            filters=filters
+        )
+
+        with open(pfp.name, 'r') as rfp:
+            raw_pandoc_json = rfp.read()
+
+    # Call pandoc and parse the HTML with BeautifulSoup
     with NamedTemporaryFile(suffix='html', delete_on_close=False, dir=output_dir) as pfp:
         pfp.close()
-
-        if hasattr(py, 'convert'):
-            convert = py.convert
-        else:
-            convert = py.convert_file
         
         convert(
             input_file,
@@ -543,7 +573,8 @@ def start_http_server(directory, port=default_port):
 
     with socketserver.TCPServer(("", port), handler) as httpd:
         def open_browser():
-            webbrowser.open(url)
+            # webbrowser.open(url)
+            run_headless_browser(url,"svgs")
 
         threading.Thread(target=open_browser, daemon=True).start()
 
