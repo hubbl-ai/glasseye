@@ -1,4 +1,5 @@
-
+### An svg in markdown
+![Alt text](~/Downloads/pie-chart-icon.svg)
 
 ### A chord diagram 
 

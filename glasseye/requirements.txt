@@ -5,3 +5,7 @@ glasseye==0.1.17
 pypandoc==1.14
 soupsieve==2.6
 seaborn==0.13.2
+playwright==1.52.0
+cairosvg==2.8.2
+svglib==1.5.1
+reportlab==4.4.1
