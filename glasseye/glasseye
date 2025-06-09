@@ -18,6 +18,9 @@ from tempfile import NamedTemporaryFile, TemporaryDirectory
 from playwright.sync_api import sync_playwright
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPDF, renderPM
+import requests
+import xml.etree.ElementTree as ET
+import re
 
 
 
@@ -238,29 +241,66 @@ def run_headless_browser(page_url, output_path=""):
         os.makedirs(output_path, exist_ok=True) 
         for svg in soup.find_all("svg"):
             svg_name = svg.parent.get("id", "unnamed_svg")
-            with open(os.path.join(output_path,f"{svg_name}.svg"), "w", encoding="utf-8") as f:
+            svg_path = os.path.join(output_path,f"{svg_name}.svg")
+            with open( svg_path, "w", encoding="utf-8") as f:
                 f.write(str(svg))
+            convert_svg_to_png(svg_name, output_path)
 
         browser.close()
-        # convert_svgs_to_pngs(output_path)
+        
         replace_glasseye_tags_with_images(output_path)
 
-# def convert_svgs_to_pngs(directory: str):
-#     for filename in os.listdir(directory):
-#         if filename.endswith(".svg"):
-#             svg_path = os.path.join(directory, filename)
-#             png_path = os.path.join(directory, filename.replace(".svg", ".png"))
 
-#             print(f"Converting {filename} → {os.path.basename(png_path)}")
-#             cairosvg.svg2png(url=svg_path, write_to=png_path)
+def convert_svg_to_png(svg_name: str, output_path: str):
+    url = "https://svgtopng-latest.onrender.com/convert"
+    svg_path = os.path.join(output_path,f'{svg_name}.svg')
+    png_path = os.path.join(output_path,f'{svg_name}.png')
+    width, height = get_svg_dimensions(svg_path)
 
-def convert_svgs_to_pngs(directory: str):
-    for filename in os.listdir(directory):
-        if filename.endswith(".svg"):
-            svg_path = os.path.join(directory, filename)
-            png_path = os.path.join(directory, filename.replace(".svg", ".png"))
-            drawing = svg2rlg(svg_path)
-            renderPM.drawToFile(drawing, png_path, fmt="PNG")
+    with open(svg_path, 'r', encoding='utf-8') as svg_file:
+        svg_content = svg_file.read()
+
+    data = {
+        'name': svg_content,
+        'width': str(width),
+        'height': str(height)
+    }
+
+    response = requests.post(url, data=data)
+
+    if response.status_code == 200:
+        with open(png_path, 'wb') as out_file:
+            out_file.write(response.content)
+        logger.info(f"SVG To PNG Image saved to {output_path}")
+    else:
+        logger.info(f"SVG To PNG Error: {response.status_code}")
+        logger.info(response.text)
+
+
+def parse_length(value: str) -> float:
+    """Strip units like 'px' and convert to float."""
+    if value is None:
+        return None
+    match = re.match(r"([0-9.]+)", value)
+    return float(match.group(1)) if match else None
+
+def get_svg_dimensions(svg_path: str):
+    tree = ET.parse(svg_path)
+    root = tree.getroot()
+
+    width = parse_length(root.attrib.get('width'))
+    height = parse_length(root.attrib.get('height'))
+
+    # Fallback to viewBox if width/height not specified
+    if width is None or height is None:
+        viewbox = root.attrib.get('viewBox')
+        if viewbox:
+            parts = viewbox.strip().split()
+            if len(parts) == 4:
+                width = width or float(parts[2])
+                height = height or float(parts[3])
+
+    return width, height
     
 def replace_glasseye_tags_with_images(directory: str):
     for filename in os.listdir(directory):
@@ -275,7 +315,7 @@ def replace_raw_json_end_tags(tag: str):
     # breakpoint()
     global raw_pandoc_json
     # p_json = json.loads(raw_pandoc_json)
-    logger.info(raw_pandoc_json)
+    # logger.info(raw_pandoc_json)
     p_json = raw_pandoc_json
     if isinstance(p_json, dict):
         for key in p_json:
@@ -289,7 +329,7 @@ def replace_raw_json_end_tags(tag: str):
         for i in range(len(p_json)):
             edit_json(p_json[i])
     raw_pandoc_json = p_json
-    logger.info(raw_pandoc_json)
+    # logger.info(raw_pandoc_json)
 
     
 def obj_has_tag(obj,tag):
