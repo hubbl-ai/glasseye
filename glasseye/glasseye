@@ -23,7 +23,6 @@ import xml.etree.ElementTree as ET
 import re
 
 
-
 fonts = [
     'http://fonts.googleapis.com/css?family=Raleway',
     'http://fonts.googleapis.com/css?family=Droid%20Sans',
@@ -312,52 +311,32 @@ def replace_glasseye_tags_with_images(directory: str):
             replace_raw_json_end_tags(tag)
 
 def replace_raw_json_end_tags(tag: str):
-    # breakpoint()
     global raw_pandoc_json
-    # p_json = json.loads(raw_pandoc_json)
-    # logger.info(raw_pandoc_json)
-    p_json = raw_pandoc_json
-    if isinstance(p_json, dict):
-        for key in p_json:
-            if isinstance(p_json[key], str):
-                p_json[key] = p_json[key].upper()
-            elif isinstance(p_json[key], dict) and obj_has_tag(p_json[key],tag):
-                p_json[key] = ""
-            else:
-                edit_json(p_json[key])
-    elif isinstance(p_json, list):
-        for i in range(len(p_json)):
-            edit_json(p_json[i])
-    raw_pandoc_json = p_json
-    # logger.info(raw_pandoc_json)
+    p_json = json.loads(raw_pandoc_json)["blocks"]
+    logger.info(json.dumps(p_json,indent=2))
+    for block in p_json:
+        block_t = block["t"]
+        block_c = block["c"]
+        logger.info(block_t)
+        logger.info(block_c)
+        if block_t.upper() == "PARA":
+            if isinstance(block_c, list):
+                for cblock in block_c:
+                    cblock_t = cblock["t"]
+                    cblock_c = cblock["c"]
+                    if cblock_t.upper() == "RAWLINE" and obj_has_tag(cblock_c,tag):
+                        # this is where you replace entire block here with png image
+                        block = {}
+    logger.info(json.dumps(p_json,indent=2))
 
-    
+  
 def obj_has_tag(obj,tag):
-    if isinstance(obj, dict):
-            if "t" in obj and "c" in obj:
-                if obj["t"].upper() == "RAWLINE" and tag.upper() in obj["c"].upper():
-                    return True
+    if isinstance(obj, list):
+                for phrase in obj:
+                    if tag.upper() in phrase.upper():
+                        return True
+    return False          
     
-    return False               
-              
-def edit_json(obj):
-    if isinstance(obj, dict):
-        for key in obj:
-            # Example: change all string values to uppercase
-            if isinstance(obj[key], str):
-                obj[key] = obj[key].upper()
-            else:
-                edit_json(obj[key])
-    elif isinstance(obj, list):
-        for i in range(len(obj)):
-            edit_json(obj[i])
-
-def elementManipulation(d,name,id,element_class,attrs,contents):
-    d[1].name = name
-    d[1].contents = contents
-    d[1].attrs = attrs
-    d[1]['id'] = id
-    d[1]['class'] = element_class
 
 def main():
     global mode
