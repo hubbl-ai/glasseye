@@ -313,21 +313,27 @@ def replace_glasseye_tags_with_images(directory: str):
 def replace_raw_json_end_tags(tag: str):
     global raw_pandoc_json
     p_json = json.loads(raw_pandoc_json)["blocks"]
-    logger.info(json.dumps(p_json,indent=2))
+    # logger.info(json.dumps(p_json,indent=2))
     for block in p_json:
+        replace_this_block = False
         block_t = block["t"]
         block_c = block["c"]
-        logger.info(block_t)
-        logger.info(block_c)
         if block_t.upper() == "PARA":
             if isinstance(block_c, list):
                 for cblock in block_c:
-                    cblock_t = cblock["t"]
-                    cblock_c = cblock["c"]
-                    if cblock_t.upper() == "RAWLINE" and obj_has_tag(cblock_c,tag):
-                        # this is where you replace entire block here with png image
-                        block = {}
-    logger.info(json.dumps(p_json,indent=2))
+                    if "t" in cblock and "c" in cblock:
+                        cblock_t = cblock["t"]
+                        cblock_c = cblock["c"]
+                        if cblock_t.upper() == "RAWINLINE" and obj_has_tag(cblock_c,tag):
+                            # this is where you replace entire block here with png image
+                            breakpoint()
+                            logger.info(f"Tag replaced {tag} on block",block)
+                            block = {}
+                            replace_this_block = True
+                            break
+                if replace_this_block:
+                    break
+    # logger.info(json.dumps(p_json,indent=2))
 
   
 def obj_has_tag(obj,tag):
