@@ -308,32 +308,45 @@ def replace_glasseye_tags_with_images(directory: str):
             chart_parts = filename.replace(".svg","").split("_")
             tag = chart_parts[0]
             tag_count = chart_parts[1]
-            replace_raw_json_end_tags(tag)
+            replace_raw_json_tags(tag, tag_count, directory)
 
-def replace_raw_json_end_tags(tag: str):
+def replace_raw_json_tags(tag, tag_count, directory):
     global raw_pandoc_json
+    result_json = json.loads(raw_pandoc_json)
+    result_json["blocks"]=[]
     p_json = json.loads(raw_pandoc_json)["blocks"]
-    # logger.info(json.dumps(p_json,indent=2))
     for block in p_json:
         replace_this_block = False
-        block_t = block["t"]
-        block_c = block["c"]
-        if block_t.upper() == "PARA":
-            if isinstance(block_c, list):
-                for cblock in block_c:
-                    if "t" in cblock and "c" in cblock:
-                        cblock_t = cblock["t"]
-                        cblock_c = cblock["c"]
-                        if cblock_t.upper() == "RAWINLINE" and obj_has_tag(cblock_c,tag):
-                            # this is where you replace entire block here with png image
-                            breakpoint()
-                            logger.info(f"Tag replaced {tag} on block",block)
-                            block = {}
-                            replace_this_block = True
-                            break
-                if replace_this_block:
-                    break
-    # logger.info(json.dumps(p_json,indent=2))
+        if "t" in block and "c" in block:
+            block_t = block["t"]
+            block_c = block["c"]
+            if block_t.upper() == "PARA":
+                if isinstance(block_c, list):
+                    for cblock in block_c:
+                        if "t" in cblock and "c" in cblock:
+                            cblock_t = cblock["t"]
+                            cblock_c = cblock["c"]
+                            if cblock_t.upper() == "RAWINLINE" and obj_has_tag(cblock_c,tag):
+                                image_name = f"{tag}_{tag_count}.png"
+                                image_path = os.path.join(directory, image_name)
+                                new_block = {
+                                    "t": "Figure",
+                                    "c": [
+                                        {
+                                            "t": "Image",
+                                            "c": [
+                                                f"{image_path}"
+                                            ]
+                                        }
+                                    ]
+                                }
+                                result_json["blocks"].append(new_block)
+                                replace_this_block = True
+                                break
+        if not replace_this_block:
+            result_json["blocks"].append(block)
+    raw_pandoc_json = json.dumps(result_json)
+    logger.info(json.dumps(raw_pandoc_json,indent=2))
 
   
 def obj_has_tag(obj,tag):
