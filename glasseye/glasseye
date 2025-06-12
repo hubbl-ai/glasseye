@@ -249,6 +249,25 @@ def run_headless_browser(page_url, output_path=""):
         
         replace_glasseye_tags_with_images(output_path)
 
+        # here is where you convert the raw_pandoc_json to pdf or other formats
+            
+        with NamedTemporaryFile(mode='w+', suffix='.md', delete=False) as f:
+            f.write(f"```\n{raw_pandoc_json}\n```")
+            # breakpoint()
+            md_file_path = f.name
+
+            # Step 3: Output file
+            output_file_path = os.path.join(output_path,f'output.{output_format}') 
+
+            # Step 4: Use pypandoc to convert Markdown to PDF
+            py.convert_file(
+                source_file=md_file_path,
+                to=output_format,
+                outputfile=output_file_path,
+                # extra_args=["--pdf-engine=xelatex"]  # or lualatex/wkhtmltopdf etc.
+            )
+            
+
 
 def convert_svg_to_png(svg_name: str, output_path: str):
     url = "https://svgtopng-latest.onrender.com/convert"
@@ -361,6 +380,8 @@ def main():
     global mode
     global logger
     global raw_pandoc_json
+    global generate_for_format
+    global output_format
 
     filters = []
     chart_defs = []
@@ -370,8 +391,9 @@ def main():
     output_file = None
     server_mode = False
     zip_mode = False
+    generate_for_format = False
+    output_format = ""
     port = default_port
-    generate_pdf = False
     verbosity = logging.WARNING
     zipped_filename = ""
     errors = 0
@@ -388,7 +410,7 @@ where args arg one of:
 -v|--verbose       # Increase debugging output. May be repeated
 -z|--zip  file     # zip the output directory to file
 --port             # the port to use in the url. defaults to 7300
---pdf              # generate a pdf file instead
+--format           # generate a file in this format 
 
 In dev mode, the script must be run in the same folder as the script.
 '''
@@ -396,7 +418,7 @@ In dev mode, the script must be run in the same folder as the script.
     opts, args = getopt(
         sys.argv[1:],
         'c:D:f:o:pst:vz:',
-        ('chart', 'dir', 'filter', 'output', 'plot', 'server', 'title:', 'verbose','zip=', 'port=')
+        ('chart', 'dir', 'filter', 'output', 'plot', 'server', 'title:', 'verbose','zip=', 'port=', 'format=')
     )
     
     for k, v in opts:
@@ -423,8 +445,9 @@ In dev mode, the script must be run in the same folder as the script.
             zip_mode = True
         elif k in ['--port']:
             port = int(v)
-        elif k in ['--pdf']:
-            generate_pdf = True
+        elif k in ['--format']:
+            generate_for_format = True
+            output_format = v
         elif k in ['-?', '-h', '--help']:
             errors += 1
         else:
@@ -627,10 +650,10 @@ In dev mode, the script must be run in the same folder as the script.
     with open(output_file, 'w') as ofp:
         ofp.write(doc)
 
-    if server_mode or zip_mode:
+    if server_mode or zip_mode or generate_for_format:
         with TemporaryDirectory(prefix='glasseye') as server_dir_name:
             copy_data(output_file, output_dir or ".", server_dir_name)
-            if server_mode:
+            if server_mode or generate_for_format:
                 start_http_server(server_dir_name, port)
             elif zip_mode:
                 zip_directory(server_dir_name,zipped_filename)
@@ -647,8 +670,10 @@ def start_http_server(directory, port=default_port):
 
     with socketserver.TCPServer(("", port), handler) as httpd:
         def open_browser():
-            # webbrowser.open(url)
-            run_headless_browser(url,"svgs")
+            if generate_for_format:
+                run_headless_browser(url,"svgs")
+            else:
+                webbrowser.open(url)
 
         threading.Thread(target=open_browser, daemon=True).start()
 
