@@ -251,21 +251,28 @@ def run_headless_browser(page_url, output_path=""):
 
         # here is where you convert the raw_pandoc_json to pdf or other formats
             
-        with NamedTemporaryFile(mode='w+', suffix='.md', delete=False) as f:
-            f.write(f"```\n{raw_pandoc_json}\n```")
+        with NamedTemporaryFile(mode='w+', suffix='.json', delete=False) as f:
+            json.dump(json.loads(raw_pandoc_json), f, indent=2)
+            f.close()
             # breakpoint()
             md_file_path = f.name
 
             # Step 3: Output file
             output_file_path = os.path.join(output_path,f'output.{output_format}') 
 
-            # Step 4: Use pypandoc to convert Markdown to PDF
-            py.convert_file(
-                source_file=md_file_path,
-                to=output_format,
-                outputfile=output_file_path,
-                # extra_args=["--pdf-engine=xelatex"]  # or lualatex/wkhtmltopdf etc.
-            )
+            if output_format.upper() == "PDF":
+                py.convert_file(
+                    source_file=md_file_path,
+                    to=output_format,
+                    outputfile=output_file_path,
+                    extra_args=["--pdf-engine=pdflatex"]  # or lualatex/wkhtmltopdf etc.
+                )
+            else:
+                 py.convert_file(
+                    source_file=md_file_path,
+                    to=output_format,
+                    outputfile=output_file_path
+                )
             
 
 
@@ -349,16 +356,32 @@ def replace_raw_json_tags(tag, tag_count, directory):
                                 image_name = f"{tag}_{tag_count}.png"
                                 image_path = os.path.join(directory, image_name)
                                 new_block = {
-                                    "t": "Figure",
-                                    "c": [
-                                        {
-                                            "t": "Image",
+                                            "t": "Figure",
                                             "c": [
-                                                f"{image_path}"
+                                                ["", [], []],
+                                                [
+                                                None,
+                                                [
+                                                ]
+                                                ],
+                                                [
+                                                {
+                                                    "t": "Plain",
+                                                    "c": [
+                                                    {
+                                                        "t": "Image",
+                                                        "c": [
+                                                        ["", [], []],
+                                                        [
+                                                        ],
+                                                        [image_path, ""]
+                                                        ]
+                                                    }
+                                                    ]
+                                                }
+                                                ]
                                             ]
                                         }
-                                    ]
-                                }
                                 result_json["blocks"].append(new_block)
                                 replace_this_block = True
                                 break
