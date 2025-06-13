@@ -2,8 +2,8 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-    title: "Glasseye",
-    description: "Glasseye",
+    title: "Doodl",
+    description: "Doodl",
     head: [
         [
             'script',
@@ -40,11 +40,11 @@ export default defineConfig({
                 link: '/history',
             },
             {
-                text: 'Using glasseye',
+                text: 'Using doodl',
                 collapsed: false,
                 items: [
                     { text: 'Writing Markdown', link: '/markdown' },
-                    { text: 'Invoking glasseye', link: '/invoking' },
+                    { text: 'Invoking doodl', link: '/invoking' },
                     { text: 'Color palettes', link: '/color' }
                 ]
             },
@@ -59,6 +59,7 @@ export default defineConfig({
                     { text: 'Chord diagram', link: '/charts/chord' },
                     { text: 'Dot plot', link: '/charts/dotplot' },
                     { text: 'Force diagram', link: '/charts/force' },
+                    { text: 'Disjoint diagram', link: '/charts/disjoint' },
                     { text: 'Gantt chart', link: '/charts/gantt' },
                     { text: 'Heat map', link: '/charts/heatmap' },
                     { text: 'Line chart', link: '/charts/line-chart' },
@@ -81,7 +82,7 @@ export default defineConfig({
             { text: 'Pandoc-Plot', link: '/pandoc-plot' }
         ],
         socialLinks: [
-            { icon: 'github', link: 'https://github.com/hubbl-ai/glasseye' }
+            { icon: 'github', link: 'https://github.com/hubbl-ai/doodl' }
         ]
     }
 })

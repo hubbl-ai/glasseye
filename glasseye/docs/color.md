@@ -1,7 +1,7 @@
 ## Color palettes
 
 Color palettes are part of the core arguments to each chart type.
-Glasseye uses [Seaborn](https://seaborn.pydata.org/tutorial/color_palettes.html)
+Doodl uses [Seaborn](https://seaborn.pydata.org/tutorial/color_palettes.html)
 to specify how to color your charts. Consider, for example, the following
 Sankey diagram:
 
@@ -182,7 +182,7 @@ The set of color interpolators includes:
 
 
 Given the wealth of possibilities for specifying color maps in
-d3, glasseye does not extend support to Python-based color maps
+d3, doodl does not extend support to Python-based color maps
 like those in Seaborn and matplotlib. We do, however, support
 interpolation of *categorical* color maps from Seaborn or elsewhere,
 as follows:

@@ -1,13 +1,13 @@
-# Invoking glasseye
+# Invoking doodl
 
-Glasseye is designed to be used in several modes.
+Doodl is designed to be used in several modes.
 
 - HTML formatter
 - HTML server
 - PDF/Doc/... formatter
 - Analytics notebook charts
 
-In *formatter* mode, glasseye formats a document written in Markdown
+In *formatter* mode, doodl formats a document written in Markdown
 (as defined by pandoc), and converts it to an output format. The
 output format may be anything that pandoc handles, but HTML is handled
 differently.  For HTML, the user has the choice of using the default
@@ -23,7 +23,7 @@ limitation may be ignore.
 To accommodate this limitation, two solutions are available:
 
 1. Use the Python `server` module to display the file.
-2. Use `glasseye` itself to run a builtin server.
+2. Use `doodl` itself to run a builtin server.
 
 The first solution works well for users who only have access to the
 output file(s) and not the source files. If the Markdown file is
@@ -33,22 +33,22 @@ formatted document viewable and fully interactive in a new tab.
 
 Note that, if it is desired to give a copy of the output to a third
 party, setting the output to a file with the "`.zip`" suffix
-(e.g. `glasseye -o mydoc.zip`) will create a ZIP archive with all
+(e.g. `doodl -o mydoc.zip`) will create a ZIP archive with all
 required files in it.
 
 If the output file is not HTML, then only a single file is produced.
-Note that the interactions and animations implemented with glasseye
+Note that the interactions and animations implemented with doodl
 are only available in HTML when the output is a file.
 
-Finally, glasseye may be used in analytics notebooks on platforms like
+Finally, doodl may be used in analytics notebooks on platforms like
 Jupyter and Colab. This permits the user to call a Python function for
 a visualization that renders a fully interactive chart in the
 notebook, like this:
 
 ```python
-%pip install --quiet colorcet seaborn glasseye
-import glasseye
-glasseye.linechart(data=[
+%pip install --quiet colorcet seaborn doodl
+import doodl
+doodl.linechart(data=[
       { "x": 1, "y": 10 }, 
       { "x": 2, "y": 20 },
       { "x": 3, "y": 15 },

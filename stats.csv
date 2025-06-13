@@ -1,0 +1,221 @@
+      1 Not Committed Yet	glasseye/docs/.vitepress/config.mts
+   2217 Not Committed Yet	glasseye/docs/.vitepress/public/graph.json
+   2306 Not Committed Yet	glasseye/docs/charts/disjoint.md
+     82 Not Committed Yet	glasseye/docs/charts/force.md
+     21 Ransome Madziyauswa	glasseye/__main__.py
+     55 Ransome Madziyauswa	glasseye/css/GlasseyeCharts.css
+     34 Ransome Madziyauswa	glasseye/css/docs.css
+      8 Ransome Madziyauswa	glasseye/css/glasseyeCharts.css
+     78 Ransome Madziyauswa	glasseye/css/menu.css
+      4 Ransome Madziyauswa	glasseye/css/tufte.css
+     52 Ransome Madziyauswa	glasseye/demo/Tufte.gif
+    105 Ransome Madziyauswa	glasseye/demo/data/bubbles.json
+     25 Ransome Madziyauswa	glasseye/demo/data/csvToJson.py
+    253 Ransome Madziyauswa	glasseye/demo/data/flare.csv
+   1010 Ransome Madziyauswa	glasseye/demo/data/flare.json
+   2217 Ransome Madziyauswa	glasseye/demo/data/graph.json
+      2 Ransome Madziyauswa	glasseye/demo/data/miserables.json
+   2647 Ransome Madziyauswa	glasseye/demo/data/symmetric_matrix.json
+   2647 Ransome Madziyauswa	glasseye/demo/data/symmetric_matrix_flat.json
+      7 Ransome Madziyauswa	glasseye/demo/data/xy.csv
+      7 Ransome Madziyauswa	glasseye/demo/data/xy.hsv
+      8 Ransome Madziyauswa	glasseye/demo/data/xy.json
+      7 Ransome Madziyauswa	glasseye/demo/data/xy.tsv
+      9 Ransome Madziyauswa	glasseye/demo/defns/defn.json
+    592 Ransome Madziyauswa	glasseye/demo/index.html
+    466 Ransome Madziyauswa	glasseye/demo/index.md
+    210 Ransome Madziyauswa	glasseye/demo/interp.html
+    267 Ransome Madziyauswa	glasseye/demo/interp.md
+     34 Ransome Madziyauswa	glasseye/demo/pandas_json.py
+   1106 Ransome Madziyauswa	glasseye/demo/plots/pandocplot17047664142327024119.png
+    220 Ransome Madziyauswa	glasseye/demo/plots/pandocplot17047664142327024119.src.html
+    376 Ransome Madziyauswa	glasseye/demo/plots/pandocplot4295645665349689877.png
+    267 Ransome Madziyauswa	glasseye/demo/plots/pandocplot4295645665349689877.src.html
+    535 Ransome Madziyauswa	glasseye/demo/plots/pandocplot6026712723587379752.png
+    234 Ransome Madziyauswa	glasseye/demo/plots/pandocplot6026712723587379752.src.html
+     90 Ransome Madziyauswa	glasseye/demo/report.html
+    333 Ransome Madziyauswa	glasseye/demo/report.md
+     28 Ransome Madziyauswa	glasseye/demo/test.html
+     70 Ransome Madziyauswa	glasseye/demo/test.md
+    245 Ransome Madziyauswa	glasseye/docs/.vitepress/cache/deps/@theme_index.js
+      7 Ransome Madziyauswa	glasseye/docs/.vitepress/cache/deps/@theme_index.js.map
+     32 Ransome Madziyauswa	glasseye/docs/.vitepress/cache/deps/_metadata.json
+   9719 Ransome Madziyauswa	glasseye/docs/.vitepress/cache/deps/chunk-6F5JWMBQ.js
+      7 Ransome Madziyauswa	glasseye/docs/.vitepress/cache/deps/chunk-6F5JWMBQ.js.map
+  12542 Ransome Madziyauswa	glasseye/docs/.vitepress/cache/deps/chunk-VJWGEPT5.js
+      7 Ransome Madziyauswa	glasseye/docs/.vitepress/cache/deps/chunk-VJWGEPT5.js.map
+      3 Ransome Madziyauswa	glasseye/docs/.vitepress/cache/deps/package.json
+   4504 Ransome Madziyauswa	glasseye/docs/.vitepress/cache/deps/vitepress___@vue_devtools-api.js
+      7 Ransome Madziyauswa	glasseye/docs/.vitepress/cache/deps/vitepress___@vue_devtools-api.js.map
+    583 Ransome Madziyauswa	glasseye/docs/.vitepress/cache/deps/vitepress___@vueuse_core.js
+      7 Ransome Madziyauswa	glasseye/docs/.vitepress/cache/deps/vitepress___@vueuse_core.js.map
+    343 Ransome Madziyauswa	glasseye/docs/.vitepress/cache/deps/vue.js
+      7 Ransome Madziyauswa	glasseye/docs/.vitepress/cache/deps/vue.js.map
+     15 Ransome Madziyauswa	glasseye/docs/.vitepress/config.mts
+      8 Ransome Madziyauswa	glasseye/docs/index.md
+      9 Ransome Madziyauswa	glasseye/docs/markdown.md
+   2404 Ransome Madziyauswa	glasseye/docs/package-lock.json
+     18 Ransome Madziyauswa	glasseye/docs/package.json
+    117 Ransome Madziyauswa	glasseye/glasseye
+      8 Ransome Madziyauswa	glasseye/js/modular/Dotplot.js
+     68 Ransome Madziyauswa	glasseye/js/modular/GlasseyeChart.js
+     85 Ransome Madziyauswa	glasseye/js/modular/GlobalFunctionsAndVariable.js
+      2 Ransome Madziyauswa	glasseye/js/modular/Heatmap.js
+      6 Ransome Madziyauswa	glasseye/js/modular/ScatterPlot.js
+      1 Ransome Madziyauswa	glasseye/js/modular/Tree.js
+     10 Ransome Madziyauswa	glasseye/js/modular/Treemap.js
+    283 Ransome Madziyauswa	glasseye/js/modular/ts/index.ts
+     46 Ransome Madziyauswa	glasseye/js/modular/ts/linechart.ts
+     27 Ransome Madziyauswa	glasseye/js/modular/ts/modules/Makefile
+     11 Ransome Madziyauswa	glasseye/js/modular/ts/modules/barchart.ts
+      2 Ransome Madziyauswa	glasseye/js/modular/ts/modules/base.ts
+     17 Ransome Madziyauswa	glasseye/js/modular/ts/modules/linechart.ts
+     13 Ransome Madziyauswa	glasseye/js/modular/ts/modules/piechart.ts
+   1429 Ransome Madziyauswa	glasseye/js/modular/ts/package-lock.json
+     13 Ransome Madziyauswa	glasseye/js/modular/ts/package.json
+      9 Ransome Madziyauswa	glasseye/js/modular/ts/rollup.config.js
+    110 Ransome Madziyauswa	glasseye/js/modular/ts/tsconfig.json
+      5 Ransome Madziyauswa	glasseye/requirements.txt
+  15095 Ransome Madziyauswa	glasseye/ts/dist/glasseyechart.js
+   2364 Ransome Madziyauswa	glasseye/ts/index.ts
+     57 Ransome Madziyauswa	glasseye/ts/modules/Boxplot.ts
+     45 Ransome Madziyauswa	glasseye/ts/modules/Dotplot.ts
+     76 Ransome Madziyauswa	glasseye/ts/modules/Force.ts
+     18 Ransome Madziyauswa	glasseye/ts/modules/Heatmap.ts
+     19 Ransome Madziyauswa	glasseye/ts/modules/Makefile
+     41 Ransome Madziyauswa	glasseye/ts/modules/ScatterPlot.ts
+     88 Ransome Madziyauswa	glasseye/ts/modules/Skey.ts
+    143 Ransome Madziyauswa	glasseye/ts/modules/Tree.ts
+     44 Ransome Madziyauswa	glasseye/ts/modules/Treemap.ts
+     54 Ransome Madziyauswa	glasseye/ts/modules/Venn.ts
+    195 Ransome Madziyauswa	glasseye/ts/modules/area.ts
+     93 Ransome Madziyauswa	glasseye/ts/modules/barchart.ts
+    212 Ransome Madziyauswa	glasseye/ts/modules/base.ts
+    108 Ransome Madziyauswa	glasseye/ts/modules/bollinger.ts
+      6 Ransome Madziyauswa	glasseye/ts/modules/boxplot.ts
+    186 Ransome Madziyauswa	glasseye/ts/modules/bubblechart.ts
+     80 Ransome Madziyauswa	glasseye/ts/modules/chord.ts
+     49 Ransome Madziyauswa	glasseye/ts/modules/contour.ts
+     43 Ransome Madziyauswa	glasseye/ts/modules/dendrogram.ts
+     20 Ransome Madziyauswa	glasseye/ts/modules/disjoint.ts
+      8 Ransome Madziyauswa	glasseye/ts/modules/dotplot.ts
+      5 Ransome Madziyauswa	glasseye/ts/modules/force.ts
+     98 Ransome Madziyauswa	glasseye/ts/modules/gantt.ts
+    128 Ransome Madziyauswa	glasseye/ts/modules/heatmap.ts
+     41 Ransome Madziyauswa	glasseye/ts/modules/linechart.ts
+      2 Ransome Madziyauswa	glasseye/ts/modules/minard.ts
+     58 Ransome Madziyauswa	glasseye/ts/modules/piechart.ts
+      8 Ransome Madziyauswa	glasseye/ts/modules/scatterplot.ts
+     59 Ransome Madziyauswa	glasseye/ts/modules/skey.ts
+      2 Ransome Madziyauswa	glasseye/ts/modules/tree.ts
+      9 Ransome Madziyauswa	glasseye/ts/modules/treemap.ts
+      2 Ransome Madziyauswa	glasseye/ts/modules/venn.ts
+     90 Ransome Madziyauswa	glasseye/ts/modules/voronoi.ts
+    152 Ransome Madziyauswa	glasseye/ts/package-lock.json
+      4 Ransome Madziyauswa	glasseye/ts/package.json
+      2 Ransome Madziyauswa	glasseye/ts/rollup.config.js
+      3 Ransome Madziyauswa	glasseye/ts/tsconfig.json
+      1 Ransome Madziyauswa	setup.py
+     30 Rennie	glasseye/ts/dist/glasseyechart.js
+    249 Scott Deerwester	README.md
+    234 Scott Deerwester	glasseye/__main__.py
+    103 Scott Deerwester	glasseye/demo/data/bubblesMulti.json
+      2 Scott Deerwester	glasseye/demo/data/dendro.json
+      2 Scott Deerwester	glasseye/demo/data/energy.json
+     23 Scott Deerwester	glasseye/demo/data/factors.txt
+    577 Scott Deerwester	glasseye/demo/data/features.json
+   1188 Scott Deerwester	glasseye/demo/data/hcl.json
+     33 Scott Deerwester	glasseye/demo/index.html
+    689 Scott Deerwester	glasseye/demo/index.md
+   1087 Scott Deerwester	glasseye/demo/plots/pandocplot16408727240621322356.png
+    220 Scott Deerwester	glasseye/demo/plots/pandocplot16408727240621322356.src.html
+      5 Scott Deerwester	glasseye/demo/report.html
+     24 Scott Deerwester	glasseye/demo/report.md
+     57 Scott Deerwester	glasseye/demo/sample_report.md
+      4 Scott Deerwester	glasseye/demo/test.md
+     30 Scott Deerwester	glasseye/docs/.vitepress/cache/deps/@theme_index.js
+      8 Scott Deerwester	glasseye/docs/.vitepress/cache/deps/_metadata.json
+     72 Scott Deerwester	glasseye/docs/.vitepress/config.mts
+   2064 Scott Deerwester	glasseye/docs/VisualCinnamon.png
+     98 Scott Deerwester	glasseye/docs/charts/bar-chart.md
+     64 Scott Deerwester	glasseye/docs/charts/bollinger.md
+     87 Scott Deerwester	glasseye/docs/charts/boxplot.md
+     54 Scott Deerwester	glasseye/docs/charts/chord.md
+      2 Scott Deerwester	glasseye/docs/charts/dotplot.md
+     56 Scott Deerwester	glasseye/docs/charts/force.md
+    118 Scott Deerwester	glasseye/docs/charts/index.md
+      1 Scott Deerwester	glasseye/docs/charts/sankey.md
+    324 Scott Deerwester	glasseye/docs/color.md
+     83 Scott Deerwester	glasseye/docs/custom/implement.md
+     24 Scott Deerwester	glasseye/docs/custom/index.md
+     46 Scott Deerwester	glasseye/docs/history.md
+   2549 Scott Deerwester	glasseye/docs/images/100_6253.jpg
+     52 Scott Deerwester	glasseye/docs/images/Tufte.gif
+    115 Scott Deerwester	glasseye/docs/images/errorbar.png
+   1087 Scott Deerwester	glasseye/docs/images/pandocplot16408727240621322356.png
+     64 Scott Deerwester	glasseye/docs/images/rgb-bar.png
+      4 Scott Deerwester	glasseye/docs/index.md
+    164 Scott Deerwester	glasseye/docs/invoking.md
+     68 Scott Deerwester	glasseye/docs/markdown.md
+     84 Scott Deerwester	glasseye/docs/pandoc-plot.md
+    190 Scott Deerwester	glasseye/glasseye
+     12 Scott Deerwester	glasseye/js/modular/ts/modules/Makefile
+      2 Scott Deerwester	glasseye/requirements.txt
+     19 Scott Deerwester	glasseye/ts/dist/glasseyechart.js
+     84 Scott Deerwester	glasseye/ts/index.ts
+      1 Scott Deerwester	glasseye/ts/modules/GlasseyeChart.ts
+      1 Scott Deerwester	glasseye/ts/modules/GlobalFunctionsAndVariable.ts
+     10 Scott Deerwester	glasseye/ts/modules/Makefile
+     36 Scott Deerwester	glasseye/ts/modules/base.ts
+    160 Scott Deerwester	glasseye/ts/modules/disjoint.ts
+      2 Scott Deerwester	glasseye/ts/modules/force.ts
+      1 Scott Deerwester	glasseye/ts/modules/linechart.ts
+     65 Scott Deerwester	glasseye/ts/modules/minard.ts
+      2 Scott Deerwester	glasseye/ts/modules/piechart.ts
+     14 Scott Deerwester	glasseye/ts/modules/skey.ts
+    172 Scott Deerwester	glasseye/ts/package-lock.json
+      2 Scott Deerwester	glasseye/ts/package.json
+      6 Scott Deerwester	glasseye/ts/rollup.config.js
+      5 Scott Deerwester	setup.py
+      9 Simon Raper	PyPiNotes.md
+      1 Simon Raper	glasseye/__main__.py
+     64 Simon Raper	glasseye/js/glasseyeCharts.js
+    186 Simon Raper	glasseye/js/modular/AnimatedBarChart.js
+    102 Simon Raper	glasseye/js/modular/AnimatedDensity.js
+    239 Simon Raper	glasseye/js/modular/AnimatedDonut.js
+    350 Simon Raper	glasseye/js/modular/AnimatedVenn.js
+     42 Simon Raper	glasseye/js/modular/BarChart.js
+    232 Simon Raper	glasseye/js/modular/Dial.js
+    197 Simon Raper	glasseye/js/modular/DrillableVenn.js
+      3 Simon Raper	glasseye/js/modular/Force.js
+     69 Simon Raper	glasseye/js/modular/GlasseyeChart.js
+    139 Simon Raper	glasseye/js/modular/GlobalFunctionsAndVariable.js
+     90 Simon Raper	glasseye/js/modular/GridChart.js
+    132 Simon Raper	glasseye/js/modular/GroupedBarChart.js
+      7 Simon Raper	glasseye/js/modular/Heatmap.js
+     47 Simon Raper	glasseye/js/modular/LeafletMap.js
+    150 Simon Raper	glasseye/js/modular/LogReg.js
+    102 Simon Raper	glasseye/js/modular/PolygonMap.js
+     57 Simon Raper	glasseye/js/modular/RandomNumber.js
+      5 Simon Raper	glasseye/js/modular/ScatterPlot.js
+    204 Simon Raper	glasseye/js/modular/Thermometers.js
+    570 Simon Raper	glasseye/js/modular/TimeSeries.js
+      8 Simon Raper	glasseye/js/modular/Venn.js
+     21 Simon Raper	glasseyeLayouts.md
+      1 Simon Raper	setup.py
+     22 coppelia machine learning and analytics	LICENSE
+   4368 coppelia machine learning and analytics	glasseye_markdownExample/data/activeDecidedSim.csv
+      7 coppeliamla	MANIFEST.in
+     50 coppeliamla	README.md
+     34 coppeliamla	glasseye/__main__.py
+     10 coppeliamla	glasseye/css/tufte.css
+      9 coppeliamla	glasseyeDemo/css/tufte.css
+     18 coppeliamla	glasseyeDemo/js/glasseyeCharts.js
+     21 coppeliamla	glasseye_markdownExample/css/tufte.css
+      1 coppeliamla	glasseye_markdownExample/data/activeDecidedSim.csv
+     41 coppeliamla	glasseye_markdownExample/data/lineplotExample.csv
+     21 coppeliamla	glasseye_markdownExample/data/share.csv
+    165 coppeliamla	root/css/tufte.css
+      5 coppeliamla	root/js/glasseyeCharts.js
+     11 coppeliamla	setup.py
+      3 dependabot[bot]	glasseye/docs/package-lock.json

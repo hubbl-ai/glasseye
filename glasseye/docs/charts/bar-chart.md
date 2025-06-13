@@ -19,14 +19,14 @@ Bar charts are drawn using the `barchart` tag, like this in HTML:
 or this in Python:
 
 ```python
-import glasseye
+import doodl
 data=[
     { "label": "Apples", "value": 10 },
     { "label": "Bananas", "value": 20 },
     { "label": "Cherries", "value": 15 },
     { "label": "Grapes", "value": 25 }
 ]
-glasseye.barchart(
+doodl.barchart(
     data=data,
     size={"width":500,"height":350},
     colors=["DarkOrange"]'

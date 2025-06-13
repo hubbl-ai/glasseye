@@ -1,6 +1,6 @@
 # Charts
 
-All Glasseye charts are inserted into a document using an HTML-style
+All Doodl charts are inserted into a document using an HTML-style
 tag, as you've already seen:
 
 ```html
@@ -13,6 +13,19 @@ tag, as you've already seen:
     ]'
 >
 </piechart>
+```
+
+or, if you're using Doodl in Python from a notebook:
+
+```python
+import doodl
+doodl.piechart([
+    {"label": "Apples", "value": 10},
+    {"label": "Bananas", "value": 20},
+    {"label": "Cherries", "value": 15},
+    {"label": "Grapes", "value": 25}
+  ]
+)
 ```
 
 Some things are common to all chart types. Every chart *must* have a
@@ -54,13 +67,13 @@ where `data/piechart1.json` contains:
 ]
 ```
 
-and the output of `glasseye`
+and the output of `doodl`
 <span class="marginnote">
 That is the value provided to the `-o` argument on the command line.
 </span>
 is in the same directory that contains the `data` directory.
 
-Glasseye infers the type of the file from the filename, which
+Doodl infers the type of the file from the filename, which
 must be one of `json`, `csv` or `tsv`. If your data file
 uses a different naming convention, you may add a `format`
 argument, like this:
@@ -74,7 +87,7 @@ argument, like this:
 
 ## Colors
 
-Glasseye uses the [color palettes](https://seaborn.pydata.org/tutorial/color_palettes.html)
+Doodl uses the [color palettes](https://seaborn.pydata.org/tutorial/color_palettes.html)
 in [seaborn](https://seaborn.pydata.org/index.html).
 The paletted is set using the `colors` argument to a chart.
 Any valid (string) argument to the [`color_palette`](https://seaborn.pydata.org/generated/seaborn.color_palette.html)
@@ -113,6 +126,6 @@ pixels, you can do so with the `size` argument. The value to
 ```
 
 In the following pages, you can explore the chart types that are
-included in glasseye, including the data formats that they accept,
+included in doodl, including the data formats that they accept,
 an animations that they provide, and any optional arguments
 particular to the chart.

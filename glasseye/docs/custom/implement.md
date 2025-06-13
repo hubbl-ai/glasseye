@@ -1,6 +1,6 @@
 ## Implementing custom charts
 
-Behind the scenes, glasseye implements a very lightweight
+Behind the scenes, doodl implements a very lightweight
 (TypeScript) API that each chart type must implement. The function
 that implements this API has a signature similar to this:
 
@@ -38,7 +38,7 @@ in the Github repository for inspiration and examples. The
 result of your work should be a Javascript bundle containing
 your visualization's implementation - likely a thin wrapper
 around whatever function you already have. If you like, you
-can call glasseye with an implementation that is in a local
+can call doodl with an implementation that is in a local
 file, or, if your module is accessible as CDN, you can give
 the URL of the implementation.
 
@@ -66,10 +66,10 @@ name of the argument, and the default value to be provided if none is
 given.
 
 Using your visualization is as simple as registering it, like this:<sup>1</sup>
-<span class="marginnote">1. See [Invoking glasseye](/invoking)</span>
+<span class="marginnote">1. See [Invoking doodl](/invoking)</span>
 
 ~~~bash
-% glasseye -c special.json myfile.md
+% doodl -c special.json myfile.md
 ~~~
 
 (`--chart` can be used instead of `-c`) and referencing it in Markdown:

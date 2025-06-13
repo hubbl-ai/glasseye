@@ -1,11 +1,11 @@
 # Writing Markdown
 
-Glasseye uses [pandoc](https://pandoc.org/) internally to turn
+Doodl uses [pandoc](https://pandoc.org/) internally to turn
 Markdown into HTML, which it then processes to do its magic.  This
 means that anything that is valid in Pandoc as an HTML generator is
-valid in glasseye.
+valid in doodl.
 
-Glasseye adds two kinds of special tags to Markdown/HTML.  First
+Doodl adds two kinds of special tags to Markdown/HTML.  First
 there's the `<sidenote>` tag. Anything enclosed in these tags will
 generate a numbered side note in the wide margin as close as possible
 to the note number in the main text. Here's an example of one:
@@ -33,7 +33,7 @@ smaller segments demoted to the tooltip.
 <span id="piechart_0"></span>
 </span>
 
-Including d3 charts in a glasseye document is very easy. The only
+Including d3 charts in a doodl document is very easy. The only
 required argument is `data`, the format of which depends on the 
 type of chart. For example this chart was generated
 using:

@@ -16,18 +16,92 @@ The data given to a force directed graph has the form:
 ~~~json
 {
   "nodes": [
-    { "id": "A", "group": 1 },
-    { "id": "B", "group": 2 },
-    { "id": "C", "group": 1 },
-    { "id": "D", "group": 2 }
+    {"id": "Myriel", "group": 1},
+    {"id": "Napoleon", "group": 1},
+    {"id": "Mlle.Baptistine", "group": 1},
+    {"id": "Mme.Magloire", "group": 1},
+    ...
   ],
   "links": [
-    { "source": "A", "target": "B" },
-    { "source": "A", "target": "C" },
-    { "source": "B", "target": "D" },
-    { "source": "C", "target": "D" }
+    {"source": "Napoleon", "target": "Myriel", "value": 1},
+    {"source": "Mlle.Baptistine", "target": "Myriel", "value": 8},
+    {"source": "Mme.Magloire", "target": "Myriel", "value": 10},
+    {"source": "Mme.Magloire", "target": "Mlle.Baptistine", "value": 6},
+    {"source": "CountessdeLo", "target": "Myriel", "value": 1},
+    {"source": "Geborand", "target": "Myriel", "value": 1},
+    ...
   ]
 }
+~~~
+
+and is used either inline, like this:
+
+~~~html
+<force
+  data='{
+    "nodes": [
+      {"id": "Myriel", "group": 1},
+      {"id": "Napoleon", "group": 1},
+      {"id": "Mlle.Baptistine", "group": 1},
+      {"id": "Mme.Magloire", "group": 1},
+      ...
+    ],
+    "links": [
+      {"source": "Napoleon", "target": "Myriel", "value": 1},
+      {"source": "Mlle.Baptistine", "target": "Myriel", "value": 8},
+      {"source": "Mme.Magloire", "target": "Myriel", "value": 10},
+      {"source": "Mme.Magloire", "target": "Mlle.Baptistine", "value": 6},
+      {"source": "CountessdeLo", "target": "Myriel", "value": 1},
+      {"source": "Geborand", "target": "Myriel", "value": 1},
+      ...
+    ]
+  }'
+  size="{'width':1500,'height':1300}"
+  colors="pastel"
+>
+</force>
+~~~
+
+or from a file, like this:
+
+~~~html
+<force
+  path="data/miserables.json"
+  format="json"
+  size="{'width':1500,'height':1300}"
+  colors="pastel"
+>
+</force>
+~~~
+
+or, in Python:
+
+~~~python
+import doodl
+data={
+  "nodes": [
+    {"id": "Myriel", "group": 1},
+    {"id": "Napoleon", "group": 1},
+    {"id": "Mlle.Baptistine", "group": 1},
+    {"id": "Mme.Magloire", "group": 1},
+    ...
+  ],
+  "links": [
+    {"source": "Napoleon", "target": "Myriel", "value": 1},
+    {"source": "Mlle.Baptistine", "target": "Myriel", "value": 8},
+    {"source": "Mme.Magloire", "target": "Myriel", "value": 10},
+    {"source": "Mme.Magloire", "target": "Mlle.Baptistine", "value": 6},
+    {"source": "CountessdeLo", "target": "Myriel", "value": 1},
+    {"source": "Geborand", "target": "Myriel", "value": 1},
+    ...
+  ]
+}
+
+doodl.force(
+  data=data,
+  size={"width":1500,"height":130},
+  colors="pastel"'
+)
 ~~~
 
 ### Nodes

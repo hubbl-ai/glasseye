@@ -1,6 +1,6 @@
 # Pandoc-plot
 
-Because glasseye is based on Pandoc, other tools in the Pandoc
+Because doodl is based on Pandoc, other tools in the Pandoc
 ecosystem are also available, in particular
 [Laurent P. René de Cotret](https://laurentrdc.xyz/)'s
 [Pandoc-Plot](https://github.com/LaurentRDC/pandoc-plot) package.
@@ -19,11 +19,11 @@ into your document, offset as a code block, like this:
     sns.pairplot(df, hue="species")
     ```
 
-To tell glasseye to include the Pandoc-Plot when it calls pandoc,
+To tell doodl to include the Pandoc-Plot when it calls pandoc,
 use the `-p` (or `--plot`) flag, like this:
 
 ```bash
-% glasseye --plot file.md
+% doodl --plot file.md
 ```
 
 Here is the output:
@@ -39,7 +39,7 @@ Some things to note:
 
 The output plots will be generated in PNG, and placed in a
 `plots` folder for you, in the same folder that holds the output file,
-if `glasseye` is run in formatter mode.
+if `doodl` is run in formatter mode.
 
 Note that Pandoc-Plot has more tricks than matplotlib up its sleeve.
 Here's a list, from

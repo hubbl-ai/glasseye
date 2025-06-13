@@ -1,0 +1,8 @@
+git ls-files |
+grep -v '^\.' |
+xargs -n1 git  blame -C -M --line-porcelain |
+awk '/^author / { author = $0 }
+/^filename / {print author "\t" $0; next }'^C sort |
+uniq -c |
+sed 's/filename //
+s/author //'
