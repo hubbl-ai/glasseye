@@ -1,9 +1,8 @@
-beautifulsoup4==4.12.3
-certifi==2024.8.30
+beautifulsoup4==4.13.4
+certifi==2025.4.26
 colorcet==3.1.0
-glasseye==0.1.17
-pypandoc==1.14
-soupsieve==2.6
+pypandoc==1.15
+soupsieve==2.7
 seaborn==0.13.2
 playwright==1.52.0
 cairosvg==2.8.2
