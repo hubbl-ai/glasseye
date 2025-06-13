@@ -254,25 +254,24 @@ def run_headless_browser(page_url, output_path=""):
         with NamedTemporaryFile(mode='w+', suffix='.json', delete=False) as f:
             json.dump(json.loads(raw_pandoc_json), f, indent=2)
             f.close()
-            # breakpoint()
             md_file_path = f.name
-
-            # Step 3: Output file
-            output_file_path = os.path.join(output_path,f'output.{output_format}') 
-
+            
             if output_format.upper() == "PDF":
                 py.convert_file(
                     source_file=md_file_path,
                     to=output_format,
-                    outputfile=output_file_path,
+                    outputfile=file_in_format,
                     extra_args=["--pdf-engine=pdflatex"]  # or lualatex/wkhtmltopdf etc.
                 )
             else:
                  py.convert_file(
                     source_file=md_file_path,
                     to=output_format,
-                    outputfile=output_file_path
+                    outputfile=file_in_format
                 )
+                
+            
+            logger.info(f"Generated File: {file_in_format}")
             
 
 
@@ -388,7 +387,6 @@ def replace_raw_json_tags(tag, tag_count, directory):
         if not replace_this_block:
             result_json["blocks"].append(block)
     raw_pandoc_json = json.dumps(result_json)
-    logger.info(json.dumps(raw_pandoc_json,indent=2))
 
   
 def obj_has_tag(obj,tag):
@@ -405,6 +403,7 @@ def main():
     global raw_pandoc_json
     global generate_for_format
     global output_format
+    global file_in_format
 
     filters = []
     chart_defs = []
@@ -416,6 +415,7 @@ def main():
     zip_mode = False
     generate_for_format = False
     output_format = ""
+    file_in_format = ""
     port = default_port
     verbosity = logging.WARNING
     zipped_filename = ""
@@ -500,7 +500,11 @@ In dev mode, the script must be run in the same folder as the script.
             sys.exit(0)
 
         output_file = base + '.html'
+        file_in_format = os.path.join( os.getcwd(), f'{base}.{output_format}')
     
+    if os.path.exists(file_in_format):
+        os.rename(file_in_format, file_in_format + '~')
+        
     if os.path.exists(output_file):
         os.rename(output_file, output_file + '~')
 
