@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from time import sleep
 import colorcet as cc
 import http.server
 import json
@@ -21,6 +20,7 @@ from bs4 import BeautifulSoup
 from getopt import getopt
 from playwright.sync_api import sync_playwright
 from tempfile import NamedTemporaryFile, TemporaryDirectory
+from time import sleep
 
 
 fonts = [
@@ -111,6 +111,7 @@ mode = "prod"
 module_name = "Glasseye"
 src_dir = "."
 logger = logging.getLogger(module_name)
+convert_url = "https://svgtopng-latest.onrender.com/convert"
 default_port = 7300
 
 
@@ -181,8 +182,6 @@ def register_chart(filename, defs):
 
 
 def parse_html(input_file, output_dir, filters=[], extras=[]):
-    global convert
-
     # Call pandoc and parse the HTML with BeautifulSoup
     with NamedTemporaryFile(
         suffix="html", delete_on_close=False, dir=output_dir
@@ -194,13 +193,11 @@ def parse_html(input_file, output_dir, filters=[], extras=[]):
                 input_file, "html", outputfile=pfp.name, extra_args=extras, filters=filters
             )
         except Exception as e:
-            logger.error(f"Error converting {input_file} to HTML: {e}")
-            sys.exit(1)
-
+            logger.fatal(f"Error converting {input_file} to HTML: {e}")
 
         with open(pfp.name, "r") as rfp:
             pdoc = rfp.read()
-            soup = BeautifulSoup(pdoc, "html.parser")
+            soup = BeautifulSoup(pdoc, 'html.parser')
 
     return soup
 
@@ -430,7 +427,6 @@ def write_html(
 
 
 def generate_json(input_file, output_dir, filters=[], extras=[]):
-    global convert
     raw_json = None
 
     # Call pandoc and parse the JSON with BeautifulSoup
@@ -483,7 +479,7 @@ def convert_images(httpd, page_url, output_path=""):
 
 
 def convert_svg_to_png(svg_name: str, output_path: str):
-    url = "https://svgtopng-latest.onrender.com/convert"
+    url = convert_url
     svg_path = os.path.join(output_path, f"{svg_name}.svg")
     png_path = os.path.join(output_path, f"{svg_name}.png")
     width, height = get_svg_dimensions(svg_path)
@@ -634,8 +630,8 @@ def obj_has_tag(obj, tag):
 def main():
     global mode
     global logger
-    global generate_for_format
     global output_format
+    global src_dir
 
     filters = []
     chart_defs = []
@@ -645,7 +641,6 @@ def main():
     output_file = None
     server_mode = False
     zip_mode = False
-    generate_for_format = False
     output_format = ""
     output_file_path = ""
     port = default_port
@@ -693,7 +688,6 @@ In dev mode, the script must be run in the same folder as the script.
             chart_defs = register_chart(v, chart_defs)
         elif k in ["-D", "--dir"]:
             mode = "dev"
-            global src_dir
             src_dir = os.path.abspath(v)
         elif k in ["-f", "--filter"]:
             filters.append(v)
@@ -713,7 +707,6 @@ In dev mode, the script must be run in the same folder as the script.
         elif k in ["--port"]:
             port = int(v)
         elif k in ["--format"]:
-            generate_for_format = True
             output_format = v
         elif k in ["-?", "-h", "--help"]:
             errors += 1
@@ -814,10 +807,8 @@ In dev mode, the script must be run in the same folder as the script.
 
     httpd, url = run_http_server(server_dir_name, port)
     
-    if output_format == "html":
-        if server_mode:
-            browse_html(httpd, url)
-
+    if server_mode:
+        browse_html(httpd, url)
         return
 
     # Now handle other formats
@@ -902,15 +893,6 @@ def copy_data(output_dir, server_dir_path):
                     os.makedirs(dest_dict, exist_ok=True)
                 shutil.copy2(sas, dest_dict)
                 logger.info(f"Copied : {sas} to {dest_dict}")
-
-    # # rename the generated .html file to index.html
-
-    # extension = os.path.splitext(output_file)[-1]
-    # new_filename = "index" + extension
-    # old_filepath = os.path.join(server_dir_path, output_file)
-    # new_filepath = os.path.join(server_dir_path, new_filename)
-
-    # os.rename(old_filepath, new_filepath)
 
 
 if __name__ == "__main__":
