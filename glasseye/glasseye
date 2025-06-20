@@ -847,7 +847,10 @@ def run_http_server(directory, port=default_port):
     if not os.path.isdir(directory):
         raise ValueError(f"Invalid directory: {directory}")
 
-    os.chdir(directory)
+    def _run():
+        os.chdir(directory)
+        httpd.serve_forever()
+        
     handler = http.server.SimpleHTTPRequestHandler
     url = f"http://localhost:{port}"
 
@@ -855,7 +858,7 @@ def run_http_server(directory, port=default_port):
 
     # Start the server in a separate thread
 
-    threading.Thread(target=httpd.serve_forever, daemon=True).start()
+    threading.Thread(target=_run, daemon=True).start()
 
     return httpd, url
 
