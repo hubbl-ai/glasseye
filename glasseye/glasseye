@@ -751,8 +751,8 @@ In dev mode, the script must be run in the same folder as the script.
             errors += 1
             sys.exit(0)
 
-        output_file = base + ".html"
-        output_file_path = os.path.join(os.getcwd(), f"{base}.{output_format}")
+        output_file = f"{base}.{output_format}"
+        output_file_path = os.path.join(os.getcwd(), output_file)
 
     if os.path.exists(output_file_path):
         os.rename(output_file_path, output_file_path + "~")
