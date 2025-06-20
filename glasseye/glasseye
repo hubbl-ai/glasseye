@@ -72,6 +72,11 @@ html_tpl = """<!DOCTYPE html>
 </html>
 """
 
+pdf_engines = [
+    "xelatex",
+    "lualatex",
+    "pdflatex"
+]
 # Standard charts
 
 standard_charts = {
@@ -597,7 +602,9 @@ def convert_to_format(doc, output_format, output_file_path):
     extras = []
 
     if output_format.upper() == "PDF":
-        extras.append("--pdf-engine=xelatex")  # or lualatex/wkhtmltopdf etc.
+        pdf_engine = get_pdf_engine()
+        if pdf_engine is not None:
+            extras.append(f"--pdf-engine={pdf_engine}")
 
     try:
         logger.info(f"Convert args: source_file={json_file_path}, to={output_format}, outputfile={output_file_path}, extra_args={extras}")
@@ -613,6 +620,13 @@ def convert_to_format(doc, output_format, output_file_path):
 
     logger.info(f"Generated File: {output_file_path}")
 
+
+def get_pdf_engine():
+    for engine in pdf_engines:
+        if hasattr(shutil, 'which') and shutil.which(engine) is not None:
+            return engine
+    logger.error("No valid PDF engine found. Please install xelatex, lualatex, or pdflatex. You can install TeX Live or MiKTeX to get these engines.")
+    return None
 
 def temp_file(suffix):
     """Create a temporary file with the given suffix."""
