@@ -373,17 +373,8 @@ def make_supporting(chart_defs, server_mode=False):
     stylesheets = base_stylesheets
 
     if mode == "dev":
-        scripts = (
-            [path.format(dir=src_dir) for path in dev_scripts]
-            if not server_mode
-            else [f"ts/dist/{os.path.basename(path)}" for path in dev_scripts]
-        )
-        stylesheets = (
-            base_stylesheets + [path.format(dir=src_dir) for path in dev_stylesheets]
-            if not server_mode
-            else base_stylesheets
-            + [f"css/{os.path.basename(path)}" for path in dev_stylesheets]
-        )
+        scripts = [f"ts/dist/{os.path.basename(path)}" for path in dev_scripts]
+        stylesheets =  base_stylesheets + [f"css/{os.path.basename(path)}" for path in dev_stylesheets]
     else:
         scripts = scripts + prod_scripts
         stylesheets = stylesheets + prod_stylesheets
@@ -780,7 +771,7 @@ In dev mode, the script must be run in the same folder as the script.
         )
         sys.exit(1)
 
-    html_file = output_file if output_format == "html" else temp_file('html')
+    html_file = output_file if not server_mode and output_format == "html" else temp_file('html')
     # No matter what, we need to generate the HTML file first.
 
     soup = parse_html(input_file, output_dir, filters, extras)
@@ -802,7 +793,12 @@ In dev mode, the script must be run in the same folder as the script.
         with TemporaryDirectory(prefix="glasseye", delete=zip_mode) as dir_name:
             server_dir_name = dir_name
             copy_data(output_dir, dir_name)
-            html_file = os.path.join(dir_name, 'index.html')
+            if os.path.isfile(html_file):
+                shutil.copy2(html_file, dir_name)
+                old_html_file_name = os.path.basename(html_file)
+                if old_html_file_name != "index.html":
+                    os.rename( os.path.join(dir_name, old_html_file_name), os.path.join(dir_name, 'index.html'))
+                html_file = os.path.join(dir_name, "index.html")
 
     write_html(
         scripts,
