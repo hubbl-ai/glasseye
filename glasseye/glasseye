@@ -655,7 +655,7 @@ def main():
     output_file = None
     server_mode = False
     zip_mode = False
-    output_format = ""
+    output_format = "html" # Default output format
     output_file_path = ""
     port = default_port
     verbosity = logging.WARNING
@@ -742,7 +742,7 @@ In dev mode, the script must be run in the same folder as the script.
         sys.exit(0)
 
     input_file = args[0]
-
+    
     if output_file is None:
         base, ext = os.path.splitext(args[0])
 
