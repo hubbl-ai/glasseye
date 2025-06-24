@@ -609,7 +609,7 @@ def convert_to_format(doc, output_format, output_file_path):
         logger.error(f"Error converting {output_file_path} to {output_format}: {e}")
         sys.exit(1)
 
-    generated_file = os.path.join(os.path.dirname(json_file_path),output_file_path)
+    generated_file = os.path.join(os.path.dirname(output_file_path),output_file_path)
     logger.info(f"Generated File: {generated_file}")
 
 
@@ -831,12 +831,13 @@ In dev mode, the script must be run in the same folder as the script.
         extras,
     )
 
-    convert_images(httpd, url, server_dir_name)
-    json_doc = replace_glasseye_tags_with_images(json_doc, output_dir)
+    svg_dir = os.path.join(server_dir_name, "svg")
+    convert_images(httpd, url,svg_dir )
+    json_doc = replace_glasseye_tags_with_images(json_doc, svg_dir)
     convert_to_format(
         json_doc,
         output_format=output_format,
-        output_file_path=output_file,
+        output_file_path=os.path.join(server_dir_name, output_file),
     )
 
 
