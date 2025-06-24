@@ -908,6 +908,55 @@ def copy_data(output_dir, server_dir_path):
                 shutil.copy2(sas, dest_dict)
                 logger.info(f"Copied : {sas} to {dest_dict}")
 
+chart_count = 0
+
+def chart(func_name, fields=None):
+    def wrapper(data=[],
+                size={},
+                file={},
+                colors='pastel',
+                n_colors=10,
+                desat=1,
+                **kwargs):
+        global chart_count
+
+        chart_id = f"{func_name}_{chart_count}"
+        chart_count += 1
+
+        colors = resolve_color_palette(colors, n_colors, desat)
+
+        args = [
+            json.dumps(f"#{chart_id}"),
+            json.dumps(data),
+            json.dumps(size),
+            json.dumps(file),
+            json.dumps(colors)
+        ]
+
+        if fields:
+            for field in fields:
+                if field in kwargs:
+                    args.append(json.dumps(kwargs[field]))
+                else:
+                    args.append(json.dumps(fields[field]))
+
+        script = f'''
+<p><span class="chart-container" id="{chart_id}"></span></p>
+<script src="{glasseye_lib}"></script>
+<link rel="stylesheet" href="{glasseye_css}" />
+<script type="text/javascript">
+            Glasseye.{func_name}({''',
+                '''.join(args)}
+            );
+</script>
+'''
+        display(HTML(script))
+
+    return wrapper
+
+for k, v in standard_charts.items():
+    globals()[k] = chart(k, v)
+
 
 if __name__ == "__main__":
     main()
