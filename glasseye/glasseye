@@ -609,7 +609,8 @@ def convert_to_format(doc, output_format, output_file_path):
         logger.error(f"Error converting {output_file_path} to {output_format}: {e}")
         sys.exit(1)
 
-    logger.info(f"Generated File: {output_file_path}")
+    generated_file = os.path.join(os.path.dirname(json_file_path),output_file_path)
+    logger.info(f"Generated File: {generated_file}")
 
 
 def get_pdf_engine():
