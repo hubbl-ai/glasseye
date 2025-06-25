@@ -733,9 +733,12 @@ In dev mode, the script must be run in the same folder as the script.
         sys.exit(0)
 
     input_file = args[0]
+    input_file_dir = os.path.dirname(input_file)
+    if not os.path.isdir(input_file_dir) or os.path.exists(input_file_dir):
+        input_file_dir = os.getcwd()
     
     if output_file is None:
-        base, ext = os.path.splitext(args[0])
+        base, ext = os.path.splitext(input_file)
 
         if ext != ".md":
             logger.error('file must have ".md" extension')
@@ -743,7 +746,9 @@ In dev mode, the script must be run in the same folder as the script.
             sys.exit(0)
 
         output_file = f"{base}.{output_format}"
-        output_file_path = os.path.join(os.getcwd(), output_file)
+        output_file_path = os.path.join(input_file_dir, output_file)
+    else:
+        output_file_path = os.path.abspath(output_file)
 
     if os.path.exists(output_file_path):
         os.rename(output_file_path, output_file_path + "~")
@@ -797,7 +802,7 @@ In dev mode, the script must be run in the same folder as the script.
                 shutil.copy2(html_file, dir_name)
                 old_html_file_name = os.path.basename(html_file)
                 if old_html_file_name != "index.html":
-                    os.rename( os.path.join(dir_name, old_html_file_name), os.path.join(dir_name, 'index.html'))
+                    os.rename( os.path.join(dir_name, old_html_file_name), os.path.join(dir_name, "index.html"))
                 html_file = os.path.join(dir_name, "index.html")
 
     write_html(
@@ -824,8 +829,8 @@ In dev mode, the script must be run in the same folder as the script.
     # Now handle other formats
 
     json_doc = generate_json(
-        input_file,
-        output_dir,
+        os.path.basename(input_file),
+        server_dir_name,
         filters,
         extras,
     )
@@ -836,7 +841,7 @@ In dev mode, the script must be run in the same folder as the script.
     convert_to_format(
         json_doc,
         output_format=output_format,
-        output_file_path=os.path.join(server_dir_name, output_file),
+        output_file_path=output_file_path,
     )
 
 
